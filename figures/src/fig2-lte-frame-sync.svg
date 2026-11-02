@@ -1,0 +1,31 @@
+<svg width="100%" viewBox="0 0 680 350" role="img"><title>LTE FDD frame structure and synchronization signals</title><desc>A 10 ms radio frame divides into ten 1 ms subframes; subframes 0 and 5 carry the synchronization signals. Subframe 0 holds slots 0 and 1 of 0.5 ms; slot 0 holds seven OFDM symbols with normal cyclic prefix, of which symbol 5 carries the SSS and symbol 6 the PSS.</desc>
+<!-- Source: 3GPP TS 36.211 V19.3.0, clause 4.1 (frame structure type 1), Table 6.2.3-1 (7 symbols per slot, normal CP, 15 kHz), clauses 6.11.1.2 and 6.11.2.2 (PSS in the last and SSS in the second-last OFDM symbol of slots 0 and 10). Adapted from the thesis-figures skill template lte-frame-structure.svg. -->
+<g class="c-gray"><rect x="40" y="30" width="600" height="36" rx="4" stroke-width="0.5"/><text class="th" x="340" y="48" text-anchor="middle" dominant-baseline="central">Radio frame, 10 ms</text></g>
+<text class="ts" x="40" y="88" dominant-baseline="central">10 subframes, 1 ms each</text>
+<text class="ts" x="640" y="88" text-anchor="end" dominant-baseline="central">Subframes 0 and 5 carry the PSS and SSS</text>
+<g class="c-purple"><rect x="40" y="100" width="60" height="36" stroke-width="0.5"/><text class="th" x="70" y="118" text-anchor="middle" dominant-baseline="central">0</text></g>
+<g class="c-teal"><rect x="100" y="100" width="60" height="36" stroke-width="0.5"/><text class="ts" x="130" y="118" text-anchor="middle" dominant-baseline="central">1</text></g>
+<g class="c-teal"><rect x="160" y="100" width="60" height="36" stroke-width="0.5"/><text class="ts" x="190" y="118" text-anchor="middle" dominant-baseline="central">2</text></g>
+<g class="c-teal"><rect x="220" y="100" width="60" height="36" stroke-width="0.5"/><text class="ts" x="250" y="118" text-anchor="middle" dominant-baseline="central">3</text></g>
+<g class="c-teal"><rect x="280" y="100" width="60" height="36" stroke-width="0.5"/><text class="ts" x="310" y="118" text-anchor="middle" dominant-baseline="central">4</text></g>
+<g class="c-purple"><rect x="340" y="100" width="60" height="36" stroke-width="0.5"/><text class="th" x="370" y="118" text-anchor="middle" dominant-baseline="central">5</text></g>
+<g class="c-teal"><rect x="400" y="100" width="60" height="36" stroke-width="0.5"/><text class="ts" x="430" y="118" text-anchor="middle" dominant-baseline="central">6</text></g>
+<g class="c-teal"><rect x="460" y="100" width="60" height="36" stroke-width="0.5"/><text class="ts" x="490" y="118" text-anchor="middle" dominant-baseline="central">7</text></g>
+<g class="c-teal"><rect x="520" y="100" width="60" height="36" stroke-width="0.5"/><text class="ts" x="550" y="118" text-anchor="middle" dominant-baseline="central">8</text></g>
+<g class="c-teal"><rect x="580" y="100" width="60" height="36" stroke-width="0.5"/><text class="ts" x="610" y="118" text-anchor="middle" dominant-baseline="central">9</text></g>
+<line x1="40" y1="136" x2="40" y2="176" class="leader"/>
+<line x1="100" y1="136" x2="640" y2="176" class="leader"/>
+<g class="c-purple"><rect x="40" y="176" width="300" height="36" rx="4" stroke-width="0.5"/><text class="th" x="190" y="194" text-anchor="middle" dominant-baseline="central">Slot 0, 0.5 ms</text></g>
+<g class="c-teal"><rect x="340" y="176" width="300" height="36" rx="4" stroke-width="0.5"/><text class="th" x="490" y="194" text-anchor="middle" dominant-baseline="central">Slot 1, 0.5 ms</text></g>
+<line x1="40" y1="212" x2="40" y2="252" class="leader"/>
+<line x1="340" y1="212" x2="640" y2="252" class="leader"/>
+<g class="c-gray"><rect x="40" y="252" width="85.7" height="44" stroke-width="0.5"/><text class="ts" x="82.9" y="274" text-anchor="middle" dominant-baseline="central">Symbol 0</text></g>
+<g class="c-gray"><rect x="125.7" y="252" width="85.7" height="44" stroke-width="0.5"/><text class="ts" x="168.6" y="274" text-anchor="middle" dominant-baseline="central">Symbol 1</text></g>
+<g class="c-gray"><rect x="211.4" y="252" width="85.7" height="44" stroke-width="0.5"/><text class="ts" x="254.3" y="274" text-anchor="middle" dominant-baseline="central">Symbol 2</text></g>
+<g class="c-gray"><rect x="297.1" y="252" width="85.7" height="44" stroke-width="0.5"/><text class="ts" x="340" y="274" text-anchor="middle" dominant-baseline="central">Symbol 3</text></g>
+<g class="c-gray"><rect x="382.8" y="252" width="85.7" height="44" stroke-width="0.5"/><text class="ts" x="425.7" y="274" text-anchor="middle" dominant-baseline="central">Symbol 4</text></g>
+<g class="c-amber"><rect x="468.5" y="252" width="85.7" height="44" stroke-width="0.5"/><text class="th" x="511.4" y="265" text-anchor="middle" dominant-baseline="central">SSS</text><text class="ts" x="511.4" y="284" text-anchor="middle" dominant-baseline="central">Symbol 5</text></g>
+<g class="c-amber"><rect x="554.2" y="252" width="85.8" height="44" stroke-width="0.5"/><text class="th" x="597.1" y="265" text-anchor="middle" dominant-baseline="central">PSS</text><text class="ts" x="597.1" y="284" text-anchor="middle" dominant-baseline="central">Symbol 6</text></g>
+<text class="ts" x="340" y="318" text-anchor="middle" dominant-baseline="central">Normal cyclic prefix: 7 OFDM symbols per slot</text>
+<text class="ts" x="340" y="336" text-anchor="middle" dominant-baseline="central">Slot 10, the first slot of subframe 5, carries the SSS and PSS again</text>
+</svg>

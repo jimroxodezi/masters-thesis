@@ -13,9 +13,10 @@
   number  = {2},
   pages   = {11--18},
   year    = {2021},
-  url     = {https://users.utcluj.ro/~atn/papers/ATN_2_2021_3.pdf},
-  note    = {No DOI listed by the journal}
+  url     = {https://users.utcluj.ro/~atn/papers/ATN_2_2021_3.pdf}
 }
+% No DOI listed by the journal. (Moved from a note field on 2026-11-02:
+% biblatex-apa printed the note in the reference list.)
 % Full text opened. Data are simulated (OFDM; AWGN, Rayleigh flat and
 % frequency-selective fading). ED with dynamic threshold beat the NN on average,
 % especially at low SNR; NN won only when trained on a narrow SNR range.
@@ -147,3 +148,114 @@
 % Confirms: R828D tuner, RTL2832U 8-bit ADC, 500 kHz to 1.766 GHz,
 % 2.56 MHz stable bandwidth (up to 3.2 MHz with drops), 50 ohm input.
 % Year inferred from the upload path (2024/12); the PDF carries no date.
+
+% --- Added for Chapter 1 (2026-11-02) --------------------------------------
+% Metadata checked against Crossref records, the publisher pages or the
+% version of record in papers/. Passages used are listed in
+% notes/chapter1-claims.md.
+
+@article{popoola2018,
+  author  = {Popoola, Jide Julius and Otuu, Uche Nwafor},
+  title   = {Assessment of radio spectrum profile in {Nigeria} using multi-band and multi-location radio spectrum occupancy measurements},
+  journal = {Eski{\c{s}}ehir Technical University Journal of Science and Technology A -- Applied Sciences and Engineering},
+  volume  = {19},
+  number  = {4},
+  pages   = {948--962},
+  year    = {2018},
+  doi     = {10.18038/aubtda.425027}
+}
+% PDF in papers/ (file misnamed 10.18038-aubtda.425027-631211.docx). Volume,
+% issue and pages from the article header; Crossref lists the journal under its
+% former name (Anadolu University Journal of Science and Technology A) and has
+% no pages. Sites: Abuja, Lafia, Lokoja, Gusau, Port Harcourt (p. 951).
+
+@inproceedings{axell2010,
+  author    = {Axell, Erik and Leus, Geert and Larsson, Erik G.},
+  title     = {Overview of spectrum sensing for cognitive radio},
+  booktitle = {2010 2nd International Workshop on Cognitive Information Processing},
+  pages     = {322--327},
+  publisher = {IEEE},
+  year      = {2010},
+  doi       = {10.1109/CIP.2010.5604136}
+}
+% PDF in papers/ (overview-of-spectrum-sensing-...pdf). Not the same paper as
+% axell2012. Metadata confirmed by Crossref.
+
+@article{tandra2008,
+  author  = {Tandra, Rahul and Sahai, Anant},
+  title   = {{SNR} walls for signal detection},
+  journal = {IEEE Journal of Selected Topics in Signal Processing},
+  volume  = {2},
+  number  = {1},
+  pages   = {4--17},
+  year    = {2008},
+  doi     = {10.1109/JSTSP.2007.914879}
+}
+% papers/ holds a 30-page manuscript copy; page numbers in the claims table
+% are manuscript pages. Metadata confirmed by Crossref.
+
+@inproceedings{tandra2005,
+  author    = {Tandra, Rahul and Sahai, Anant},
+  title     = {Fundamental limits on detection in low {SNR} under noise uncertainty},
+  booktitle = {2005 International Conference on Wireless Networks, Communications and Mobile Computing},
+  volume    = {1},
+  pages     = {464--469},
+  publisher = {IEEE},
+  year      = {2005},
+  doi       = {10.1109/WIRLES.2005.1549453}
+}
+% PDF in papers/. Metadata confirmed by Crossref (Crossref gives no issue date;
+% the conference was held in June 2005). The finite-dynamic-range result is
+% proved for a primary signal with no deterministic component (BPSK case).
+
+@inproceedings{calvopalomino2015,
+  author     = {Calvo-Palomino, Roberto and Pfammatter, Damian and Giustiniano, Domenico and Lenders, Vincent},
+  title      = {A low-cost sensor platform for large-scale wideband spectrum monitoring},
+  titleaddon = {Demonstration abstract},
+  booktitle  = {Proceedings of the 14th International Conference on Information Processing in Sensor Networks},
+  pages      = {396--397},
+  publisher  = {Association for Computing Machinery},
+  year       = {2015},
+  doi        = {10.1145/2737095.2737124}
+}
+% PDF in papers/ (demo_IPSN2015.pdf). Metadata confirmed by Crossref (IPSN '15,
+% Seattle). The PDF title begins "Demonstration Abstract:".
+
+@incollection{saber2021,
+  author    = {Saber, Mohamed and Chehri, Abdellah and {El Rharras}, Abdessamad and Saadane, Rachid and Wahbi, Mohammed},
+  title     = {A cognitive radio spectrum sensing implementation based on deep learning and real signals},
+  editor    = {{Ben Ahmed}, Mohamed and {Rak{\i}p Kara{\c{s}}}, {\.I}smail and Santos, Domingos and Sergeyeva, O. and Boudhir, A. A.},
+  booktitle = {Innovations in Smart Cities Applications Volume 4},
+  pages     = {930--941},
+  publisher = {Springer},
+  year      = {2021},
+  doi       = {10.1007/978-3-030-66840-2_70}
+}
+% PDF in papers/ ("A Cognitive Radio Spectrum Sensing Implementation.pdf"; a
+% manuscript copy without the book's page numbers). Metadata from Crossref and
+% the Springer "Cite this paper" text: Lecture Notes in Networks and Systems,
+% vol. 183 (SCA 2020). Editor names follow Springer's citation; the full given
+% names of the last two editors were not shown, so initials are used.
+
+@online{ncc2026,
+  author      = {{Nigerian Communications Commission}},
+  shortauthor = {{NCC}},
+  title       = {Industry statistics},
+  date        = {2026-10-12},
+  url         = {https://ncc.gov.ng/market-data-reports/industry-statistics},
+  urldate     = {2026-11-02}
+}
+% Page opened 2026-11-02 ("Last Updated October 12, 2026"). Table "Percentage
+% market share (generation)", Aug'26: 2G 36.05, 3G 4.27, 4G 54.77, 5G 4.92.
+% The page does not mention LTE; itu2010 links LTE to the term "4G".
+
+@online{itu2010,
+  author     = {{International Telecommunication Union}},
+  title      = {{ITU World Radiocommunication Seminar} highlights future communication technologies},
+  titleaddon = {Press release},
+  date       = {2010-12-06},
+  url        = {https://www.itu.int/net/pressoffice/press_releases/2010/48.aspx}
+}
+% Opened 2026-11-02 (Geneva). States that IMT-Advanced is considered "4G", that
+% the term may also be applied to its forerunners LTE and WiMax, and that
+% LTE-Advanced and WirelessMAN-Advanced should be designated IMT-Advanced.

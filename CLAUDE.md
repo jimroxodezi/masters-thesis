@@ -12,6 +12,7 @@ Author: Jimrox Odezi Ogume. Department of Electrical and Electronic Engineering,
 ## Decisions already made (do not reopen)
 - **All data is captured by me with the RTL-SDR.** No public datasets (no RadioML or similar) anywhere in the thesis's own data.
 - **Hardware:** RTL-SDR Blog **V4** for all captures (R828D tuner, RTL2832U 8-bit ADC, 1 PPM TCXO, software-switchable bias tee, built-in HF upconverter). Specs are in Section 8.1 of the proposal (`rtlsdrblog2024`). Never write V3 or V4L. Don't describe the HF upconverter as part of the method. Bias-tee state is logged per capture and is off with the 50 Ω terminator. If a capture log shows any other receiver, ask me.
+- **Host computer:** a Dell Latitude 5490 laptop (Intel Core i5-8250U, 8th generation, 4 cores/8 threads; 16 GB RAM; integrated Intel UHD Graphics 620, so PyTorch runs on the CPU only) running Ubuntu 26.04 LTS. Capture, training, evaluation, latency measurement and the real-time demo all run on it. **No Raspberry Pi or other embedded board is used**; never describe embedded deployment as part of the method.
 - The target band must lie **within the RTL-SDR tuning range (about 1.766 GHz max)**. LTE Band 3 downlink (1805 MHz and above) is out of range and must not be described as captured.
 - Splits are by capture session/day/location, never by random frame. Normalization statistics come from training data only. Thresholds are set on idle validation data only.
 - The thesis reports **actual** results from `code/` and `results/`, never the proposal's hypotheses or predictions.
@@ -73,7 +74,7 @@ All of these are addressed in the proposal; carry them into the chapters:
 - Methods and results must match `code/` and `results/`. Read the code first. Never invent numbers, metrics, or settings; if a value is unknown, ask.
 - Define acronyms on first use (LTE, SDR, STFT, PSD, SNR, ROC, AUC, MSE, etc.). Keep notation consistent, with a notation list.
 - Figures and tables: numbered, captioned, referenced with `\cref{}`. Plots as vector PDF with readable labels and units. Use `siunitx` and `booktabs`.
-- Detection metrics to report: detection probability at fixed false alarm rates (e.g. 1% and 5%), confusion matrix, precision, recall, F1, ROC/AUC, and SNR-stratified results, for the autoencoder and every baseline, on identical frames. Report variability over training seeds and bootstrap confidence intervals resampled over sessions. Also report per-frame latency and throughput for each method.
+- Detection metrics to report: detection probability at fixed false alarm rates (e.g. 1% and 5%), confusion matrix, precision, recall, F1, ROC/AUC, and SNR-stratified results, for the autoencoder and every baseline, on identical frames. Report variability over training seeds and bootstrap confidence intervals resampled over sessions. Also report per-frame latency and throughput for each method, measured on the host laptop.
 
 ## Chapter plan (five chapters; detail in Section 10 of the proposal)
 1. **Introduction:** motivation (with the "why" above), problem statement, aim, research questions and hypotheses, objectives, scope, contributions, thesis outline

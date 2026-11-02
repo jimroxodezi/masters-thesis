@@ -18,10 +18,10 @@ Revision of the August 2025 proposal. Supervisor: `<FILL IN>`
 | Novelty claim | "Practical and novel approach" | Reproducible, controlled **evaluation** with strong baselines on real low-cost captures | Autoencoder spectrum anomaly detection and autoencoder-vs-power-detection comparisons already exist (Section 3) |
 | Expected outcome | AE expected to outperform ED, with specific percentages | Testable hypotheses; **a null or mixed result is an acceptable, reportable outcome** | The literature is mixed on whether learned detectors beat a well-tuned energy detector |
 | Unsourced numbers | 20% detection at −20 dB; 85–90%; 4–5x improvement | **Removed** | No verified source |
-| Baselines | Energy detector only | Adaptive-threshold ED, CFAR-style detector, linear (PCA) reconstruction baseline; optional LTE sync-signal correlator | A weak baseline makes any win uninformative |
+| Baselines | Energy detector only | Fixed- and adaptive-threshold ED, linear (PCA) reconstruction baseline, LTE sync-signal correlator | A weak baseline makes any win uninformative |
 | Ground truth | Visual labelling of spectrograms, cell scanner as an example | Cell-search confirmation plus **controlled digital SNR injection** | Gives exact labels at low SNR, where visual labelling fails |
 | Data splitting | Not specified | **Split by capture session/day/location, not by frame** | Adjacent frames are correlated, so frame-level splits leak and inflate results |
-| Extras | LangChain, transfer learning, C++ deployment | Dropped or reduced to a measured CPU/edge latency study | Not needed for the research questions |
+| Extras | LangChain, transfer learning, C++ deployment | Dropped or reduced to a measured CPU latency study on the host laptop | Not needed for the research questions |
 
 ---
 
@@ -56,14 +56,15 @@ Energy detection is the standard low-cost occupancy detector, but a fixed thresh
 **Aim:** to design, implement and rigorously evaluate an autoencoder-based occupancy detector for an LTE downlink band using only RTL-SDR captures, and to compare it with classical baselines under controlled and uncontrolled conditions.
 
 **Research questions**
-- **RQ1:** At a fixed false alarm rate, how does the autoencoder's detection probability compare with adaptive-threshold energy detection across SNR?
-- **RQ2:** Does the autoencoder add value beyond a linear (PCA) reconstruction detector and a CFAR-style detector?
-- **RQ3:** How do both approaches generalize across capture sessions, days, locations and receiver gain settings?
-- **RQ4:** What are the latency and throughput of each method on commodity CPU hardware, and is real-time operation feasible?
+- **RQ1:** At fixed false alarm rates, how does the convolutional autoencoder's detection probability compare with fixed-threshold and adaptive-threshold energy detection across SNR?
+- **RQ2:** Does the autoencoder add value beyond a linear (PCA) reconstruction detector and an LTE synchronization-signal correlator that exploits known signal structure?
+- **RQ3:** How do the methods generalize across capture sessions, days and receiver gain settings, and across locations where captures from more than one location are available?
+- **RQ4:** What are the per-frame latency and throughput of each method on the host laptop's CPU, and is real-time operation at the capture sample rate feasible?
+- **RQ5:** How do the autoencoder's architecture (convolutional vs fully connected) and anomaly score (reconstruction MSE vs the VAE percentile score) affect detection?
 
 **Hypotheses (to be tested, not assumed):**
 - **H1:** the autoencoder achieves higher detection probability than adaptive energy detection at low SNR for the same false alarm rate.
-- **H2:** the autoencoder degrades less than fixed-threshold methods across sessions with different noise floors.
+- **H2:** when a test session's noise floor differs from that of the sessions used to set the thresholds, the autoencoder's realized false alarm rate and detection probability depart less from their calibrated values than those of the fixed-threshold energy detector. The adaptive-threshold energy detector shows how much adapting the noise estimate alone recovers.
 
 Rejecting H1 and/or H2 is a valid and publishable result.
 
@@ -72,15 +73,16 @@ Rejecting H1 and/or H2 is a valid and publishable result.
 1. Select a downlink band within the RTL-SDR tuning range that is confirmed active in the study area, and configure the receiver for it.
 2. Build a capture protocol and collect a labelled dataset: terminated-input noise, antenna-connected idle spectrum, and LTE-active spectrum, across multiple sessions.
 3. Implement the preprocessing pipeline (STFT spectrograms, normalization).
-4. Train and tune autoencoders (convolutional primary, fully connected comparison) on idle data only.
-5. Implement the baselines: adaptive-threshold energy detection, CFAR-style detection, and a PCA reconstruction detector (optional: LTE synchronization-signal correlator).
+4. Train and tune autoencoders (convolutional primary, fully connected comparison) and a VAE with percentile scoring on idle data only.
+5. Implement the baselines: fixed-threshold and adaptive-threshold energy detection, a PCA reconstruction detector and an LTE synchronization-signal correlator.
 6. Evaluate all methods with identical frames, fixed-false-alarm operating points, ROC analysis, SNR-stratified results and session-level generalization tests.
 7. Measure inference latency and throughput and build a real-time demonstration with logging.
 
 ### Priority tiers (to keep the plan achievable)
-- **Core (must have):** band survey and capture protocol; Class A/B/C data; session-level splits; convolutional autoencoder; adaptive-threshold energy detector; fixed-false-alarm evaluation with SNR-stratified results; controlled-SNR injection set.
+- **Core (must have):** band survey and capture protocol; Class A/B/C data; session-level splits; convolutional autoencoder; adaptive-threshold and fixed-threshold energy detectors; fixed-false-alarm evaluation with SNR-stratified results; controlled-SNR injection set.
 - **Stretch (strongly preferred):** PCA reconstruction detector (cheap, and it tests whether non-linearity matters); fully connected autoencoder comparison (answers the supervisor's CNN-vs-dense question); cross-session and gain-change robustness tests; bootstrap confidence intervals over sessions; CPU latency measurement.
-- **Optional (drop first if time runs short):** CFAR-style detector, LTE sync-signal correlator, VAE with percentile score, Raspberry Pi test, dashboard polish.
+- **Optional (drop first if time runs short):** LTE sync-signal correlator, VAE with percentile score, dashboard polish.
+- **Confirmed by the author on 2 November 2026:** all Stretch items are in scope. From the Optional tier, the LTE sync-signal correlator and the VAE with percentile score are in scope; dashboard polish stays optional. The CFAR-style detector is dropped. The fixed-threshold energy detector (the adaptive detector with its noise estimate frozen at the validation value) was added so that H2 can be tested.
 
 ## 7. Scope
 
@@ -88,14 +90,16 @@ Rejecting H1 and/or H2 is a valid and publishable result.
 - One LTE downlink band within the tuner range (**not** Band 3, whose downlink lies above 1766 MHz), observed through the dongle's instantaneous bandwidth of about 2.4 MHz. A slice of one or more LTE carriers is observed, not a full wide carrier. Findings apply to sub-1.77 GHz carriers and should not be generalized to Band 3 or Band 7 carriers.
 - All training, validation and test data captured by the author with the RTL-SDR. No external datasets are used.
 - Autoencoder vs classical detectors for binary occupancy per frame.
-- Real-time pipeline demonstration and latency measurement on CPU.
+- Real-time pipeline demonstration and latency measurement on the host laptop's CPU (Section 8.1).
 
 **Excluded**
-- Demodulating or decoding LTE (no cell IDs beyond what a cell-search tool reports for ground truth, no user data); only power and spectral structure are analysed.
+- Demodulating or decoding LTE (no cell IDs beyond what a cell-search tool reports for ground truth, no user data). Apart from the sync-signal correlator, which only tests for the presence of known synchronization sequences, only power and spectral structure are analysed.
 - Uplink monitoring; any transmission or active probing (passive reception only).
-- Cooperative multi-sensor sensing; full evaluation of other deep models (VAE, GAN, diffusion) beyond optional ablations.
+- Cooperative multi-sensor sensing; GAN, diffusion and other deep models (the VAE is included as an ablation).
+- CFAR-style, cyclostationary, eigenvalue-based and matched-filter detectors (reviewed in Chapter 2, not implemented).
 - LTE network performance metrics (throughput, latency of the network).
 - Operator-level or regulatory conclusions; implications are discussed conceptually.
+- Deployment on a Raspberry Pi or any other embedded board; all processing runs on the host laptop.
 
 ## 8. Methodology
 
@@ -104,6 +108,7 @@ Rejecting H1 and/or H2 is a valid and publishable result.
   - The HF upconverter only affects reception below about 28.8 MHz and plays no part in this study.
   - The bias tee supplies DC to the antenna port. Its state (on/off) is logged for every capture. It must be off when the 50 Ω terminator is fitted (Class A) and when a passive antenna is used.
   - A later model, the RTL-SDR Blog V4L, uses a different tuner (R828S) and front end. If any further dongle is bought, it must be a V4 (R828D), or the model must be recorded per capture and treated as a separate receiver.
+- **Host computer:** Dell Latitude 5490 laptop with an Intel Core i5-8250U (8th generation, 4 cores/8 threads), 16 GB RAM and integrated Intel UHD Graphics 620 (no CUDA GPU, so PyTorch runs on the CPU), running Ubuntu 26.04 LTS. The dongle connects to it over USB. It runs capture, training, evaluation, latency measurement and the real-time demonstration; no embedded board is used.
 - **Band choice (not yet decided):** candidates within range, in the order to survey them in Benin City (band edges `[CITE: 3GPP TS 36.101]`):
   1. **800 MHz band** (Band 20, downlink 791–821 MHz, or another 800/850 MHz plan). News reports confirm that the Nigerian Communications Commission (NCC) approved MTN Nigeria's use of 2 × 10 MHz in the 800 MHz band for LTE, but do not state the band plan. Secondary sources list MTN LTE in Band 20 at 791–811 MHz; an 850 MHz plan (e.g. Band 5, downlink 869–894 MHz) cannot be ruled out, so the survey covers 790–894 MHz.
   2. **Band 28**, downlink 758–803 MHz. Secondary sources list Glo LTE on 700 MHz, with an MTN layer also reported at 768–778 MHz.
@@ -145,13 +150,12 @@ Rejecting H1 and/or H2 is a valid and publishable result.
 - **Convolutional autoencoder (primary):** captures local time-frequency structure of spectrogram patches.
 - **Fully connected autoencoder (comparison):** for the flattened-vector input. The CNN-vs-dense choice is justified by the ablation, not assumed.
 - **PCA reconstruction detector:** a linear baseline, to show whether non-linearity adds anything.
-- **Optional:** a variational autoencoder with the percentile score of Tian et al. (2022).
+- **VAE (score ablation):** a variational autoencoder with the percentile score of Tian et al. (2022).
 - Training: PyTorch, MSE reconstruction loss, Adam, early stopping on idle validation loss. Fixed seeds and **multiple runs** with mean and standard deviation reported. Latent size and depth studied as ablations.
 
 ### 8.8 Baseline detectors
-- **Energy detector:** per-frame power statistic, threshold from a target false alarm rate using an estimated noise power (theoretical chi-square/Gaussian approximation as a starting point), with an **adaptive** noise estimate from recent frames judged idle.
-- **CFAR-style detector:** threshold set relative to a local noise estimate across frequency or time cells.
-- **Optional LTE sync-signal correlator:** detects the primary/secondary synchronization signals when a carrier's center lies within the captured slice.
+- **Energy detector:** per-frame power statistic, threshold from a target false alarm rate using an estimated noise power (theoretical chi-square/Gaussian approximation as a starting point), with an **adaptive** noise estimate from recent frames judged idle. A **fixed-threshold** variant uses the same statistic with the noise estimate frozen at its validation value; it is the comparator for H2.
+- **LTE sync-signal correlator:** detects the primary/secondary synchronization signals when a carrier's center lies within the captured slice.
 - All baselines are tuned on the same idle validation data as the autoencoder.
 
 ### 8.9 Operating points and evaluation
@@ -161,27 +165,27 @@ Rejecting H1 and/or H2 is a valid and publishable result.
 - **Uncertainty:** bootstrap confidence intervals resampled over **sessions** (not frames), and variability across training seeds.
 - **Robustness tests (RQ3):** train on some sessions and test on others; change receiver gain between train and test; test on a different day and, if possible, location.
 - **Failure analysis:** inspect false alarms and misses, and relate them to interference, gain changes or drift.
-- **Compute (RQ4):** per-frame inference latency and throughput on CPU, with a measured real-time factor against the 2.4 MS/s stream. Optional run on an embedded board such as a Raspberry Pi.
+- **Compute (RQ4):** per-frame inference latency and throughput on CPU, with a measured real-time factor against the 2.4 MS/s stream, measured on the host laptop (Section 8.1).
 
 ### 8.10 Real-time demonstration
 - Streaming capture, live spectrogram, per-frame occupancy decision, and timestamped logging; a simple dashboard (notebook or small web app). A sample of the logged data is used for a brief occupancy-over-time illustration of the chosen band.
 
 ### 8.11 Ethics and reproducibility
-- Reception is passive and only power and spectral features are analysed. No content is decoded and no user data is recorded.
+- Reception is passive and only power and spectral features are analysed, apart from the sync-signal correlator, which only tests for known synchronization sequences. No content is decoded and no user data is recorded.
 - Code, configuration and, subject to supervisor approval, the captured dataset and labels are released so the benchmark can be reproduced.
 
 ## 9. Expected contributions
 1. A documented, labelled dataset of real RTL-SDR captures for an LTE downlink band, with idle, active and controlled-SNR subsets.
 2. A controlled benchmark of a learned detector against strong classical and linear baselines, with fixed-false-alarm operating points.
 3. An analysis of generalization across sessions, days and gain settings on low-cost hardware.
-4. An open implementation with measured latency and real-time feasibility on commodity hardware.
+4. An open implementation with measured latency and real-time feasibility on a commodity laptop.
 
 ## 10. Thesis structure (five chapters)
 
 1. **Introduction:** background and motivation (interference management, network optimization, dynamic spectrum access planning), problem statement, aim, research questions and hypotheses, objectives, scope, contributions, thesis outline.
 2. **Literature Review:** LTE downlink structure; cognitive radio systems; taxonomy of classical spectrum sensing (energy, matched-filter, cyclostationary, eigenvalue-based, waveform-based); SDR and the RTL-SDR; STFT and spectrograms; autoencoders (convolutional vs fully connected); related work on learned anomaly detection and learned sensing versus energy detection; research gap.
 3. **Methodology:** hardware and band selection, three-class data collection, ground truth, controlled-SNR injection, preprocessing, session-level splits, models, baseline detectors, fixed-false-alarm thresholding, evaluation protocol, real-time demonstration, ethics and reproducibility.
-4. **Results and Discussion:** detection performance by method and SNR, session and gain generalization, bootstrap confidence intervals, latency and throughput, failure cases; interpretation against RQ1–RQ4 and H1–H2; limitations and threats to validity.
+4. **Results and Discussion:** detection performance by method and SNR, session and gain generalization, bootstrap confidence intervals, latency and throughput, failure cases; interpretation against RQ1–RQ5 and H1–H2; limitations and threats to validity.
 5. **Conclusion and Recommendations:** summary of findings, contributions, recommendations, future work.
 
 ## 11. Risks and mitigations
@@ -214,6 +218,6 @@ Bibliographic details were checked online on 2 November 2026; BibTeX is in `refe
 
 ## 13. Items to confirm with the author before writing
 1. The **target band** and center frequency. Pending the survey in Section 8.1; until then write band-specific text with placeholders.
-2. Which Stretch and Optional items will actually be done (see the priority tiers). Core items are assumed.
+2. Stretch and Optional items: **resolved 2 November 2026** (see the priority tiers in Section 6).
 3. Whether any existing captures were taken with hardware or settings that differ from this plan (check the logs before describing them as part of the dataset).
 4. Supervisor requirements for dataset release, ethics and format.

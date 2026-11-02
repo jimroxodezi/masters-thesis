@@ -41,3 +41,37 @@ Text taken out of `notes/proposal-revised.md` and `CLAUDE.md` on 2 November 2026
   5. Results and analysis: quantitative and qualitative, SNR sensitivity, session/gain generalization, bootstrap confidence intervals over sessions, latency and throughput, failure cases
   6. Discussion: findings, limitations, scope exclusions (no demodulation, downlink only, passive, single receiver)
   7. Conclusion and future work
+
+## Raspberry Pi dropped (2 November 2026)
+
+The host computer is a Dell Latitude 5490 laptop, not a Raspberry Pi or other embedded board. Text taken out of `notes/proposal.md`:
+
+- Section 0, "Extras" row: "Dropped or reduced to a measured CPU/edge latency study". Now "a measured CPU latency study on the host laptop".
+- Section 6, Optional tier: "Raspberry Pi test".
+- Section 8.9, Compute (RQ4): "Optional run on an embedded board such as a Raspberry Pi."
+- Section 9, contribution 4: "on commodity hardware". Now "on a commodity laptop".
+
+## Scope decisions for Chapter 1 (2 November 2026)
+
+The author confirmed the scope tiers: all Stretch items in; from the Optional tier, the LTE sync-signal correlator and the VAE in; the CFAR-style detector dropped; a fixed-threshold energy detector added so that H2 can be tested. The Chapter 1 outline (`notes/chapter1-outline.md`) was approved. Text replaced in `notes/proposal.md`:
+
+- Section 0, "Baselines" row, revision column: "Adaptive-threshold ED, CFAR-style detector, linear (PCA) reconstruction baseline; optional LTE sync-signal correlator".
+- Section 5, research questions (RQ5 was added after them):
+  - "**RQ1:** At a fixed false alarm rate, how does the autoencoder's detection probability compare with adaptive-threshold energy detection across SNR?"
+  - "**RQ2:** Does the autoencoder add value beyond a linear (PCA) reconstruction detector and a CFAR-style detector?"
+  - "**RQ3:** How do both approaches generalize across capture sessions, days, locations and receiver gain settings?"
+  - "**RQ4:** What are the latency and throughput of each method on commodity CPU hardware, and is real-time operation feasible?"
+- Section 5, hypothesis: "**H2:** the autoencoder degrades less than fixed-threshold methods across sessions with different noise floors." The only planned energy detector was adaptive, and the autoencoder's own threshold is fixed once set, so H2 had no fixed-threshold comparator.
+- Section 6, objective 4: "Train and tune autoencoders (convolutional primary, fully connected comparison) on idle data only."
+- Section 6, objective 5: "Implement the baselines: adaptive-threshold energy detection, CFAR-style detection, and a PCA reconstruction detector (optional: LTE synchronization-signal correlator)."
+- Section 6, priority tiers: Core read "...; convolutional autoencoder; adaptive-threshold energy detector; ..."; Optional read "CFAR-style detector, LTE sync-signal correlator, VAE with percentile score, dashboard polish."
+- Section 7, excluded: "Demodulating or decoding LTE (no cell IDs beyond what a cell-search tool reports for ground truth, no user data); only power and spectral structure are analysed." and "Cooperative multi-sensor sensing; full evaluation of other deep models (VAE, GAN, diffusion) beyond optional ablations."
+- Section 8.7: "**Optional:** a variational autoencoder with the percentile score of Tian et al. (2022)."
+- Section 8.8: "**CFAR-style detector:** threshold set relative to a local noise estimate across frequency or time cells." and the label "**Optional LTE sync-signal correlator:**".
+- Section 8.11: "Reception is passive and only power and spectral features are analysed. No content is decoded and no user data is recorded."
+- Section 10, Chapter 4 item: "interpretation against RQ1–RQ4 and H1–H2".
+- Section 13, item 2: "Which Stretch and Optional items will actually be done (see the priority tiers). Core items are assumed."
+
+## From bib/references.bib (2 November 2026)
+
+- `grosu2021`: the field `note = {No DOI listed by the journal}` was moved into a comment below the entry, because biblatex-apa printed it in the reference list as "[No DOI listed by the journal]".

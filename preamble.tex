@@ -1,0 +1,100 @@
+% preamble.tex: packages, page layout and project macros. Loaded by main.tex.
+
+% ---------------------------------------------------------------------------
+% Encoding, language and fonts
+% ---------------------------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[british]{babel}
+% Heading of the table of contents (set through babel, which would otherwise
+% reset it to "Contents").
+\addto\captionsbritish{\renewcommand{\contentsname}{Table of Contents}}
+\usepackage{csquotes}   % required by biblatex-apa
+\usepackage{microtype}
+
+% ---------------------------------------------------------------------------
+% Page layout
+% TODO: check margins, line spacing and font against the University of Benin
+% School of Postgraduate Studies (SPGS) formatting rules. These are defaults
+% chosen on 2026-11-02: A4, 12 pt (set in main.tex), 1.5 line spacing, wider
+% left margin for binding.
+% ---------------------------------------------------------------------------
+\usepackage[a4paper,top=25mm,bottom=25mm,left=35mm,right=25mm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% ---------------------------------------------------------------------------
+% Mathematics, units, tables, figures and lists
+% ---------------------------------------------------------------------------
+\usepackage{amsmath}
+\usepackage{siunitx}
+\sisetup{range-phrase={--}, range-units=single}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[nottoc,notbib]{tocbibind}   % lists of tables and figures in the TOC
+
+% ---------------------------------------------------------------------------
+% Bibliography: APA 7 (biblatex-apa) with biber
+% ---------------------------------------------------------------------------
+\usepackage[style=apa,backend=biber]{biblatex}
+\addbibresource{bib/references.bib}
+% APA 7 puts a comma before "&" in lists of three or more names; British
+% English settings would drop it.
+\DefineBibliographyExtras{british}{\def\finalandcomma{\addcomma}}
+% Allow line breaks inside long DOIs and URLs.
+\setcounter{biburlnumpenalty}{100}
+\setcounter{biburlucpenalty}{100}
+\setcounter{biburllcpenalty}{100}
+
+% ---------------------------------------------------------------------------
+% Hyperlinks and cross-references (hyperref must load before cleveref)
+% ---------------------------------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+\usepackage[capitalise,noabbrev]{cleveref}
+
+% ---------------------------------------------------------------------------
+% Placeholders: printed in red until resolved, so none can be missed
+% ---------------------------------------------------------------------------
+\newcommand{\TBC}[1]{\textcolor{red}{[#1]}}
+% The band is not yet chosen (CLAUDE.md, "Things to resolve").
+\newcommand{\TargetBand}{\TBC{target band to be confirmed after the band survey}}
+
+% ---------------------------------------------------------------------------
+% Thesis metadata (title page, declaration, certification, PDF properties)
+% ---------------------------------------------------------------------------
+% Working title: the final title is still to be confirmed.
+\newcommand{\ThesisTitle}{Real-Capture Evaluation of Autoencoder-Based and Classical Detection for LTE Downlink Spectrum Occupancy Using a Low-Cost RTL-SDR}
+\newcommand{\ThesisAuthor}{Jimrox Odezi Ogume}
+\newcommand{\ThesisDepartment}{Department of Electrical and Electronic Engineering}
+\newcommand{\ThesisUniversity}{University of Benin}
+\newcommand{\ThesisPlace}{Benin City, Nigeria}
+\newcommand{\ThesisDegree}{Master of Science (M.Sc.) in Electrical and Electronic Engineering}
+\newcommand{\ThesisSupervisor}{\TBC{supervisor's name}}
+\newcommand{\ThesisHoD}{\TBC{Head of Department's name}}
+\newcommand{\ThesisDate}{\TBC{month and year of submission}}
+
+\hypersetup{
+  pdftitle  = {Real-Capture Evaluation of Autoencoder-Based and Classical Detection for LTE Downlink Spectrum Occupancy Using a Low-Cost RTL-SDR},
+  pdfauthor = {Jimrox Odezi Ogume},
+}
+
+% ---------------------------------------------------------------------------
+% Notation (keep in step with front/abbreviations.tex)
+% ---------------------------------------------------------------------------
+\newcommand{\Pd}{P_{\mathrm{D}}}    % probability of detection
+\newcommand{\Pfa}{P_{\mathrm{FA}}}  % probability of false alarm
+% Percentages without a space before the sign, as in APA style.
+\newcommand{\pct}[1]{\qty[quantity-product={}]{#1}{\percent}}
+
+% ---------------------------------------------------------------------------
+% Terms
+% ---------------------------------------------------------------------------
+% Prints "synchronization-signal". An explicit hyphen would stop TeX from
+% hyphenating "synchronization" and cause overfull lines; babel's hard hyphen
+% keeps the hyphen and still allows normal hyphenation of the word.
+\newcommand{\syncsignal}{synchronization\babelhyphen{hard}signal}

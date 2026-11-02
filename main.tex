@@ -1,0 +1,48 @@
+% main.tex: root file of the thesis.
+% Build: latexmk -pdf -interaction=nonstopmode main.tex
+\documentclass[12pt,a4paper,oneside]{report}
+\input{preamble}
+
+\begin{document}
+
+% ---------------------------------------------------------------------------
+% Preliminary pages (lower-case roman page numbers; the title page counts as i)
+% TODO: check the order and wording of these pages against the SPGS rules.
+% ---------------------------------------------------------------------------
+\pagenumbering{roman}
+\input{front/titlepage}
+\setcounter{page}{2}   % titlepage resets the counter; the next page is ii
+\input{front/declaration}
+\input{front/certification}
+\input{front/dedication}
+\input{front/acknowledgements}
+\input{front/abstract}
+\tableofcontents
+\listoftables
+\listoffigures
+\input{front/abbreviations}
+
+% ---------------------------------------------------------------------------
+% Main text (arabic page numbers from 1). The \clearpage must come before
+% \pagenumbering, or the last preliminary page would be renumbered 1.
+% ---------------------------------------------------------------------------
+\clearpage
+\pagenumbering{arabic}
+\include{chapters/chapter1}
+\include{chapters/chapter2}
+\include{chapters/chapter3}
+\include{chapters/chapter4}
+\include{chapters/chapter5}
+
+% ---------------------------------------------------------------------------
+% References (APA 7)
+% ---------------------------------------------------------------------------
+\printbibliography[heading=bibintoc,title={References}]
+
+% ---------------------------------------------------------------------------
+% Appendices (appendices/appA_details.tex is still empty)
+% ---------------------------------------------------------------------------
+% \appendix
+% \include{appendices/appA_details}
+
+\end{document}

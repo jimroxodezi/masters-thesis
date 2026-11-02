@@ -1,0 +1,156 @@
+% chapters/chapter1.tex: Chapter 1, Introduction.
+% Outline approved 2 November 2026 (notes/chapter1-outline.md).
+% Claims and their sources: notes/chapter1-claims.md.
+% References to Chapters 2-5 are plain text until those chapters carry labels;
+% switch them to \cref{ch:...} then.
+% TODO: revisit the contributions (Section 1.6) once Chapter 4 results exist.
+% TODO: re-check the gap statement (end of Section 1.2) after the Chapter 2
+%       literature search.
+
+\chapter{Introduction}
+\label{ch:introduction}
+
+This thesis evaluates whether an autoencoder trained only on idle spectrum, captured with a low-cost RTL-SDR receiver, can detect when a Long Term Evolution (LTE) downlink band is occupied, and compares it with classical detectors tuned with equal care. This chapter sets out the background and motivation (\cref{sec:background}), the problem (\cref{sec:problem}), the aim, research questions and hypotheses (\cref{sec:aim}), the objectives (\cref{sec:objectives}), the scope (\cref{sec:scope}) and the contributions (\cref{sec:contributions}) of the study, and outlines the remaining chapters (\cref{sec:organization}).
+
+% ===========================================================================
+\section{Background and Motivation}
+\label{sec:background}
+
+\subsection{Spectrum Use and Its Measurement}
+\label{sec:spectrum-use}
+
+The radio spectrum is the natural resource on which wireless communication depends. It has traditionally been regulated by assigning bands to licensed users on a long-term basis, with the aim of keeping wireless systems free of harmful interference \parencite{popoola2018}. Measurements of how assigned spectrum is actually used have shown that much of it is idle for much of the time, and that its use varies with time, frequency and location \parencite{axell2010,popoola2018}. In Nigeria, \textcite{popoola2018} measured occupancy over \qtyrange{80}{2200}{\mega\hertz} at sites in Abuja, Lafia, Lokoja, Gusau and Port Harcourt, and found an average occupancy below \pct{10} across that range. Occupancy measurements of this kind are the main quantitative tool through which regulators, researchers, engineers and policymakers learn how licensed bands are used in practice \parencite[p.~949]{popoola2018}.
+
+The \textcite{itu2010} stated that International Mobile Telecommunications-Advanced (IMT-Advanced) systems are considered fourth-generation (4G) systems. It determined that LTE-Advanced should be designated an IMT-Advanced technology and noted that the term 4G may also be applied to LTE, its forerunner. In Nigeria, 4G is now the mobile generation used by the largest share of subscribers. In August 2026, \pct{54.77} of mobile subscribers used 4G services, against \pct{36.05} for second-generation (2G), \pct{4.27} for third-generation (3G) and \pct{4.92} for fifth-generation (5G) services \parencite{ncc2026}. The LTE downlink, which carries transmissions from base stations to users' devices, is therefore of direct practical interest. LTE is one of several current systems that use orthogonal frequency-division multiplexing (OFDM) signalling \parencite{axell2010}; the structure of the LTE downlink is reviewed in Chapter~2.
+
+\subsection{Why Downlink Occupancy Matters}
+\label{sec:why}
+
+Knowing whether, when and where an LTE downlink band is occupied serves three purposes: interference management, network optimization and the planning of dynamic spectrum access.
+
+\paragraph{Interference management.}
+In each country, the radio spectrum is managed by authorities whose functions include monitoring radio emissions in order to identify, locate and eliminate harmful interference and other irregularities \parencite[p.~2]{torio2025}. Effective surveillance is needed to identify unauthorized emissions and mitigate interference. It has traditionally been carried out manually by surveillance teams, which is time-consuming, resource-intensive and prone to error when large parts of the spectrum must be watched in real time \parencite[p.~1]{torio2025}. Spectrum measurements are still made mainly by government agencies with bulky and expensive equipment, an approach that does not scale and gives only limited awareness of how the spectrum is actually used \parencite{calvopalomino2015}. Meanwhile, the risk of interference and malicious use of the spectrum has grown \parencite{tian2022}. An automated occupancy detector addresses the first step of this task: deciding, frame by frame, whether a band contains anything other than noise.
+
+\paragraph{Network optimization.}
+Interference also affects operators directly: illegal repeaters frequently disrupt mobile operators' cell planning, causing poor coverage and dropped connections \parencite{tian2022}. More generally, occupancy measurements give engineers and regulators information on how licensed bands are actually used \parencite[p.~949]{popoola2018}, and that use varies with time, frequency and location \parencite{popoola2018}. Low-cost sensors have been proposed as a way to make spectrum measurement continuous and large-scale \parencite{calvopalomino2015}. Their value for planning depends on whether their occupancy decisions can be trusted.
+
+\paragraph{Dynamic spectrum access planning.}
+Licensed spectrum is intended for use by its licence holders, and cognitive radio is a concept for reusing it in an unlicensed manner, motivated by measurements showing unused spectrum in frequency, time and space \parencite{axell2010}. Under such dynamic spectrum access, secondary users would use idle portions of licensed spectrum opportunistically, and before they can do so it must be established which portions are idle \parencite[p.~960]{popoola2018}. The licensed (primary) users must also be detected reliably enough that secondary users do not cause them harmful interference \parencite{tandra2008}. \Textcite{popoola2018} concluded that the low occupancy they measured suggests a hopeful future for dynamic spectrum access in Nigeria. Whatever band is considered, reliable occupancy detection is a prerequisite for such access. Cognitive radio is reviewed in Chapter~2.
+
+\subsection{Low-Cost Software-Defined Radio as a Sensor}
+\label{sec:low-cost-sdr}
+
+In a software-defined radio (SDR), receiver functions that are traditionally implemented in hardware, such as mixing, filtering, demodulation and detection, are implemented in software instead \parencite{saber2021}. Receivers from the low-cost RTL-SDR family make this approach inexpensive. \Textcite{calvopalomino2015} built a wideband spectrum-monitoring sensor around an RTL-SDR-compatible USB dongle, which delivered digital in-phase and quadrature (IQ) samples to a host computer for processing. The sensor covered \qtyrange{24}{1766}{\mega\hertz} at a cost of under US\$100, which they put at 50 to 500 times cheaper than professional equipment.
+
+The receiver used in this study, the RTL-SDR Blog V4, tunes from \qty{500}{\kilo\hertz} to \qty{1.766}{\giga\hertz}, digitizes the signal with an 8-bit analogue-to-digital converter (ADC) and has a stable bandwidth of about \qty{2.56}{\mega\hertz} \parencite{rtlsdrblog2024}. These figures bound the study. Only LTE downlink bands below about \qty{1.77}{\giga\hertz} can be received, and only a slice a few megahertz wide can be observed at once. The low cost also comes with limited amplitude resolution and dynamic range, which matter for detection at low signal-to-noise ratio (SNR), as \cref{sec:problem} explains.
+
+\subsection{Learned Detection by Reconstruction Error}
+\label{sec:learned-detection}
+
+A detector need not model the signal it is looking for; it can model the noise instead. A model trained only on noise learns to reproduce noise-only observations, so an observation that it reconstructs poorly is evidence that something other than noise is present. An autoencoder suits this approach: it is a neural network that compresses its input into a smaller latent representation and reconstructs the input from that representation \parencite[pp.~2--3]{torio2025}. \Textcite{torio2025} applied this reasoning to spectrum surveillance. They trained an autoencoder on synthetic Rayleigh-distributed noise sequences, treated the absence of transmissions as the normal state of a channel, and took a large reconstruction error as evidence of a transmission (p.~5). Unsupervised models of this kind have also been used for spectrum anomaly detection more generally. \Textcite{tian2022}, for example, modelled spectrograms with a variational autoencoder (VAE) and scored anomalies with a percentile-based measure of the reconstruction error. In this thesis, the noise model is learned from idle spectrum captured with the RTL-SDR itself, so an LTE carrier is the anomaly to be detected. Autoencoders and the related literature are reviewed in Chapter~2.
+
+% ===========================================================================
+\section{Statement of the Problem}
+\label{sec:problem}
+
+Energy detection is a good choice for blind detection, that is, detection without knowledge of the signal \parencite{gao2019}. An energy detector compares the energy received during an observation interval with a threshold; it can detect any type of signal and needs no knowledge of the signal's structure \parencite{axell2010}. Its weakness lies in the threshold. Setting the threshold requires the noise variance, and if the noise variance is known only imperfectly, the threshold is wrong and performance deteriorates quickly \parencite{axell2010}. \Textcite{tandra2008} showed that, under such noise uncertainty, a detector with no knowledge of the signal's modulation cannot be made robust below a certain SNR, however long it observes the channel. They called this limit the \enquote{SNR wall}, and showed that any such detector is essentially as non-robust as the energy detector.
+
+Noise uncertainty arises in every practical receiver. The noise that a receiver sees aggregates thermal noise, leakage of signals from other bands through receiver non-linearity, aliasing from imperfect front-end filters and interference from distant transmitters, so some uncertainty in the noise level remains even after calibration at run time \parencite{tandra2008}. Low-cost hardware adds a further limit. The RTL-SDR Blog V4 digitizes with an 8-bit ADC \parencite{rtlsdrblog2024}, which restricts its dynamic range. \Textcite{tandra2005} showed that, for a primary signal without a deterministic component, a receiver with a finite dynamic range faces an SNR wall that no detector can overcome, even under moderate noise uncertainty. Detectors that exploit known structure in the transmitted signal \parencite{axell2010} need prior knowledge of that signal, and \textcite{tandra2008} showed that coherent and cyclostationary feature detectors also lose robustness to model uncertainty when channel coherence times are finite.
+
+Learned detectors have been proposed as a way past these limits, with mixed results. \Textcite{gao2019} reported a deep-learning detector whose SNR wall was \qty{3.15}{\decibel} lower than that of the energy detector at one operating point; their signals were simulated single-carrier modulations, not OFDM. \Textcite{zeghdoud2023} reported from numerical simulations that a hybrid of a convolutional neural network and a long short-term memory network (CNN-LSTM) outperformed CNN, LSTM and energy detectors, with high detection performance at low SNR, and implemented the detector for real-time sensing on a Universal Software Radio Peripheral (USRP) platform. In contrast, \textcite{grosu2021}, working with simulated OFDM signals, found that an energy detector with a dynamic threshold outperformed a neural-network detector on average, especially at low SNR. The network was better only in scenarios that matched the constrained data on which it had been trained. All three comparisons were based on simulated signals.
+
+Evidence from real captures is thinner, and the closest studies differ from the present one in important respects. \Textcite{torio2025} compared an autoencoder with a power-measurement detector on amplitude-only recordings of very high frequency (VHF) land and maritime mobile channels, made with highly calibrated monitoring-station instruments (p.~4). Both methods proved effective, and the autoencoder was more sensitive to low-power transmissions (p.~12). Their autoencoder, however, was trained on synthetic noise rather than on captured idle spectrum. The analysis was also carried out afterwards on recorded files rather than in real time, and the deep-learning method required more demanding computing hardware (pp.~2, 14). \Textcite{saber2021} captured real signals with an RTL-SDR receiver and found that a supervised CNN classified them better than energy detection, an artificial neural network and a support vector machine. Their signals, however, were amplitude-shift-keyed and frequency-shift-keyed transmissions at \qty{433}{\mega\hertz}, generated with an Arduino Uno board and a wireless transmitter, not live cellular signals.
+
+The studies reviewed above therefore do not establish whether an autoencoder trained only on idle captures from a low-cost receiver detects LTE downlink occupancy better than carefully tuned classical detectors operating at the same false-alarm rate. Nor do they show whether either kind of detector holds its calibrated false-alarm rate when the noise floor changes between capture sessions, for example after a change of receiver gain or of local interference. A learned model offers no guarantee on this point. An autoencoder whose input normalization is fixed from training data may respond to a raised noise floor much as a fixed energy threshold does. These are empirical questions. This thesis addresses them with real captures, matched operating points and evaluation across capture sessions.
+
+% ===========================================================================
+\section{Aim, Research Questions and Hypotheses}
+\label{sec:aim}
+
+The aim of this study is to design, implement and rigorously evaluate an autoencoder-based occupancy detector for an LTE downlink band using only RTL-SDR captures, and to compare it with classical baselines under controlled and uncontrolled conditions. Controlled conditions are created by combining captured LTE signals and captured noise in software at set SNRs, so that every label is exact. Uncontrolled conditions are the over-the-air captures themselves, taken across sessions, days and receiver gain settings.
+
+Detectors are compared at fixed values of the probability of false alarm, $\Pfa$, which is the probability of declaring a band occupied when it is idle. The main figure of merit is the probability of detection, $\Pd$, which is the probability of declaring the band occupied when an LTE signal is present. The study addresses five research questions:
+
+\begin{enumerate}[label=\textbf{RQ\arabic*.}, ref=RQ\arabic*, leftmargin=*]
+  \item\label{rq:energy} At fixed false-alarm rates, how does the detection probability of the convolutional autoencoder compare with that of fixed-threshold and adaptive-threshold energy detection across SNR?
+  \item\label{rq:baselines} Does the autoencoder add detection value beyond a linear reconstruction detector based on principal component analysis (PCA) and an LTE \syncsignal{} correlator that exploits known signal structure?
+  \item\label{rq:generalization} How do the methods generalize across capture sessions, days and receiver gain settings, and across locations where captures from more than one location are available?
+  \item\label{rq:compute} What are the per-frame latency and throughput of each method on the central processing unit (CPU) of the host laptop, and is real-time operation at the capture sample rate feasible?
+  \item\label{rq:design} How do the architecture of the autoencoder (convolutional or fully connected) and its anomaly score (the mean squared error (MSE) of the reconstruction, or the VAE percentile score) affect detection performance?
+\end{enumerate}
+
+Two hypotheses are tested; neither is assumed to hold:
+
+\begin{enumerate}[label=\textbf{H\arabic*.}, ref=H\arabic*, leftmargin=*]
+  \item\label{hyp:low-snr} At low SNR and the same false-alarm rate, the convolutional autoencoder achieves a higher detection probability than the adaptive-threshold energy detector. The range of SNR regarded as low is defined in Chapter~3.
+  \item\label{hyp:drift} When the noise floor of a test session differs from that of the sessions used to set the detection thresholds, the realized false-alarm rate and detection probability of the autoencoder depart less from their calibrated values than those of the fixed-threshold energy detector.
+\end{enumerate}
+
+The adaptive-threshold energy detector serves as a reference for \ref{hyp:drift}: it shows how much of any degradation can be recovered by adapting the noise estimate alone, without learning. Rejecting either hypothesis would be a valid result of the study and would be reported as such.
+
+% ===========================================================================
+\section{Objectives}
+\label{sec:objectives}
+
+The objectives of the study are:
+
+\begin{enumerate}[label=\arabic*., ref=\arabic*, leftmargin=*]
+  \item\label{obj:band} to survey candidate LTE downlink bands within the tuning range of the RTL-SDR Blog V4 at the study site and to select one band confirmed to be active (\TargetBand);
+  \item\label{obj:data} to design a capture protocol and to collect a labelled, multi-session dataset in three classes (receiver noise with the antenna input terminated, antenna-connected idle spectrum, and LTE-active spectrum), with metadata recorded for every capture, together with a controlled-SNR test set produced by digital injection with exact labels;
+  \item\label{obj:preprocessing} to implement the preprocessing, in which the IQ samples are converted to log-magnitude spectrograms by the short-time Fourier transform (STFT) and normalized with statistics from the training data only, and to split the data by capture session;
+  \item\label{obj:models} to train, on idle data only, a convolutional autoencoder (the primary model), a fully connected autoencoder (for the architecture comparison) and a VAE with percentile scoring (for the score comparison);
+  \item\label{obj:baselines} to implement the baselines, namely fixed-threshold and adaptive-threshold energy detectors, a PCA reconstruction detector and an LTE \syncsignal{} correlator, all tuned on the same idle validation data as the autoencoders;
+  \item\label{obj:evaluation} to evaluate all methods on identical frames at fixed false-alarm rates of \pct{1} and \pct{5}, reporting receiver operating characteristic (ROC) curves and the area under them (AUC), confusion matrices with precision, recall and F1 score, SNR-stratified results, cross-session, cross-day and cross-gain tests, variability over training seeds, and bootstrap confidence intervals resampled over sessions; and
+  \item\label{obj:compute} to measure the per-frame latency, throughput and real-time factor of each method on the CPU of the host laptop, and to demonstrate a real-time occupancy-logging pipeline.
+\end{enumerate}
+
+\Cref{tab:rq-map} relates the research questions to the hypotheses, the objectives and the principal evidence used to answer them.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Research questions, hypotheses, objectives and principal evidence.}
+  \label{tab:rq-map}
+  \small
+  \begin{tabularx}{\textwidth}{@{}l l l X@{}}
+    \toprule
+    Question & Hypothesis & Objectives & Principal evidence \\
+    \midrule
+    \ref{rq:energy} & \ref{hyp:low-snr} & \ref{obj:data}--\ref{obj:evaluation} & $\Pd$ at fixed $\Pfa$, by SNR, on the controlled-SNR test set and on over-the-air test sessions \\
+    \ref{rq:baselines} & -- & \ref{obj:baselines}, \ref{obj:evaluation} & As for \ref{rq:energy}, comparing the autoencoder with the PCA detector and the \syncsignal{} correlator \\
+    \ref{rq:generalization} & \ref{hyp:drift} & \ref{obj:data}, \ref{obj:evaluation} & Change in realized $\Pfa$ and $\Pd$ between threshold-setting and test sessions, with bootstrap confidence intervals over sessions \\
+    \ref{rq:compute} & -- & \ref{obj:compute} & Per-frame latency, throughput and real-time factor on the CPU of the host laptop \\
+    \ref{rq:design} & -- & \ref{obj:models}, \ref{obj:evaluation} & Detection performance of convolutional versus fully connected autoencoders, and of MSE versus VAE percentile scores \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+% ===========================================================================
+\section{Scope and Delimitations}
+\label{sec:scope}
+
+The study covers one LTE downlink band within the tuning range of the RTL-SDR Blog V4 (\TargetBand), chosen after a local survey of candidate bands (Chapter~3). Because the receiver's stable bandwidth is about \qty{2.56}{\mega\hertz} \parencite{rtlsdrblog2024}, only a slice of the band a few megahertz wide is observed at a time. The study therefore concerns the occupancy of that slice, not the characterization of whole LTE carriers. Bands above the receiver's tuning range are outside the study.
+
+Captures are made in Benin City, Nigeria, with a single RTL-SDR Blog V4. All training, validation and test data are captured by the author, and no external dataset is used. All processing, including capture, training, evaluation, latency measurement and the real-time demonstration, runs on the CPU of a Dell Latitude 5490 laptop (Intel Core i5-8250U processor, \qty{16}{\giga\byte} of memory). The detection task is binary: each frame is classified as idle or occupied.
+
+The study does not demodulate or decode LTE transmissions. The \syncsignal{} correlator tests only for the presence of known synchronization sequences, and no system information or user data is decoded or recorded. Reception is passive: the study involves no transmission or active probing, and it covers the downlink only. Cooperative sensing with several receivers, deep models other than the autoencoders and the VAE (for example, generative adversarial networks or diffusion models), performance metrics of the LTE network itself, and deployment on embedded hardware are outside the scope. Several classical detectors, including constant false-alarm rate (CFAR), cyclostationary, eigenvalue-based and matched-filter detectors, are reviewed in Chapter~2 but not implemented. Implications for operators and regulators are discussed conceptually only. The findings apply to the band, receiver and site studied, and should not be generalized to other bands or receivers without further measurement.
+
+% ===========================================================================
+\section{Contributions of the Study}
+\label{sec:contributions}
+
+The thesis makes four contributions:
+
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+  \item a documented, labelled, multi-session dataset of real RTL-SDR captures in an LTE downlink band, comprising terminated-input noise, idle, LTE-active and controlled-SNR subsets;
+  \item a controlled benchmark of noise-trained autoencoders against fixed-threshold and adaptive-threshold energy detection, a PCA reconstruction detector and an LTE \syncsignal{} correlator, evaluated on identical frames at fixed false-alarm operating points;
+  \item an analysis of how these detectors generalize across capture sessions, days and receiver gain settings on low-cost hardware, with uncertainty estimated by resampling sessions; and
+  \item an implementation whose per-frame latency and throughput are measured on the CPU of a commodity laptop, showing whether real-time operation is feasible without a graphics processing unit (GPU).
+\end{enumerate}
+
+RTL-SDR-based sensors cost a small fraction of professional monitoring equipment \parencite{calvopalomino2015}. A benchmark of this kind therefore shows what such low-cost sensing can and cannot deliver for the monitoring tasks described in \cref{sec:why}, and which detector makes the best use of it.
+
+% ===========================================================================
+\section{Organization of the Thesis}
+\label{sec:organization}
+
+The rest of the thesis is organized as follows. Chapter~2 reviews the structure of the LTE downlink, cognitive radio systems, the classical spectrum-sensing methods (energy, matched-filter, cyclostationary, eigenvalue-based and waveform-based detection), SDR and the RTL-SDR, the STFT and spectrograms, and autoencoders. It then surveys related work on learned anomaly detection and on learned sensing compared with energy detection, and ends with the research gap. Chapter~3 describes the methodology: hardware and band selection, the three-class data collection, ground truth, controlled-SNR injection, preprocessing, data splits by capture session, the models and baseline detectors, threshold setting at fixed false-alarm rates, the evaluation protocol and the real-time demonstration. Chapter~4 presents and discusses the results, answers \ref{rq:energy}--\ref{rq:design}, tests \ref{hyp:low-snr} and \ref{hyp:drift}, and sets out the limitations of the study. Chapter~5 summarizes the findings and contributions and gives recommendations and directions for future work.

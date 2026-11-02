@@ -1,0 +1,36 @@
+<svg width="100%" viewBox="0 0 680 330" role="img"><title>RTL-SDR observation window and an LTE carrier</title><desc>An example 10 MHz LTE carrier occupies 9 MHz (50 resource blocks). The PSS and SSS occupy only the central 6 resource blocks (1.08 MHz). An RTL-SDR window of at most 2.56 MHz centred on the carrier contains them (window A); a window placed off-centre does not (window B). Drawn to scale in frequency.</desc>
+<!-- Scale: 54 px per MHz, carrier centre at x = 340.
+     Sources: 3GPP TS 36.101 V19.6.0 Table 5.6-1 (10 MHz channel = 50 RBs); 3GPP TS 36.211 V19.3.0 Table 6.2.3-1 (12 subcarriers per RB at 15 kHz, i.e. 180 kHz) and clause 6.11.1.2 (PSS on 62 subcarriers around the centre, 5 reserved each side, i.e. the central 72 subcarriers = 6 RBs = 1.08 MHz); RTL-SDR Blog V4 datasheet (stable bandwidth about 2.56 MHz). -->
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<!-- carrier and central resource blocks -->
+<g class="c-teal"><rect x="97" y="130" width="486" height="75" stroke-width="0.5"/><text class="th" x="184" y="157" text-anchor="middle" dominant-baseline="central">LTE carrier</text><text class="ts" x="184" y="177" text-anchor="middle" dominant-baseline="central">50 RBs, 9 MHz</text></g>
+<g class="c-purple"><rect x="310.84" y="130" width="58.32" height="75" stroke-width="0.5"/></g>
+<!-- observation windows (dashed outlines) -->
+<rect x="270.88" y="72" width="138.24" height="133" style="fill:none;stroke:#993C1D;stroke-width:1.5;stroke-dasharray:6 4"/>
+<rect x="443.68" y="72" width="138.24" height="133" style="fill:none;stroke:#993C1D;stroke-width:1.5;stroke-dasharray:6 4"/>
+<text class="th" x="340" y="40" text-anchor="middle" dominant-baseline="central" style="fill:#712B13">Window A</text>
+<text class="ts" x="340" y="58" text-anchor="middle" dominant-baseline="central" style="fill:#993C1D">contains PSS and SSS</text>
+<text class="th" x="512.8" y="40" text-anchor="middle" dominant-baseline="central" style="fill:#712B13">Window B</text>
+<text class="ts" x="512.8" y="58" text-anchor="middle" dominant-baseline="central" style="fill:#993C1D">misses PSS and SSS</text>
+<!-- window width markers -->
+<text class="ts" x="340" y="90" text-anchor="middle" dominant-baseline="central">≤ 2.56 MHz</text>
+<line x1="340" y1="106" x2="273" y2="106" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="106" x2="407" y2="106" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="512.8" y="90" text-anchor="middle" dominant-baseline="central">≤ 2.56 MHz</text>
+<line x1="512.8" y1="106" x2="445.8" y2="106" class="arr" marker-end="url(#arrow)"/>
+<line x1="512.8" y1="106" x2="579.8" y2="106" class="arr" marker-end="url(#arrow)"/>
+<!-- frequency axis -->
+<line x1="40" y1="215" x2="655" y2="215" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="655" y="232" text-anchor="end" dominant-baseline="central">Frequency</text>
+<line x1="340" y1="209" x2="340" y2="221" stroke="var(--s)" stroke-width="1.5"/>
+<text class="ts" x="340" y="232" text-anchor="middle" dominant-baseline="central">Carrier centre</text>
+<!-- label for the central resource blocks -->
+<line x1="362" y1="205" x2="436" y2="248" class="leader"/>
+<text class="ts" x="440" y="250" dominant-baseline="central">Central 6 RBs, 1.08 MHz,</text>
+<text class="ts" x="440" y="268" dominant-baseline="central">carry the PSS and SSS</text>
+<!-- channel bandwidth bracket -->
+<line x1="70" y1="292" x2="610" y2="292" stroke="var(--s)" stroke-width="1"/>
+<line x1="70" y1="286" x2="70" y2="298" stroke="var(--s)" stroke-width="1"/>
+<line x1="610" y1="286" x2="610" y2="298" stroke="var(--s)" stroke-width="1"/>
+<text class="ts" x="340" y="310" text-anchor="middle" dominant-baseline="central">Channel bandwidth, 10 MHz (example)</text>
+</svg>
