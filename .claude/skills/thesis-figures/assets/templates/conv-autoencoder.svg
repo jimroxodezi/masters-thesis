@@ -1,0 +1,20 @@
+<svg width="100%" viewBox="0 0 680 300" role="img"><title>Convolutional autoencoder</title><desc>A spectrogram input is compressed by two convolution blocks into a small latent code, then expanded by two deconvolution blocks into a reconstructed spectrogram.</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-gray"><rect x="50" y="60" width="56" height="140" rx="6" stroke-width="0.5"/><text class="ts" x="78" y="130" text-anchor="middle" dominant-baseline="central">Input</text></g>
+<g class="c-teal"><rect x="136" y="75" width="56" height="110" rx="6" stroke-width="0.5"/><text class="ts" x="164" y="130" text-anchor="middle" dominant-baseline="central">Conv</text></g>
+<g class="c-teal"><rect x="222" y="90" width="56" height="80" rx="6" stroke-width="0.5"/><text class="ts" x="250" y="130" text-anchor="middle" dominant-baseline="central">Conv</text></g>
+<g class="c-coral"><rect x="308" y="110" width="56" height="40" rx="6" stroke-width="0.5"/><text class="ts" x="336" y="130" text-anchor="middle" dominant-baseline="central">Latent</text></g>
+<g class="c-purple"><rect x="394" y="90" width="56" height="80" rx="6" stroke-width="0.5"/><text class="ts" x="422" y="130" text-anchor="middle" dominant-baseline="central">Deconv</text></g>
+<g class="c-purple"><rect x="480" y="75" width="56" height="110" rx="6" stroke-width="0.5"/><text class="ts" x="508" y="130" text-anchor="middle" dominant-baseline="central">Deconv</text></g>
+<g class="c-gray"><rect x="566" y="60" width="56" height="140" rx="6" stroke-width="0.5"/><text class="ts" x="594" y="130" text-anchor="middle" dominant-baseline="central">Output</text></g>
+<line x1="108" y1="130" x2="134" y2="130" class="arr" marker-end="url(#arrow)"/>
+<line x1="194" y1="130" x2="220" y2="130" class="arr" marker-end="url(#arrow)"/>
+<line x1="280" y1="130" x2="306" y2="130" class="arr" marker-end="url(#arrow)"/>
+<line x1="366" y1="130" x2="392" y2="130" class="arr" marker-end="url(#arrow)"/>
+<line x1="452" y1="130" x2="478" y2="130" class="arr" marker-end="url(#arrow)"/>
+<line x1="538" y1="130" x2="564" y2="130" class="arr" marker-end="url(#arrow)"/>
+<line x1="136" y1="228" x2="278" y2="228" stroke="var(--s)" stroke-width="1.5"/>
+<text class="th" x="207" y="250" text-anchor="middle" dominant-baseline="central">Encoder</text>
+<line x1="394" y1="228" x2="536" y2="228" stroke="var(--s)" stroke-width="1.5"/>
+<text class="th" x="465" y="250" text-anchor="middle" dominant-baseline="central">Decoder</text>
+<text class="ts" x="340" y="276" text-anchor="middle" dominant-baseline="central">Training minimises the difference between input and output</text>
+</svg>

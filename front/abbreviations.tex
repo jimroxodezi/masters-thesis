@@ -1,36 +1,60 @@
 % front/abbreviations.tex: list of abbreviations and symbols.
 % Maintained by hand: add an entry whenever a chapter defines a new acronym or
 % symbol, and keep the symbols in step with the notation macros in preamble.tex.
-% Current contents: everything defined in Chapter 1.
+% Current contents: everything defined in Chapters 1 and 2.
 \chapter*{List of Abbreviations and Symbols}
 \addcontentsline{toc}{chapter}{List of Abbreviations and Symbols}
 
 \section*{Abbreviations}
 \begin{description}[style=sameline, leftmargin=3.6cm, labelwidth=3.3cm, font=\normalfont, itemsep=0pt]
+  \item[16QAM]        16-point quadrature amplitude modulation
   \item[2G]           Second-generation (mobile networks)
   \item[3G]           Third-generation (mobile networks)
+  \item[3GPP]         3rd Generation Partnership Project
   \item[4G]           Fourth-generation (mobile networks)
   \item[5G]           Fifth-generation (mobile networks)
+  \item[ACARS]        Aircraft Communications Addressing and Reporting System
   \item[ADC]          Analogue-to-digital converter
   \item[AUC]          Area under the receiver operating characteristic curve
+  \item[AWGN]         Additive white Gaussian noise
   \item[CFAR]         Constant false-alarm rate
   \item[CNN]          Convolutional neural network
   \item[CPU]          Central processing unit
+  \item[CRS]          Cell-specific reference signal(s)
+  \item[DAB]          Digital audio broadcasting
+  \item[DC]           Direct current
+  \item[DVB-T]        Digital Video Broadcasting -- Terrestrial
+  \item[ED]           Energy detector (in tables)
+  \item[FAR]          False-alarm rate (in tables)
+  \item[FDD]          Frequency-division duplex
+  \item[FFT]          Fast Fourier transform
+  \item[GMSK]         Gaussian minimum-shift keying
   \item[GPU]          Graphics processing unit
+  \item[GSM]          Global System for Mobile Communications
   \item[H]            Hypothesis (H1, H2)
   \item[IMT-Advanced] International Mobile Telecommunications-Advanced
   \item[IQ]           In-phase and quadrature
+  \item[ISM]          Industrial, scientific and medical (radio bands)
+  \item[LODA]         Lightweight on-line detector of anomalies
   \item[LSTM]         Long short-term memory
   \item[LTE]          Long Term Evolution
+  \item[MBSFN]        Multicast and broadcast transmission (subframes configured for it)
   \item[MSE]          Mean squared error
   \item[NCC]          Nigerian Communications Commission
   \item[OFDM]         Orthogonal frequency-division multiplexing
   \item[PCA]          Principal component analysis
+  \item[PER]          Percentile (anomaly score)
+  \item[PSD]          Power spectral density
+  \item[PSS]          Primary synchronization signal
+  \item[QPSK]         Quadrature phase-shift keying
   \item[ROC]          Receiver operating characteristic
   \item[RQ]           Research question (RQ1--RQ5)
   \item[SDR]          Software-defined radio
   \item[SNR]          Signal-to-noise ratio
+  \item[SSS]          Secondary synchronization signal
   \item[STFT]         Short-time Fourier transform
+  \item[TCXO]         Temperature-compensated crystal oscillator
+  \item[USB]          Universal serial bus
   \item[USRP]         Universal Software Radio Peripheral
   \item[VAE]          Variational autoencoder
   \item[VHF]          Very high frequency
@@ -38,6 +62,26 @@
 
 \section*{Symbols}
 \begin{description}[style=sameline, leftmargin=3.6cm, labelwidth=3.3cm, font=\normalfont, itemsep=0pt]
+  \item[$\mathcal{H}_0$, $\mathcal{H}_1$] Null hypothesis (noise only) and alternative hypothesis (signal present)
+  \item[$y(n)$]     Received complex baseband sample $n$
+  \item[$s(n)$, $w(n)$] Signal and noise components of $y(n)$
+  \item[$N$]        Number of samples in one sensing decision
+  \item[$T$]        Test statistic (average power for the energy detector)
+  \item[$\lambda$]  Decision threshold
   \item[$\Pd$]  Probability of detection
   \item[$\Pfa$] Probability of false alarm
+  \item[$\sigma^2$] Noise variance (noise power)
+  \item[$\sigma_n^2$] Nominal noise power
+  \item[$\sigma_s^2$] Signal variance (signal power)
+  \item[$\gamma$]   Signal-to-noise ratio, $\sigma_s^2/\sigma^2$
+  \item[$\rho$, $\delta$] Noise-uncertainty factor, $\rho = 10^{\delta/10}$, for an uncertainty of $\delta$ decibels
+  \item[$F_{\chi^2_{2N}}$] Cumulative distribution function of a chi-square variable with $2N$ degrees of freedom
+  \item[$h(m)$]     STFT window
+  \item[$L$, $R$, $K$] STFT window length, frame spacing (hop) and number of frequency bins
+  \item[$f_s$]      Sampling rate
+  \item[$X(\ell, k)$, $S(\ell, k)$] STFT and spectrogram (dB) at frame $\ell$ and bin $k$
+  \item[$f$, $g$]   Encoder and decoder of an autoencoder
+  \item[$D$, $d$]   Number of input elements and code dimension
+  \item[$e(\mathbf{x})$] Reconstruction-error score of input $\mathbf{x}$
+  \item[$\mathbf{W}$] PCA projection matrix (rows: leading eigenvectors)
 \end{description}

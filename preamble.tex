@@ -50,6 +50,10 @@
 \setcounter{biburlnumpenalty}{100}
 \setcounter{biburlucpenalty}{100}
 \setcounter{biburllcpenalty}{100}
+% Let the reference list break lines more loosely, so that long unbreakable
+% items (URLs, arXiv identifiers) move to the next line instead of overflowing
+% the margin.
+\appto{\bibsetup}{\sloppy}
 
 % ---------------------------------------------------------------------------
 % Hyperlinks and cross-references (hyperref must load before cleveref)
@@ -74,7 +78,7 @@
 \newcommand{\ThesisUniversity}{University of Benin}
 \newcommand{\ThesisPlace}{Benin City, Nigeria}
 \newcommand{\ThesisDegree}{Master of Science (M.Sc.) in Electrical and Electronic Engineering}
-\newcommand{\ThesisSupervisor}{\TBC{supervisor's name}}
+\newcommand{\ThesisSupervisor}{Prof.\ Kingsley Ogbeide}
 \newcommand{\ThesisHoD}{\TBC{Head of Department's name}}
 \newcommand{\ThesisDate}{\TBC{month and year of submission}}
 

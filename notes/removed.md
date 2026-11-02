@@ -75,3 +75,78 @@ The author confirmed the scope tiers: all Stretch items in; from the Optional ti
 ## From bib/references.bib (2 November 2026)
 
 - `grosu2021`: the field `note = {No DOI listed by the journal}` was moved into a comment below the entry, because biblatex-apa printed it in the reference list as "[No DOI listed by the journal]".
+
+## Idle class corrected (2 November 2026)
+
+3GPP TS 36.211 V19.3.0, clause 6.10.1, states that a UE may assume cell-specific reference signals are transmitted in all downlink subframes of an FDD cell that supports PDSCH transmission (in MBSFN subframes, only in the first one or two OFDM symbols). An active carrier is therefore never silent, and an idle class cannot be drawn from its "quiet periods". The author approved the correction. Text replaced in `notes/proposal.md`, Section 8.2:
+
+- "**Class B, idle environment:** antenna connected, tuned to spectrum with no LTE carrier (guard regions, unused channels, or quiet periods), confirmed by cell search and power screening. Captures environmental noise and local interference."
+
+In `chapters/chapter1.tex` (Section 1.5) a sentence defining occupancy as carrier presence was added; no text was removed there.
+
+## Uncited bibliography entries removed (2 November 2026)
+
+Rule 5 of CLAUDE.md requires every `.bib` entry to be cited. These two entries, listed among the verified sources in CLAUDE.md, could not be read and are not cited in Chapters 1 or 2, so they were moved here from `bib/references.bib`. Restore them if the full texts become available and the papers are cited.
+
+- `kang2022`: the author could not obtain the PDF (2 November 2026). No abstract was retrievable: Crossref holds none, IEEE Xplore did not render for the fetch tool, and the Semantic Scholar API refused the request (rate limit).
+- `axell2012`: the TU Delft repository record has no file and refused connections; no other open copy was found. Chapter 2 uses Axell et al. (2010, `axell2010`) instead.
+
+```bibtex
+@article{kang2022,
+  author  = {Kang, Ying and Wu, Hao and Zhao, Zhihua and Li, Yaxing and Meng, Jin},
+  title   = {{DL}-based anomaly detection at the physical-layer of cognitive radio by deep support vector data description},
+  journal = {IEEE Transactions on Cognitive Communications and Networking},
+  volume  = {8},
+  number  = {4},
+  pages   = {1689--1705},
+  year    = {2022},
+  doi     = {10.1109/TCCN.2022.3200377}
+}
+@article{axell2012,
+  author  = {Axell, Erik and Leus, Geert and Larsson, Erik G. and Poor, H. Vincent},
+  title   = {Spectrum sensing for cognitive radio: State-of-the-art and recent advances},
+  journal = {IEEE Signal Processing Magazine},
+  volume  = {29},
+  number  = {3},
+  pages   = {101--116},
+  year    = {2012},
+  doi     = {10.1109/MSP.2012.2183771}
+}
+```
+
+## Chapter 1 wording corrected after the Chapter 2 reading (2 November 2026)
+
+Saber et al. (2021) call their classifier a CNN, but the only network they describe is fully connected (1024-1024-8-1), and they report each detector at a different false-alarm rate. Text replaced in `chapters/chapter1.tex`, Section 1.2:
+
+- "\Textcite{saber2021} captured real signals with an RTL-SDR receiver and found that a supervised CNN classified them better than energy detection, an artificial neural network and a support vector machine."
+
+Comment replaced at the top of `chapters/chapter1.tex`:
+
+- "% TODO: re-check the gap statement (end of Section 1.2) after the Chapter 2 / literature search."
+
+## From CLAUDE.md: outdated file references (2 November 2026)
+
+At the author's request, file references in CLAUDE.md that no longer matched the repository were corrected: `notes/proposal-revised.md` does not exist (the revised proposal is `notes/proposal.md`), no transcription of the original proposal is kept, and the bibliography is `bib/references.bib`. The supervisor's name was filled in and the study site (Benin City) added to the decisions. Replaced text:
+
+- "Supervisor: `<FILL IN>`."
+- "**The governing plan is `notes/proposal-revised.md`. Read it before writing any chapter.** `notes/proposal.md` is the transcription of the original August 2025 proposal (with the supervisor's handwritten notes); use it only for history. Where they differ, the revised proposal wins."
+- Repository layout lines: "references.bib        # single bibliography file"; "notes/                # proposal.md, proposal-revised.md, removed.md, claim tables, outlines, TODOs"; "figures/              # all figures (PDF/PNG)".
+- "BibTeX is in `references-verified.bib` (`tian2022`, `rajendran2019`, `torio2025`, `gao2019`, `kang2022`, `yucek2009`, `axell2012`, `grosu2021`, `zeghdoud2023`, `baset2023`, `rtlsdrblog2024`)."
+- Citation rule 4: "Every new reference gets a full `references.bib` entry with DOI where available."
+
+## From CLAUDE.md and the bibliography header: outdated status (2 November 2026)
+
+At the author's request, statements that no longer matched the project's state were updated. Replaced text:
+
+- CLAUDE.md, "Things to resolve with me before writing", item 2: "2. **Scope tiers:** I have not confirmed which Stretch and Optional items will be done; ask before describing any method as implemented." Scope was confirmed for Chapter 1 and is now listed under "Decisions already made".
+- CLAUDE.md, "Sources and known problems": "Only `torio2025`, `grosu2021` and the arXiv preprint of `gao2019` have been read in full; read the others before citing a finding from them."
+- CLAUDE.md, "Sources and known problems": "Open `[CITE]` markers in the proposal: LTE's share of mobile broadband; interference management (regulator or operator source); long-term occupancy statistics; 3GPP TS 36.101 for band edges."
+- `bib/references.bib`, header comment:
+
+```
+% Verified entries for Section 11 of notes/proposal-revised.md
+% Checked online on 2026-11-02 against publisher/indexing pages (not full-text reads
+% unless noted). Paste into references.bib after reading each paper in full.
+% Use biblatex + biber (style=apa).
+```
+- CLAUDE.md, "Core idea": "Benchmark against strong classical baselines (adaptive energy detector, CFAR-style, PCA reconstruction) across SNR and across capture sessions." The CFAR-style detector was dropped from the scope; the baseline list now matches the confirmed scope.

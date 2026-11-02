@@ -1,0 +1,28 @@
+<svg width="100%" viewBox="0 0 680 290" role="img"><title>RTL-SDR receive chain</title><desc>Antenna, front-end filters, R828D tuner and RTL2832U converter inside the RTL-SDR Blog V4, with one reference oscillator clocking the tuner and the converter; IQ samples pass over USB to the host laptop and the Python pipeline.</desc>
+<!-- Sources: RTL-SDR Blog (2024, p. 1) for the parts; Calvo-Palomino et al. (2017, p. 52, Fig. 1) for the single-oscillator receiver model. Functional view: the chips' internal design is not fully documented. -->
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<!-- dongle outline -->
+<rect x="155" y="4" width="518" height="164" rx="8" style="fill:none;stroke:#888780;stroke-width:1;stroke-dasharray:6 4"/>
+<text class="th" x="167" y="24" dominant-baseline="central">RTL-SDR Blog V4</text>
+<!-- reference oscillator -->
+<g class="c-amber"><rect x="425" y="12" width="180" height="44" rx="4" stroke-width="0.5"/><text class="th" x="515" y="26" text-anchor="middle" dominant-baseline="central">Reference oscillator</text><text class="ts" x="515" y="44" text-anchor="middle" dominant-baseline="central">TCXO, 1 ppm</text></g>
+<line x1="440" y1="56" x2="440" y2="88" class="arr" marker-end="url(#arrow)"/>
+<line x1="595" y1="56" x2="595" y2="88" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="448" y="72" dominant-baseline="central">clock</text>
+<text class="ts" x="587" y="72" text-anchor="end" dominant-baseline="central">clock</text>
+<!-- row 1: RF chain -->
+<g class="c-gray"><rect x="20" y="90" width="120" height="64" rx="4" stroke-width="0.5"/><text class="th" x="80" y="112" text-anchor="middle" dominant-baseline="central">Antenna</text><text class="ts" x="80" y="132" text-anchor="middle" dominant-baseline="central">SMA input</text></g>
+<line x1="140" y1="122" x2="163" y2="122" class="arr" marker-end="url(#arrow)"/>
+<g class="c-gray"><rect x="165" y="90" width="150" height="64" rx="4" stroke-width="0.5"/><text class="th" x="240" y="108" text-anchor="middle" dominant-baseline="central">Front end</text><text class="ts" x="240" y="126" text-anchor="middle" dominant-baseline="central">triplexer and</text><text class="ts" x="240" y="142" text-anchor="middle" dominant-baseline="central">notch filters</text></g>
+<line x1="315" y1="122" x2="338" y2="122" class="arr" marker-end="url(#arrow)"/>
+<g class="c-teal"><rect x="340" y="90" width="160" height="64" rx="4" stroke-width="0.5"/><text class="th" x="420" y="108" text-anchor="middle" dominant-baseline="central">R828D tuner</text><text class="ts" x="420" y="126" text-anchor="middle" dominant-baseline="central">gain and</text><text class="ts" x="420" y="142" text-anchor="middle" dominant-baseline="central">frequency translation</text></g>
+<line x1="500" y1="122" x2="523" y2="122" class="arr" marker-end="url(#arrow)"/>
+<g class="c-teal"><rect x="525" y="90" width="140" height="64" rx="4" stroke-width="0.5"/><text class="th" x="595" y="108" text-anchor="middle" dominant-baseline="central">RTL2832U</text><text class="ts" x="595" y="126" text-anchor="middle" dominant-baseline="central">8-bit ADC,</text><text class="ts" x="595" y="142" text-anchor="middle" dominant-baseline="central">complex IQ output</text></g>
+<!-- to the host -->
+<path d="M595 154 L595 184 L90 184 L90 206" class="arr" marker-end="url(#arrow)"/>
+<g class="c-purple"><rect x="20" y="208" width="140" height="64" rx="4" stroke-width="0.5"/><text class="th" x="90" y="230" text-anchor="middle" dominant-baseline="central">USB link</text><text class="ts" x="90" y="250" text-anchor="middle" dominant-baseline="central">IQ samples</text></g>
+<line x1="160" y1="240" x2="188" y2="240" class="arr" marker-end="url(#arrow)"/>
+<g class="c-purple"><rect x="190" y="208" width="180" height="64" rx="4" stroke-width="0.5"/><text class="th" x="280" y="226" text-anchor="middle" dominant-baseline="central">Host laptop</text><text class="ts" x="280" y="244" text-anchor="middle" dominant-baseline="central">Dell Latitude 5490</text><text class="ts" x="280" y="260" text-anchor="middle" dominant-baseline="central">CPU only</text></g>
+<line x1="370" y1="240" x2="398" y2="240" class="arr" marker-end="url(#arrow)"/>
+<g class="c-purple"><rect x="400" y="208" width="180" height="64" rx="4" stroke-width="0.5"/><text class="th" x="490" y="226" text-anchor="middle" dominant-baseline="central">Python pipeline</text><text class="ts" x="490" y="244" text-anchor="middle" dominant-baseline="central">STFT, detectors,</text><text class="ts" x="490" y="260" text-anchor="middle" dominant-baseline="central">logging</text></g>
+</svg>

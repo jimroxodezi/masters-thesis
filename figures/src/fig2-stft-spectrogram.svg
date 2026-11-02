@@ -1,0 +1,40 @@
+<svg width="100%" viewBox="0 0 680 230" role="img"><title>From IQ samples to a spectrogram</title><desc>Overlapping windows of length L, spaced R samples apart, are cut from the IQ stream; each segment is transformed with a K-point FFT; the power in dB of each segment forms one column of a time-frequency image. Schematic: the image shading is illustrative, not data.</desc>
+<!-- Concept: Allen and Rabiner (1977), STFT as the Fourier transform of windowed segments. Schematic only; the shaded band in the image is illustrative, not data. -->
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<!-- window length bracket -->
+<line x1="30" y1="52" x2="130" y2="52" stroke="#5F5E5A" stroke-width="1"/><line x1="30" y1="46" x2="30" y2="58" stroke="#5F5E5A" stroke-width="1"/><line x1="130" y1="46" x2="130" y2="58" stroke="#5F5E5A" stroke-width="1"/>
+<text class="ts" x="80" y="38" text-anchor="middle" dominant-baseline="central" style="font-family:'Latin Modern Math'">window, 𝐿 samples</text>
+<!-- overlapping windows -->
+<g style="fill:none;stroke:#0F6E56;stroke-width:1.5">
+<path d="M30 116 C55 116 60 70 80 70 C100 70 105 116 130 116"/>
+<path d="M80 116 C105 116 110 70 130 70 C150 70 155 116 180 116"/>
+<path d="M130 116 C155 116 160 70 180 70 C200 70 205 116 230 116"/>
+<path d="M180 116 C205 116 210 70 230 70 C250 70 255 116 280 116"/>
+</g>
+<!-- IQ stream -->
+<g class="c-gray"><rect x="20" y="120" width="262" height="26" rx="3" stroke-width="0.5"/><text class="ts" x="151" y="133" text-anchor="middle" dominant-baseline="central">IQ samples</text></g>
+<!-- hop bracket -->
+<line x1="30" y1="160" x2="80" y2="160" stroke="#5F5E5A" stroke-width="1"/><line x1="30" y1="154" x2="30" y2="166" stroke="#5F5E5A" stroke-width="1"/><line x1="80" y1="154" x2="80" y2="166" stroke="#5F5E5A" stroke-width="1"/>
+<text class="ts" x="55" y="178" text-anchor="middle" dominant-baseline="central" style="font-family:'Latin Modern Math'">hop 𝑅</text>
+<!-- processing boxes -->
+<line x1="282" y1="133" x2="298" y2="133" class="arr" marker-end="url(#arrow)"/>
+<g class="c-teal"><rect x="300" y="105" width="108" height="56" rx="4" stroke-width="0.5"/><text class="th" x="354" y="123" text-anchor="middle" dominant-baseline="central">FFT</text><text class="ts" x="354" y="143" text-anchor="middle" dominant-baseline="central" style="font-family:'Latin Modern Math'">𝐾 bins per segment</text></g>
+<line x1="408" y1="133" x2="424" y2="133" class="arr" marker-end="url(#arrow)"/>
+<g class="c-teal"><rect x="426" y="105" width="108" height="56" rx="4" stroke-width="0.5"/><text class="th" x="480" y="123" text-anchor="middle" dominant-baseline="central">Power in dB</text><text class="ts" x="480" y="143" text-anchor="middle" dominant-baseline="central">squared magnitude</text></g>
+<line x1="534" y1="133" x2="550" y2="133" class="arr" marker-end="url(#arrow)"/>
+<!-- spectrogram image: 8 x 8 cells of 14 px; rows 2-5 shaded as an illustrative carrier band -->
+<text class="th" x="608" y="62" text-anchor="middle" dominant-baseline="central">Spectrogram</text>
+<g style="stroke:#FFFFFF;stroke-width:1">
+<rect x="552" y="77" width="112" height="28" style="fill:#F1EFE8"/>
+<rect x="552" y="105" width="112" height="56" style="fill:#5DCAA5"/>
+<rect x="552" y="161" width="112" height="28" style="fill:#F1EFE8"/>
+</g>
+<g style="stroke:#FFFFFF;stroke-width:1">
+<line x1="566" y1="77" x2="566" y2="189"/><line x1="580" y1="77" x2="580" y2="189"/><line x1="594" y1="77" x2="594" y2="189"/><line x1="608" y1="77" x2="608" y2="189"/><line x1="622" y1="77" x2="622" y2="189"/><line x1="636" y1="77" x2="636" y2="189"/><line x1="650" y1="77" x2="650" y2="189"/>
+<line x1="552" y1="91" x2="664" y2="91"/><line x1="552" y1="105" x2="664" y2="105"/><line x1="552" y1="119" x2="664" y2="119"/><line x1="552" y1="133" x2="664" y2="133"/><line x1="552" y1="147" x2="664" y2="147"/><line x1="552" y1="161" x2="664" y2="161"/><line x1="552" y1="175" x2="664" y2="175"/>
+</g>
+<rect x="552" y="77" width="112" height="112" style="fill:none;stroke:#888780;stroke-width:0.8"/>
+<line x1="552" y1="202" x2="664" y2="202" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="608" y="216" text-anchor="middle" dominant-baseline="central">Time (segments)</text>
+<text class="ts" x="674" y="133" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 674 133)">Frequency</text>
+</svg>

@@ -1,0 +1,16 @@
+<svg width="100%" viewBox="0 0 680 570" role="img"><title>LTE anomaly detection pipeline</title><desc>Block diagram from SDR capture through STFT and a convolutional autoencoder to an anomaly decision.</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-gray"><rect x="200" y="30" width="280" height="56" rx="8" stroke-width="0.5"/><text class="th" x="340" y="48" text-anchor="middle" dominant-baseline="central">RTL-SDR capture</text><text class="ts" x="340" y="68" text-anchor="middle" dominant-baseline="central">LTE downlink, raw IQ samples</text></g>
+<line x1="340" y1="86" x2="340" y2="112" class="arr" marker-end="url(#arrow)"/>
+<g class="c-purple"><rect x="200" y="114" width="280" height="56" rx="8" stroke-width="0.5"/><text class="th" x="340" y="132" text-anchor="middle" dominant-baseline="central">Preprocessing</text><text class="ts" x="340" y="152" text-anchor="middle" dominant-baseline="central">Filter, normalize, segment</text></g>
+<line x1="340" y1="170" x2="340" y2="196" class="arr" marker-end="url(#arrow)"/>
+<g class="c-purple"><rect x="200" y="198" width="280" height="56" rx="8" stroke-width="0.5"/><text class="th" x="340" y="216" text-anchor="middle" dominant-baseline="central">STFT spectrograms</text><text class="ts" x="340" y="236" text-anchor="middle" dominant-baseline="central">Time-frequency images</text></g>
+<line x1="340" y1="254" x2="340" y2="280" class="arr" marker-end="url(#arrow)"/>
+<g class="c-teal"><rect x="200" y="282" width="280" height="56" rx="8" stroke-width="0.5"/><text class="th" x="340" y="300" text-anchor="middle" dominant-baseline="central">Convolutional autoencoder</text><text class="ts" x="340" y="320" text-anchor="middle" dominant-baseline="central">PyTorch, trained on normal</text></g>
+<line x1="340" y1="338" x2="340" y2="364" class="arr" marker-end="url(#arrow)"/>
+<g class="c-teal"><rect x="200" y="366" width="280" height="56" rx="8" stroke-width="0.5"/><text class="th" x="340" y="384" text-anchor="middle" dominant-baseline="central">Reconstruction error</text><text class="ts" x="340" y="404" text-anchor="middle" dominant-baseline="central">Input versus output</text></g>
+<line x1="340" y1="422" x2="340" y2="448" class="arr" marker-end="url(#arrow)"/>
+<g class="c-gray"><rect x="200" y="450" width="280" height="56" rx="8" stroke-width="0.5"/><text class="th" x="340" y="468" text-anchor="middle" dominant-baseline="central">Anomaly decision</text><text class="ts" x="340" y="488" text-anchor="middle" dominant-baseline="central">Error above threshold</text></g>
+<rect x="130" y="532" width="12" height="12" rx="2" class="c-gray" stroke-width="0.5"/><text class="ts" x="148" y="538" dominant-baseline="central">Acquisition</text>
+<rect x="260" y="532" width="12" height="12" rx="2" class="c-purple" stroke-width="0.5"/><text class="ts" x="278" y="538" dominant-baseline="central">Signal processing</text>
+<rect x="420" y="532" width="12" height="12" rx="2" class="c-teal" stroke-width="0.5"/><text class="ts" x="438" y="538" dominant-baseline="central">Deep learning</text>
+</svg>

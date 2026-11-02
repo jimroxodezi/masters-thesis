@@ -1,0 +1,29 @@
+<svg width="100%" viewBox="0 0 380 340" role="img"><title>Cellular coverage with handover</title><desc>Seven hexagonal cells, each with a base station, and a phone moving from the centre cell into a neighbouring cell with a handover point at the boundary.</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<polygon class="c-teal" points="302.5,189 280,228 235,228 212.5,189 235,150 280,150" stroke-width="0.5"/>
+<polygon class="c-coral" points="235,228 212.5,267 167.5,267 145,228 167.5,189 212.5,189" stroke-width="0.5"/>
+<polygon class="c-teal" points="167.5,189 145,228 100,228 77.5,189 100,150 145,150" stroke-width="0.5"/>
+<polygon class="c-coral" points="167.5,111 145,150 100,150 77.5,111 100,72 145,72" stroke-width="0.5"/>
+<polygon class="c-teal" points="235,72 212.5,111 167.5,111 145,72 167.5,33 212.5,33" stroke-width="0.5"/>
+<polygon class="c-coral" points="302.5,111 280,150 235,150 212.5,111 235,72 280,72" stroke-width="0.5"/>
+<polygon class="c-purple" points="235,150 212.5,189 167.5,189 145,150 167.5,111 212.5,111" stroke-width="0.5"/>
+<polygon points="185,157 190,143 195,157" fill="none" stroke="var(--s)" stroke-width="1.5" stroke-linejoin="round"/>
+<polygon points="252.5,196 257.5,182 262.5,196" fill="none" stroke="var(--s)" stroke-width="1.5" stroke-linejoin="round"/>
+<polygon points="185,235 190,221 195,235" fill="none" stroke="var(--s)" stroke-width="1.5" stroke-linejoin="round"/>
+<polygon points="117.5,196 122.5,182 127.5,196" fill="none" stroke="var(--s)" stroke-width="1.5" stroke-linejoin="round"/>
+<polygon points="117.5,118 122.5,104 127.5,118" fill="none" stroke="var(--s)" stroke-width="1.5" stroke-linejoin="round"/>
+<polygon points="185,79 190,65 195,79" fill="none" stroke="var(--s)" stroke-width="1.5" stroke-linejoin="round"/>
+<polygon points="252.5,118 257.5,104 262.5,118" fill="none" stroke="var(--s)" stroke-width="1.5" stroke-linejoin="round"/>
+<line x1="205" y1="140" x2="237" y2="177" class="arr" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+<circle cx="205" cy="140" r="4" fill="var(--p)"/>
+<circle cx="226.6" cy="164.6" r="8" fill="none" stroke="#BA7517" stroke-width="2"/>
+<polygon points="61,298 66,284 71,298" fill="none" stroke="var(--s)" stroke-width="1.5" stroke-linejoin="round"/>
+<text class="ts" x="80" y="291" dominant-baseline="central">Base station</text>
+<circle cx="210" cy="291" r="4" fill="var(--p)"/>
+<text class="ts" x="222" y="291" dominant-baseline="central">Phone moving</text>
+<circle cx="66" cy="316" r="7" fill="none" stroke="#BA7517" stroke-width="2"/>
+<text class="ts" x="80" y="316" dominant-baseline="central">Handover point</text>
+<rect class="c-purple" x="210" y="310" width="12" height="12" rx="2" stroke-width="0.5"/>
+<rect class="c-teal" x="226" y="310" width="12" height="12" rx="2" stroke-width="0.5"/>
+<rect class="c-coral" x="242" y="310" width="12" height="12" rx="2" stroke-width="0.5"/>
+<text class="ts" x="262" y="316" dominant-baseline="central">Frequency groups</text>
+</svg>

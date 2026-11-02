@@ -89,7 +89,7 @@ Target length is about 3,200 words (roughly 9–11 pages at 12 pt with 1.5 spaci
 
 ### 1.5 Scope and Delimitations (~300 words)
 
-- **Included:** one LTE downlink band within the V4's tuning range `[BAND TBC]`; observed as a slice a few megahertz wide (exact sample rate to come from the final capture configuration); captures at `[STUDY SITE: Benin City, per proposal §8.1; confirm]`; one RTL-SDR Blog V4; all processing on the Dell Latitude 5490 laptop (CPU only); binary per-frame occupancy; only data captured by the author.
+- **Included:** one LTE downlink band within the V4's tuning range `[BAND TBC]`; observed as a slice a few megahertz wide (exact sample rate to come from the final capture configuration); captures in Benin City (confirmed by the author, 2 November 2026); one RTL-SDR Blog V4; all processing on the Dell Latitude 5490 laptop (CPU only); binary per-frame occupancy; only data captured by the author.
 - **Excluded:** demodulation or decoding of LTE content (the sync correlator only detects known synchronization sequences); uplink; any transmission or active probing; cooperative multi-sensor sensing; GAN, diffusion and other deep models; CFAR, cyclostationary, eigenvalue-based and matched-filter detectors (reviewed in Chapter 2, not implemented); network performance metrics; operator-level or regulatory conclusions (implications discussed conceptually); embedded deployment; Band 3 and higher bands.
 - Findings apply to the band, receiver and site studied. A brief note says reception is passive and no content or user data is recorded (detail in Chapter 3).
 
@@ -128,7 +128,7 @@ One paragraph per chapter (2–5), following CLAUDE.md's five-chapter plan.
 
 1. **LTE's role in mobile broadband** `[CITE]`. Plan: during drafting, look for Nigerian Communications Commission (NCC) subscription data by technology (preferred), or GSMA *Mobile Economy* data, and cite only what I open. If nothing verifiable is found, the sentence is cut. Tell me if you already have a source.
 2. **Operator-side source for network optimization** (see 1.1.2). Same plan as item 1; otherwise the paragraph keeps its indirect support.
-3. **Study site:** confirm Benin City.
+3. **Study site:** Benin City, confirmed by the author on 2 November 2026.
 4. **Operating points:** confirm 1% and 5% false-alarm rates.
 5. **Dataset and code release:** needs supervisor approval (proposal §13, item 4).
 6. **Gap statement:** provisional until the Chapter 2 literature search is done.
@@ -157,7 +157,7 @@ One paragraph per chapter (2–5), following CLAUDE.md's five-chapter plan.
 - **Tandra & Sahai (2005)** is cited only for signals without a deterministic component, which is the condition of their proof. This motivates the sync correlator as a baseline.
 - **Table 1.1** maps each research question to its objectives and principal evidence rather than to chapter sections, since Chapters 2–5 are not yet written.
 - **Remaining open items:**
-  - Study site (Benin City, taken from proposal §8.1) is used in the text but still unconfirmed.
+  - Study site (Benin City, taken from proposal §8.1) is used in the text; confirmed by the author on 2 November 2026.
   - The 1% and 5% false-alarm rates are used.
   - Dataset and code release are still open.
   - The gap statement is still provisional.

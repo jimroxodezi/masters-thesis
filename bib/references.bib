@@ -1,7 +1,9 @@
-% Verified entries for Section 11 of notes/proposal-revised.md
-% Checked online on 2026-11-02 against publisher/indexing pages (not full-text reads
-% unless noted). Paste into references.bib after reading each paper in full.
-% Use biblatex + biber (style=apa).
+% bib/references.bib: the single bibliography of the thesis (biblatex-apa, biber).
+% The first block holds the sources verified for Section 12 of notes/proposal.md
+% (metadata checked online on 2026-11-02 against publisher or indexing pages).
+% Later blocks hold the entries added for each chapter. The version of each
+% source that was read, and the passages used, are listed in
+% notes/<chapter>-claims.md.
 
 % --- Previously missing metadata (now found) -------------------------------
 
@@ -104,16 +106,6 @@
 % method mentioned in its introduction is its reference [10] (Q. Chen et al.).
 % Check the published version before quoting figures.
 
-@article{kang2022,
-  author  = {Kang, Ying and Wu, Hao and Zhao, Zhihua and Li, Yaxing and Meng, Jin},
-  title   = {{DL}-based anomaly detection at the physical-layer of cognitive radio by deep support vector data description},
-  journal = {IEEE Transactions on Cognitive Communications and Networking},
-  volume  = {8},
-  number  = {4},
-  pages   = {1689--1705},
-  year    = {2022},
-  doi     = {10.1109/TCCN.2022.3200377}
-}
 
 @article{yucek2009,
   author  = {Y{\"u}cek, Tevfik and Arslan, H{\"u}seyin},
@@ -126,16 +118,6 @@
   doi     = {10.1109/SURV.2009.090109}
 }
 
-@article{axell2012,
-  author  = {Axell, Erik and Leus, Geert and Larsson, Erik G. and Poor, H. Vincent},
-  title   = {Spectrum sensing for cognitive radio: State-of-the-art and recent advances},
-  journal = {IEEE Signal Processing Magazine},
-  volume  = {29},
-  number  = {3},
-  pages   = {101--116},
-  year    = {2012},
-  doi     = {10.1109/MSP.2012.2183771}
-}
 
 @manual{rtlsdrblog2024,
   author       = {{RTL-SDR Blog}},
@@ -259,3 +241,282 @@
 % Opened 2026-11-02 (Geneva). States that IMT-Advanced is considered "4G", that
 % the term may also be applied to its forerunners LTE and WiMax, and that
 % LTE-Advanced and WirelessMAN-Advanced should be designated IMT-Advanced.
+
+% --- Added for Chapter 2 (2026-11-02) --------------------------------------
+% Metadata checked against Crossref records (DOI entries), the arXiv abstract
+% pages or the documents themselves. Passages used are listed in
+% notes/chapter2-claims.md. biblatex-apa sentence-cases titles, so proper
+% nouns and acronyms are braced.
+
+@report{3gpp2026a,
+  author      = {{3rd Generation Partnership Project}},
+  shortauthor = {{3GPP}},
+  title       = {{LTE}; {Evolved Universal Terrestrial Radio Access (E-UTRA)}; {Physical channels and modulation} ({3GPP TS} 36.211 version 19.3.0 {Release} 19)},
+  type        = {Technical specification},
+  number      = {ETSI TS 136 211 V19.3.0},
+  institution = {European Telecommunications Standards Institute},
+  year        = {2026},
+  url         = {https://www.etsi.org/deliver/etsi_ts/136200_136299/136211/19.03.00_60/ts_136211v190300p.pdf}
+}
+% Downloaded from etsi.org and read 2026-11-02; dated 2026-04 on the cover.
+% Clause numbers are cited in the text.
+
+@report{3gpp2026b,
+  author      = {{3rd Generation Partnership Project}},
+  shortauthor = {{3GPP}},
+  title       = {{LTE}; {Evolved Universal Terrestrial Radio Access (E-UTRA)}; {User Equipment (UE) radio transmission and reception} ({3GPP TS} 36.101 version 19.6.0 {Release} 19)},
+  type        = {Technical specification},
+  number      = {ETSI TS 136 101 V19.6.0},
+  institution = {European Telecommunications Standards Institute},
+  year        = {2026},
+  url         = {https://www.etsi.org/deliver/etsi_ts/136100_136199/136101/19.06.00_60/ts_136101v190600p.pdf}
+}
+% Downloaded from etsi.org and read 2026-11-02; dated 2026-08 on the cover.
+
+@article{mitola1999,
+  author  = {Mitola, III, Joseph and Maguire, Jr., Gerald Q.},
+  title   = {Cognitive radio: Making software radios more personal},
+  journal = {IEEE Personal Communications},
+  volume  = {6},
+  number  = {4},
+  pages   = {13--18},
+  year    = {1999},
+  doi     = {10.1109/98.788210}
+}
+% PDF in papers/ (98.788210.pdf, scanned with OCR errors).
+
+@article{haykin2005,
+  author  = {Haykin, Simon},
+  title   = {Cognitive radio: Brain-empowered wireless communications},
+  journal = {IEEE Journal on Selected Areas in Communications},
+  volume  = {23},
+  number  = {2},
+  pages   = {201--220},
+  year    = {2005},
+  doi     = {10.1109/JSAC.2004.839380}
+}
+% PDF in papers/ (jsac.2004.839380.pdf).
+
+@inproceedings{kostylev2002,
+  author    = {Kostylev, V. I.},
+  title     = {Energy detection of a signal with random amplitude},
+  booktitle = {2002 IEEE International Conference on Communications. Conference Proceedings. ICC 2002},
+  volume    = {3},
+  pages     = {1606--1610},
+  publisher = {IEEE},
+  year      = {2002},
+  doi       = {10.1109/ICC.2002.997120}
+}
+% PDF in papers/ (icc.2002.997120.pdf). Used for its summary of Urkowitz
+% (1967), which was not obtained; cited as a secondary source.
+
+@article{zeng2009,
+  author  = {Zeng, Yonghong and Liang, Ying-Chang},
+  title   = {Eigenvalue-based spectrum sensing algorithms for cognitive radio},
+  journal = {IEEE Transactions on Communications},
+  volume  = {57},
+  number  = {6},
+  pages   = {1784--1793},
+  year    = {2009},
+  doi     = {10.1109/TCOMM.2009.06.070402}
+}
+% arXiv preprint 0804.2960v1 read (open access); page numbers in the claims
+% table are preprint pages.
+
+@inproceedings{calvopalomino2017,
+  author    = {Calvo-Palomino, Roberto and Ricciato, Fabio and Giustiniano, Domenico and Lenders, Vincent},
+  title     = {{LTESS-track}: A precise and fast frequency offset estimation for low-cost {SDR} platforms},
+  booktitle = {Proceedings of the 11th Workshop on Wireless Network Testbeds, Experimental Evaluation \& Characterization},
+  pages     = {51--58},
+  publisher = {Association for Computing Machinery},
+  year      = {2017},
+  doi       = {10.1145/3131473.3131481}
+}
+% PDF in papers/ (paper.pdf). Crossref gives only "LTESS-track" as the title;
+% the subtitle is from the PDF.
+
+@article{rajendran2018,
+  author  = {Rajendran, Sreeraj and Calvo-Palomino, Roberto and Fuchs, Markus and {Van den Bergh}, Bertold and Cordob{\'e}s, H{\'e}ctor and Giustiniano, Domenico and Pollin, Sofie and Lenders, Vincent},
+  title   = {{Electrosense}: Open and big spectrum data},
+  journal = {IEEE Communications Magazine},
+  volume  = {56},
+  number  = {1},
+  pages   = {210--217},
+  year    = {2018},
+  doi     = {10.1109/MCOM.2017.1700200}
+}
+% Preprint (arXiv 1703.09989v3) in papers/.
+
+@article{calvopalomino2020,
+  author  = {Calvo-Palomino, Roberto and Cordob{\'e}s, H{\'e}ctor and Engel, Markus and Fuchs, Markus and Jain, Pratiksha and Liechti, Marc and Rajendran, Sreeraj and Sch{\"a}fer, Matthias and {Van den Bergh}, Bertold and Pollin, Sofie and Giustiniano, Domenico and Lenders, Vincent},
+  title   = {{Electrosense+}: Crowdsourcing radio spectrum decoding using {IoT} receivers},
+  journal = {Computer Networks},
+  volume  = {174},
+  eid     = {107231},
+  year    = {2020},
+  doi     = {10.1016/j.comnet.2020.107231}
+}
+% Preprint (arXiv 1811.12265v3) in papers/.
+
+@article{reyesmoncayo2018,
+  author  = {{Reyes Moncayo}, H{\'e}ctor Iv{\'a}n and {Sarmiento Ortiz}, Leidy Alexandra and {Mart{\'i}nez Cuervo}, V{\'i}ctor Manuel},
+  title   = {Low cost spectrum monitoring system based on {Dragonboard} {410C} and {RTL-SDR} {2832U} dongle},
+  journal = {Scientia et Technica},
+  volume  = {23},
+  number  = {1},
+  pages   = {34--40},
+  year    = {2018},
+  doi     = {10.22517/23447214.16601}
+}
+% PDF in papers/ (84956661006.pdf, Redalyc copy with a cover page).
+
+@article{molinatenorio2021,
+  author  = {Molina-Tenorio, Yanqueleth and Prieto-Guerrero, Alfonso and Aguilar-Gonzalez, Rafael},
+  title   = {Real-time implementation of multiband spectrum sensing using {SDR} technology},
+  journal = {Sensors},
+  volume  = {21},
+  number  = {10},
+  eid     = {3506},
+  year    = {2021},
+  doi     = {10.3390/s21103506}
+}
+% PDF in papers/ (sensors-21-03506.pdf).
+
+@article{allen1977,
+  author  = {Allen, Jont B. and Rabiner, Lawrence R.},
+  title   = {A unified approach to short-time {Fourier} analysis and synthesis},
+  journal = {Proceedings of the IEEE},
+  volume  = {65},
+  number  = {11},
+  pages   = {1558--1564},
+  year    = {1977},
+  doi     = {10.1109/PROC.1977.10770}
+}
+% PDF in papers/ (PROC.1977.10770.pdf, scanned).
+
+@article{harris1978,
+  author  = {Harris, Fredric J.},
+  title   = {On the use of windows for harmonic analysis with the discrete {Fourier} transform},
+  journal = {Proceedings of the IEEE},
+  volume  = {66},
+  number  = {1},
+  pages   = {51--83},
+  year    = {1978},
+  doi     = {10.1109/PROC.1978.10837}
+}
+% PDF in papers/ (proc.1978.10837.pdf, scanned).
+
+@book{goodfellow2016,
+  author    = {Goodfellow, Ian and Bengio, Yoshua and Courville, Aaron},
+  title     = {Deep learning},
+  publisher = {MIT Press},
+  year      = {2016},
+  url       = {https://www.deeplearningbook.org}
+}
+% Chapters 9 and 14 read in the authors' free online edition (opened
+% 2026-11-02); page numbers are those shown in that edition.
+
+@inproceedings{masci2011,
+  author    = {Masci, Jonathan and Meier, Ueli and Cire{\c{s}}an, Dan and Schmidhuber, J{\"u}rgen},
+  title     = {Stacked convolutional auto-encoders for hierarchical feature extraction},
+  booktitle = {Artificial Neural Networks and Machine Learning -- ICANN 2011},
+  series    = {Lecture Notes in Computer Science},
+  pages     = {52--59},
+  publisher = {Springer},
+  year      = {2011},
+  doi       = {10.1007/978-3-642-21735-7_7}
+}
+% Author copy (8 pages, printed pp. 52-59) downloaded from people.idsia.ch on
+% 2026-11-02. Book title and pages from Crossref; the volume number and the
+% editors were not verified and are omitted.
+
+@report{kingma2014,
+  author      = {Kingma, Diederik P. and Welling, Max},
+  title       = {Auto-encoding variational {Bayes}},
+  number      = {arXiv:\allowbreak 1312.6114},
+  institution = {arXiv},
+  year        = {2014},
+  doi         = {10.48550/arXiv.1312.6114}
+}
+% Read version 11 (10 Dec 2022); arXiv states it only fixes a typo in the
+% abstract of version 10 (1 May 2014), hence the year 2014.
+
+@article{ruff2021,
+  author  = {Ruff, Lukas and Kauffmann, Jacob R. and Vandermeulen, Robert A. and Montavon, Gr{\'e}goire and Samek, Wojciech and Kloft, Marius and Dietterich, Thomas G. and M{\"u}ller, Klaus-Robert},
+  title   = {A unifying review of deep and shallow anomaly detection},
+  journal = {Proceedings of the IEEE},
+  volume  = {109},
+  number  = {5},
+  pages   = {756--795},
+  year    = {2021},
+  doi     = {10.1109/JPROC.2021.3052449}
+}
+% arXiv preprint 2009.11732v3 (8 Feb 2021) read; page numbers in the claims
+% table are preprint pages.
+
+@report{oshea2016,
+  author      = {O'Shea, Timothy J. and Clancy, T. Charles and McGwier, Robert W.},
+  title       = {Recurrent neural radio anomaly detection},
+  number      = {arXiv:1611.00301},
+  institution = {arXiv},
+  year        = {2016},
+  doi         = {10.48550/arXiv.1611.00301}
+}
+% PDF in papers/ (1611.00301v1.pdf). arXiv only.
+
+@inproceedings{tandiya2018,
+  author    = {Tandiya, Nistha and Jauhar, Ahmad and Marojevic, Vuk and Reed, Jeffrey H.},
+  title     = {Deep predictive coding neural network for {RF} anomaly detection in wireless networks},
+  booktitle = {2018 IEEE International Conference on Communications Workshops (ICC Workshops)},
+  pages     = {1--6},
+  publisher = {IEEE},
+  year      = {2018},
+  doi       = {10.1109/ICCW.2018.8403654}
+}
+% Preprint (arXiv 1803.06054v1) in papers/.
+
+@article{rajendran2020,
+  author  = {Rajendran, Sreeraj and Lenders, Vincent and Meert, Wannes and Pollin, Sofie},
+  title   = {Crowdsourced wireless spectrum anomaly detection},
+  journal = {IEEE Transactions on Cognitive Communications and Networking},
+  volume  = {6},
+  number  = {2},
+  pages   = {694--703},
+  year    = {2020},
+  doi     = {10.1109/TCCN.2019.2947512}
+}
+% Preprint (arXiv 1903.05408v1) in papers/.
+
+@report{xu2021,
+  author      = {Xu, Jing and Tian, Yu and Yuan, Shuai and Liu, Naijin},
+  title       = {Noise attention based spectrum anomaly detection method for unauthorized bands},
+  number      = {arXiv:2104.08517},
+  institution = {arXiv},
+  year        = {2021},
+  doi         = {10.48550/arXiv.2104.08517}
+}
+% PDF in papers/ (2104.08517v1.pdf). arXiv only.
+
+@article{zheng2020,
+  author  = {Zheng, Shilian and Chen, Shichuan and Qi, Peihan and Zhou, Huaji and Yang, Xiaoniu},
+  title   = {Spectrum sensing based on deep learning classification for cognitive radios},
+  journal = {China Communications},
+  volume  = {17},
+  number  = {2},
+  pages   = {138--148},
+  year    = {2020},
+  doi     = {10.23919/JCC.2020.02.012}
+}
+% Preprint (arXiv 1909.06020v1) in papers/.
+
+@article{peng2020,
+  author  = {Peng, Qihang and Gilman, Andrew and Vasconcelos, Nuno and Cosman, Pamela C. and Milstein, Laurence B.},
+  title   = {Robust deep sensing through transfer learning in cognitive radio},
+  journal = {IEEE Wireless Communications Letters},
+  volume  = {9},
+  number  = {1},
+  pages   = {38--41},
+  year    = {2020},
+  doi     = {10.1109/LWC.2019.2940579}
+}
+% Preprint (arXiv 1908.00658v1) in papers/.

@@ -1,2 +1,18 @@
 /.vscode
 /papers/
+
+# LaTeX build files (the compiled main.pdf is kept). Patterns other than *.aux
+# are anchored to the repository root so that logs in results/ stay tracked.
+*.aux
+/*.bbl
+/*.bcf
+/*.blg
+/*.fdb_latexmk
+/*.fls
+/*.lof
+/*.log
+/*.lot
+/*.out
+/*.run.xml
+/*.synctex.gz
+/*.toc

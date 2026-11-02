@@ -1,6 +1,6 @@
 # Chapter 2 (Literature Review): outline for approval
 
-Status: **draft outline, awaiting approval.** No chapter text has been written. Two **preview figures** were drawn to fix the visual style (Figures 2.1 and 2.2 below).
+Status: **approved and drafted (2 November 2026).** The author approved the outline and asked for the whole chapter; the two-batch split was dropped. The draft is in `chapters/chapter2.tex` and the claims table in `notes/chapter2-claims.md`. The deviations from this outline are listed at the end.
 Governing plan: `notes/proposal.md` §10. Supervisor feedback carried here: cognitive radio background, the five-method sensing taxonomy, and the CNN-vs-dense justification. The energy-detector benchmark is the core contribution, so energy detection gets the fullest treatment.
 
 Target: about 8,000 words, 9 figures, 5 tables. Drafting in two reviewable batches is proposed: §2.1–2.5 first, then §2.6–2.10.
@@ -162,3 +162,19 @@ Already verified this session: the publication details of every source below (Cr
    - I propose adding one sentence to the Chapter 1 scope and correcting §8.2 of the proposal.
 2. **Band edges are now sourced** (TS 36.101 Table 5.5-1). This closes the proposal's `[CITE: 3GPP TS 36.101]`.
 3. **The gap statement** in Chapter 1 will be updated to match §2.9 once it is drafted.
+
+## Deviations in the draft (2 November 2026)
+
+- **Figures: 10 instead of 9.** The energy-detector figure was split in two: Figure 2.5 is the block diagram, and Figure 2.6 shows the analytic P_D-versus-SNR curves (`figures/src/fig2-ed-pd-snr.py`). Later figures move up by one: 2.7 receive chain, 2.8 STFT, 2.9 autoencoder architectures, 2.10 threshold calibration.
+- **Tables: 6 instead of 5.** The related-work matrix did not fit on one page, so it is split into Table 2.5 (anomaly detection) and Table 2.6 (sensing compared with energy detection).
+- **Figure font:** every figure uses Latin Modern Roman to match the body text (author's request), through the new `--font lmodern` option of the installed skill.
+- **Sources:**
+  - Urkowitz (1967) is cited secondarily through Kostylev (2002), whose PDF the author added.
+  - Not obtained: Chandola et al. (2009), Sakurada & Yairi (2014), Hinton & Salakhutdinov (2006) and Jolliffe & Cadima (2016) (download refused or host unreachable), and Axell et al. (2012) and Kang et al. (2022). Ruff et al. (2021) and Goodfellow et al. (2016) cover the same points instead. The `axell2012` and `kang2022` entries were moved to `notes/removed.md`.
+- **Section 2.4.3:** CFAR is covered within energy detection (dynamic noise estimation for a constant false-alarm rate, from Yücek & Arslan, 2009), because no dedicated CFAR source was available. Chapter 1 says CFAR is reviewed in Chapter 2, and it is, briefly.
+- **Section 2.7.5:** the threshold source changed from "Torío et al. (2025)" to a comparison of practices: an n-sigma rule (Rajendran et al., 2019), a training-error percentile (Baset et al., 2023) and a relative dB threshold (Torío et al., 2025). Torío et al. do not use a quantile threshold.
+- **In-text page numbers:** sources read as preprints or manuscripts are cited without page numbers, because the published versions are cited and their pagination differs. The pages are in the claims table.
+- **Chapter 1:**
+  - The Saber et al. sentence was corrected, because their "CNN" is described as fully connected and their detectors were compared at different false-alarm rates.
+  - The gap statement was checked against Section 2.9 and is consistent.
+  - The old text is in `notes/removed.md`.

@@ -1,0 +1,40 @@
+<svg width="100%" viewBox="0 0 680 290" role="img"><title>Spectrum holes in time and frequency</title><desc>A grid of four channels over eight time intervals. Shaded cells are used by primary users; dashed cells are spectrum holes; one hole is used by a secondary user. Schematic, not to scale.</desc>
+<!-- Concept: Haykin (2005, p. 201), definition of a spectrum hole. Schematic only: the occupancy pattern is invented for illustration and is not data. -->
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<!-- cell grid: 8 time intervals x 4 channels, 60 x 40 px -->
+<g style="stroke:#D3D1C7;stroke-width:0.8;fill:none">
+<line x1="120" y1="30" x2="120" y2="190"/><line x1="180" y1="30" x2="180" y2="190"/><line x1="240" y1="30" x2="240" y2="190"/><line x1="300" y1="30" x2="300" y2="190"/><line x1="360" y1="30" x2="360" y2="190"/><line x1="420" y1="30" x2="420" y2="190"/><line x1="480" y1="30" x2="480" y2="190"/><line x1="540" y1="30" x2="540" y2="190"/><line x1="600" y1="30" x2="600" y2="190"/>
+<line x1="120" y1="30" x2="600" y2="30"/><line x1="120" y1="70" x2="600" y2="70"/><line x1="120" y1="110" x2="600" y2="110"/><line x1="120" y1="150" x2="600" y2="150"/><line x1="120" y1="190" x2="600" y2="190"/>
+</g>
+<!-- channel 4: always used -->
+<g class="c-teal"><rect x="121" y="31" width="478" height="38" stroke-width="0.5"/><text class="ts" x="360" y="50" text-anchor="middle" dominant-baseline="central">Primary user</text></g>
+<!-- channel 3: hole in intervals 4 to 6, partly used by a secondary user -->
+<g class="c-teal"><rect x="121" y="71" width="178" height="38" stroke-width="0.5"/><text class="ts" x="210" y="90" text-anchor="middle" dominant-baseline="central">Primary user</text></g>
+<rect x="302" y="72" width="176" height="36" style="fill:none;stroke:#5F5E5A;stroke-width:1.2;stroke-dasharray:5 3"/>
+<g class="c-coral"><rect x="306" y="76" width="110" height="28" stroke-width="0.8"/><text class="ts" x="361" y="90" text-anchor="middle" dominant-baseline="central">Secondary user</text></g>
+<g class="c-teal"><rect x="481" y="71" width="118" height="38" stroke-width="0.5"/><text class="ts" x="540" y="90" text-anchor="middle" dominant-baseline="central">Primary user</text></g>
+<!-- channel 2 -->
+<rect x="122" y="112" width="116" height="36" style="fill:none;stroke:#5F5E5A;stroke-width:1.2;stroke-dasharray:5 3"/>
+<g class="c-teal"><rect x="241" y="111" width="238" height="38" stroke-width="0.5"/><text class="ts" x="360" y="130" text-anchor="middle" dominant-baseline="central">Primary user</text></g>
+<rect x="482" y="112" width="116" height="36" style="fill:none;stroke:#5F5E5A;stroke-width:1.2;stroke-dasharray:5 3"/>
+<!-- channel 1 -->
+<g class="c-teal"><rect x="121" y="151" width="118" height="38" stroke-width="0.5"/><text class="ts" x="180" y="170" text-anchor="middle" dominant-baseline="central">Primary user</text></g>
+<rect x="242" y="152" width="356" height="36" style="fill:none;stroke:#5F5E5A;stroke-width:1.2;stroke-dasharray:5 3"/>
+<text class="ts" x="420" y="170" text-anchor="middle" dominant-baseline="central">Spectrum hole</text>
+<!-- channel labels and axes -->
+<text class="ts" x="110" y="50" text-anchor="end" dominant-baseline="central">Channel 4</text>
+<text class="ts" x="110" y="90" text-anchor="end" dominant-baseline="central">Channel 3</text>
+<text class="ts" x="110" y="130" text-anchor="end" dominant-baseline="central">Channel 2</text>
+<text class="ts" x="110" y="170" text-anchor="end" dominant-baseline="central">Channel 1</text>
+<line x1="34" y1="190" x2="34" y2="32" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="22" y="110" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 22 110)">Frequency</text>
+<line x1="120" y1="206" x2="612" y2="206" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="612" y="222" text-anchor="end" dominant-baseline="central">Time</text>
+<!-- legend -->
+<g class="c-teal"><rect x="120" y="250" width="26" height="16" stroke-width="0.5"/></g>
+<text class="ts" x="154" y="258" dominant-baseline="central">Primary user transmission</text>
+<g class="c-coral"><rect x="338" y="250" width="26" height="16" stroke-width="0.8"/></g>
+<text class="ts" x="372" y="258" dominant-baseline="central">Secondary use of a hole</text>
+<rect x="540" y="250" width="26" height="16" style="fill:none;stroke:#5F5E5A;stroke-width:1.2;stroke-dasharray:5 3"/>
+<text class="ts" x="574" y="258" dominant-baseline="central">Spectrum hole</text>
+</svg>

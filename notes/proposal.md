@@ -121,7 +121,7 @@ Rejecting H1 and/or H2 is a valid and publishable result.
 
 ### 8.2 Data collection (three classes)
 - **Class A, receiver noise:** the antenna input terminated with a matched 50 Ω load. Captures the receiver's own noise floor, with no external signals.
-- **Class B, idle environment:** antenna connected, tuned to spectrum with no LTE carrier (guard regions, unused channels, or quiet periods), confirmed by cell search and power screening. Captures environmental noise and local interference.
+- **Class B, idle environment:** antenna connected, tuned to spectrum with no LTE carrier (guard regions or unused channels), confirmed by cell search and power screening. Captures environmental noise and local interference. Quiet periods of an active carrier do not qualify: an FDD LTE cell transmits cell-specific reference signals in every downlink subframe (3GPP TS 36.211 V19.3.0, clause 6.10.1), so an active carrier is never silent. "Occupancy" in this study therefore means the presence of a carrier in the observed slice, not its traffic load.
 - **Class C, LTE active:** antenna connected, tuned onto active carrier(s), at several positions, times and conditions to vary natural SNR.
 - Multiple sessions across different days, times and (if possible) locations. Each session is an independent unit for splitting.
 
