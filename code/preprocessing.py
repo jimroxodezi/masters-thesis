@@ -8,7 +8,7 @@ Pipeline
 1. Segment the long IQ stream into fixed-length tiles.
 2. Compute a two-sided STFT magnitude spectrogram for each tile.
 3. Convert to dB scale and pad/crop to a fixed spatial shape.
-4. Fit a per-pixel min-max normaliser on the training set.
+4. Fit a global min-max normaliser on the training set.
 5. Return a SpectrogramDataset ready for the DataLoader.
 """
 
@@ -119,7 +119,8 @@ def build_spectrograms(segments: np.ndarray, config: Config = cfg) -> np.ndarray
 
 class Normalizer:
     """
-    Per-pixel min-max normaliser that maps spectrogram values to [0, 1].
+    Global min-max normaliser that maps spectrogram values to [0, 1], using one
+    scalar minimum and one scalar maximum over all pixels.
 
     Fit once on the training split, then call transform() on any data.
     """

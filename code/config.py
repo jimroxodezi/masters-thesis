@@ -16,13 +16,17 @@ class SDRConfig:
     # Tune to a local LTE downlink carrier.
     # RTL-SDR Blog V4 (R828D) range: ~24 MHz – 1766 MHz.
     # Common LTE DL bands within range:
-    #   Band 28 centre ≈ 758–803 MHz  (700 MHz APT, used in NG/Africa)
-    #   Band 20 centre ≈ 791–821 MHz  (800 MHz EU)
-    #   Band 3  centre ≈ 1805–1880 MHz (1800 MHz — at R828D limit)
+    #   Band 28 DL 758–803 MHz  (700 MHz APT, used in NG/Africa)
+    #   Band 20 DL 791–821 MHz  (800 MHz EU)
+    # Band 3 DL (1805–1880 MHz) is above the R828D limit and cannot be tuned.
     center_freq: float   = 796e6     # Hz  — adjust to your local carrier
+    max_freq: float      = 1766e6    # Hz  — R828D tuner limit, enforced on --freq
     sample_rate: float   = 2.048e6   # Hz  — 2.048 MSPS (standard RTL-SDR)
     gain: str            = "auto"
     capture_duration: float = 30.0   # seconds of IQ data per capture session
+    # Samples per USB transfer. Must stay small: Linux caps usbfs buffers at
+    # 16 MB by default, so a long capture cannot be one synchronous read.
+    read_block_samples: int = 131072  # 262 144 bytes (librtlsdr's default)
 
 
 # ── Signal Pre-processing ─────────────────────────────────────────────────────
@@ -57,16 +61,18 @@ class TrainConfig:
     weight_decay: float      = 1e-5
     val_split: float         = 0.15   # fraction of data held out for validation
     patience: int            = 15     # early-stopping patience (epochs)
+    min_delta: float         = 1e-6   # smallest val-loss drop that counts as improvement
     scheduler_factor: float  = 0.5    # LR reduction factor on plateau
     scheduler_patience: int  = 7
+    grad_clip_norm: float    = 1.0    # max L2 norm of the gradient vector
+    seed: int                = 42     # weight initialisation and batch shuffling
 
 
 # ── Anomaly Detection ─────────────────────────────────────────────────────────
 
 @dataclass
 class AnomalyConfig:
-    # Threshold = mean + k * std of training reconstruction errors.
-    # Alternatively set threshold_percentile to use a percentile instead.
+    # Threshold = this percentile of the training reconstruction errors.
     threshold_percentile: float = 99.0   # percentile of training-set errors
 
 

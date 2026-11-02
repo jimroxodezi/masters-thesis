@@ -3,8 +3,8 @@ sdr_capture.py
 --------------
 Captures IQ samples from the RTL-SDR Blog V4 dongle.
 
-Falls back to a synthetic OFDM-like LTE signal generator when the
-hardware is not connected (useful for unit-testing the pipeline).
+Also provides a synthetic OFDM-like LTE signal generator and an anomaly
+injector, for running the pipeline without hardware.
 """
 
 import warnings
@@ -31,8 +31,10 @@ def capture_iq(config: Config = cfg) -> np.ndarray:
     """
     try:
         from rtlsdr import RtlSdr
-    except ImportError:
-        raise ImportError("pyrtlsdr not installed. Run: uv add 'pyrtlsdr==0.2.91'")
+    except ImportError as exc:
+        # Also raised when pyrtlsdr is installed but the native librtlsdr is missing
+        raise ImportError(f"cannot load pyrtlsdr: {exc}. "
+                          "Run uv sync, and check that librtlsdr is installed.") from exc
 
     sdr = RtlSdr()
     try:
@@ -41,9 +43,26 @@ def capture_iq(config: Config = cfg) -> np.ndarray:
         sdr.gain        = config.sdr.gain
 
         n_samples = int(config.sdr.sample_rate * config.sdr.capture_duration)
-        # read_samples returns complex128 — downcast immediately to save memory
-        samples = sdr.read_samples(n_samples).astype(np.complex64)
-        print(f"[sdr_capture] Captured {len(samples):,} samples "
+        samples   = np.empty(n_samples, dtype=np.complex64)
+        filled    = 0
+
+        def _store_block(block: np.ndarray, _context) -> None:
+            # Blocks arrive as complex128 — downcast on copy to save memory
+            nonlocal filled
+            n = min(len(block), n_samples - filled)
+            samples[filled:filled + n] = block[:n]
+            filled += n
+            if filled >= n_samples:
+                sdr.cancel_read_async()
+
+        # Streaming keeps the samples contiguous and each USB transfer small;
+        # one synchronous read of the whole capture would exceed the usbfs limit.
+        sdr.read_samples_async(_store_block, num_samples=config.sdr.read_block_samples)
+
+        if filled < n_samples:
+            raise IOError(f"Capture stopped early: {filled:,} of {n_samples:,} samples")
+
+        print(f"[sdr_capture] Captured {n_samples:,} samples "
               f"@ {config.sdr.center_freq/1e6:.1f} MHz "
               f"({config.sdr.capture_duration:.0f} s)")
         return samples
@@ -80,7 +99,12 @@ def generate_synthetic_lte(
     Generate a synthetic OFDM signal that approximates a 1.4 MHz LTE carrier.
 
     The signal comprises 72 active QPSK-modulated subcarriers at 15 kHz
-    spacing (ITU-R LTE numerology), embedded in AWGN at the specified SNR.
+    spacing (3GPP TS 36.211), embedded in AWGN at the specified SNR.
+
+    Known limitation: symbols change on every sample rather than once per
+    OFDM symbol, so each subcarrier is spectrally white and the sum has a
+    flat spectrum with no visible 1.08 MHz occupied band. Use it to exercise
+    the pipeline, not as a model of a real LTE carrier.
 
     Parameters
     ----------
@@ -98,8 +122,8 @@ def generate_synthetic_lte(
     sample_rate  = config.sdr.sample_rate
     t            = np.arange(n_samples) / sample_rate
 
-    n_subcarriers       = 72           # LTE 1.4 MHz: 72 active RBs
-    subcarrier_spacing  = 15e3         # 15 kHz (LTE numerology 0)
+    n_subcarriers       = 72           # LTE 1.4 MHz: 6 RBs × 12 subcarriers
+    subcarrier_spacing  = 15e3         # 15 kHz (LTE)
 
     signal = np.zeros(n_samples, dtype=np.complex128)
 

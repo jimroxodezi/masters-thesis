@@ -170,7 +170,8 @@ class ConvAutoencoder(nn.Module):
 # ─────────────────────────────────────────────────────────────────────────────
 
 def build_model(config: Config = cfg) -> ConvAutoencoder:
-    """Instantiate and return a new ConvAutoencoder."""
+    """Instantiate and return a new ConvAutoencoder with seeded initial weights."""
+    torch.manual_seed(config.train.seed)
     model = ConvAutoencoder(config)
     n_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"[model] ConvAutoencoder  trainable params: {n_params:,}")
