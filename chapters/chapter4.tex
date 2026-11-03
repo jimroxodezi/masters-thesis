@@ -1,0 +1,58 @@
+\chapter{Results and Discussion}
+\label{chap:results}
+
+% Outline approved 2 November 2026 (notes/chapter4-outline.md).
+% SKELETON ONLY: no results exist yet (results/ is empty, no captures made).
+% Every number, table and figure of this chapter is to be generated from
+% results/ by the report step of code/ (decision D1); no result is typed by
+% hand. Prose interpretation is written only after the evaluation has run.
+
+\section{Introduction}
+\label{sec:r-intro}
+
+\TBC{Roadmap of the chapter, written once the results exist.}
+
+\section{Band Survey and Chosen Band}
+\label{sec:r-survey}
+
+\TBC{Survey spectra by day and night, carriers found, cell-search results, the band chosen and the carrier bandwidth (which decides whether C\textsubscript{offset} captures were possible). Figure~4.1: survey spectrum with the windows marked. Full survey plots in \cref{app:survey}.}
+
+\section{The Dataset}
+\label{sec:r-data}
+
+\TBC{Sessions captured, frames per class, clipping, agreement of the two labelling passes, noise floors by session and gain, and the natural-SNR distribution of the active captures. Table~4.1 (dataset summary); Figures~4.2 (example spectrograms of real frames) and~4.3 (noise floor by session and gain). Session list in \cref{app:sessions}.}
+
+\section{Detection at Fixed False-Alarm Rates}
+\label{sec:r-detection}
+
+\TBC{RQ1, RQ2 and H1. Table~4.2: $\Pd$ on C\textsubscript{centre} and C\textsubscript{offset}, realized $\Pfa$ and AUC for the seven detectors at $\Pfa = \pct{1}$ and \pct{5}, with seed variability and session-bootstrap intervals. Figure~4.4: ROC curves. Figure~4.5: $\Pd$ against SNR on the controlled-SNR set. Table~4.3: the H1 test. The \syncsignal{} correlator on centred and offset windows; theoretical and empirical energy-detector thresholds.}
+
+\section{Architecture and Score}
+\label{sec:r-design}
+
+\TBC{RQ5. Convolutional and fully connected autoencoders; VAE with the MSE and percentile scores; latent-size ablations; seed variability. Table~4.4 and Figure~4.6.}
+
+\section{Generalization across Sessions and Gain}
+\label{sec:r-general}
+
+\TBC{RQ3 and H2. Per-session realized $\Pfa$ and $\Pd$ (Figure~4.7); breakdown by time of day and position; the gain-change test and the H2 verdict (Table~4.5, Figure~4.8); recovery by the adaptive energy detector; link to the Class~A noise floors.}
+
+\section{Computational Cost and Real-Time Operation}
+\label{sec:r-compute}
+
+\TBC{RQ4. Latency (median and 95th percentile), throughput and real-time factor per detector on the laptop (Table~4.6); effect of the scoring optimization of \cref{sec:m-optim}: median latency of each neural network as trained and in its scoring form, and their ratio; occupancy over time from the demonstration log, with the numbers of dropped and missing blocks (Figure~4.9).}
+
+\section{Failure Analysis}
+\label{sec:r-failures}
+
+\TBC{Examples of false alarms and missed detections with their likely causes (Figure~4.10).}
+
+\section{Discussion}
+\label{sec:r-discussion}
+
+\TBC{Answers to RQ1--RQ5 and verdicts on H1 and H2, each tied to its table; comparison with the studies of Chapter~2 (\cref{sec:related}); practical implications, conceptually only; limitations and scope exclusions (no demodulation, downlink only, passive reception, one receiver, band and city; capture-level labels; the controlled-SNR approximation; the number of sessions).}
+
+\section{Summary}
+\label{sec:r-summary}
+
+\TBC{Summary of the findings, written once the results exist.}

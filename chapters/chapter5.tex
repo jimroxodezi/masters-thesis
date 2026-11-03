@@ -1,0 +1,90 @@
+\chapter{Conclusion and Recommendations}
+\label{chap:conclusion}
+
+% Outline approved 2 November 2026 (notes/chapter5-outline.md), decisions D1
+% and D2. Only the parts that do not depend on results are drafted; the rest
+% are red \TBC notes. No finding is anticipated. Written in the present tense
+% for now; convert to the past tense once the study is complete.
+
+\section{Summary of the Study}
+\label{sec:c-summary}
+
+Occupancy detection is the step on which spectrum monitoring and dynamic spectrum access both depend: before a band's use can be measured or shared, it must be decided, observation by observation, whether a signal is present. The classical answer, energy detection, needs no knowledge of the signal but sets its threshold from the noise power, and errors in that power limit it at low SNR (Chapter~2). Learned detectors have been proposed as an alternative, but the evidence comparing them with energy detection is mixed and comes mostly from simulation, from baselines whose thresholds were not tuned on the same data, or from comparisons at unequal false-alarm rates.
+
+This thesis examines whether an autoencoder trained only on idle spectrum, captured with a low-cost RTL-SDR receiver, detects the occupancy of an LTE downlink band better than carefully tuned classical detectors. The study captures its own data in Benin City: receiver noise, idle spectrum and active LTE carriers, in sessions spread over days, times, positions and two gain settings (Chapter~3). Seven detectors score identical frames. Four are learned from idle frames: a convolutional autoencoder, a fully connected autoencoder, a variational autoencoder and a PCA detector. The other three are classical: energy detectors with fixed and adaptive thresholds, and a correlator for the LTE synchronization signals. Every detector is calibrated on held-out idle sessions at false-alarm probabilities of \pct{1} and \pct{5} and evaluated on unseen sessions, with uncertainty estimated over training seeds and over sessions. A controlled-SNR set with exact labels complements the over-the-air captures, and the cost of each detector is measured on the laptop that would run it.
+
+\section{Findings}
+\label{sec:c-findings}
+
+\TBC{One paragraph per research question and a verdict on each hypothesis, each pointing to its evidence in Chapter~4. Written only after the evaluation has run.}
+
+\Cref{tab:c-answers} will collect the answers. Its evidence column is fixed by the design; its answers are filled in from the results of Chapter~4.
+
+\begin{table}[tbp]
+  \centering
+  \small
+  \caption[Answers to the research questions and hypotheses]{Answers to the research questions and hypotheses, with the evidence for each.}
+  \label{tab:c-answers}
+  \begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}p{1.2cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{3.6cm} @{}}
+    \toprule
+    Item & Answer & Evidence \\
+    \midrule
+    RQ1 & \TBC{after results} & \Cref{sec:r-detection} \\
+    RQ2 & \TBC{after results} & \Cref{sec:r-detection} \\
+    RQ3 & \TBC{after results} & \Cref{sec:r-general} \\
+    RQ4 & \TBC{after results} & \Cref{sec:r-compute} \\
+    RQ5 & \TBC{after results} & \Cref{sec:r-design} \\
+    H1 & \TBC{supported or not supported, at each operating point} & \Cref{sec:r-detection} \\
+    H2 & \TBC{supported or not supported} & \Cref{sec:r-general} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Contributions}
+\label{sec:c-contributions}
+
+\TBC{The contributions of Section~1.6, revised to what the study actually delivered: the dataset (if released), the benchmark protocol, the comparison and the code. To be written together with the revision of Section~1.6.}
+
+\section{Recommendations}
+\label{sec:c-recommendations}
+
+\subsection{For Practitioners}
+\label{sec:c-rec-practice}
+
+\TBC{Which detector to use for occupancy monitoring with a low-cost receiver, under which conditions, and how to calibrate it. These recommendations follow from the results and are written only after them.}
+
+\subsection{For Researchers Evaluating Learned Detectors}
+\label{sec:c-rec-research}
+
+The review of Chapter~2 found that studies of learned spectrum detectors were evaluated in ways that make their conclusions hard to compare (\cref{sec:related-practice}). The design of this study answers those problems, and the same practices are recommended to others.
+
+\begin{itemize}
+  \item \emph{Split data by session, not by frame.} Frames recorded together share the receiver's state, the antenna position and the local interference, so a random split lets a model be tested on conditions it was trained on. Separating training and test data by time, as \textcite{rajendran2020} did, or by session, as here, tests what deployment requires.
+  \item \emph{Calibrate thresholds on held-out idle data and report the realized false-alarm rate.} A threshold derived from training errors, or tuned on test data, does not show whether a detector holds its false-alarm rate on new data. The finding of \textcite{baset2023} that a static energy threshold failed from one day to the next shows why the realized rate should be reported, not assumed.
+  \item \emph{Compare at the same operating point.} Detection probabilities are comparable only at equal false-alarm rates; comparisons at unequal rates, as in \textcite{saber2021}, cannot rank detectors.
+  \item \emph{Give the classical baseline the same care.} An energy detector whose threshold is computed rather than calibrated on the same data, or whose noise estimate is never updated, is a weak baseline. Both a fixed and an adaptive variant, tuned on the same validation data as the learned detector, are needed to show what learning adds.
+  \item \emph{Report uncertainty over the units of independence.} Intervals over sessions, and variability over training seeds, show how much a difference between detectors could be due to the particular data or initialization. None of the thirteen studies reviewed in Chapter~2 reported confidence intervals.
+\end{itemize}
+
+\TBC{Confirm or qualify these recommendations in the light of the results.}
+
+\section{Limitations and Future Work}
+\label{sec:c-future}
+
+The limitations of the study are discussed with the results (\cref{sec:r-discussion}). Several directions for future work follow from the scope set in Chapter~1.
+
+\begin{itemize}
+  \item \emph{More receivers and cooperative sensing.} The study uses a single receiver at a time. Cooperation among sensors has been proposed to counter noise uncertainty, fading and shadowing \parencite{yucek2009}, and networks of low-cost sensors already exist \parencite{rajendran2018}. Whether a detector calibrated on one receiver transfers to another of the same model is an open question that this study does not test.
+  \item \emph{Other bands and receivers.} The downlink of LTE Band~3 lies above the tuning range of the RTL-SDR (\cref{tab:lte-bands}). Repeating the study there, or in other bands, needs a receiver with a wider range.
+  \item \emph{Other classical detectors.} The cyclostationary and eigenvalue-based detectors reviewed in \cref{sec:cyclo,sec:eigen} are not implemented here. The eigenvalue-based detectors need no estimate of the noise power \parencite{zeng2009}, which makes them natural further baselines for the noise-floor changes studied under H2.
+  \item \emph{Other learned models.} Generative adversarial networks, diffusion models and other deep detectors are outside the scope of this study (Chapter~1) and could be compared under the same protocol.
+  \item \emph{Longer-term monitoring.} The real-time demonstration logs occupancy for a short period. Logging over weeks would show daily and weekly patterns of use and test whether a detector's calibration holds over longer periods.
+  \item \emph{Embedded deployment.} All processing runs on a laptop. Running the detectors on low-power embedded hardware, as monitoring networks do \parencite{calvopalomino2015,rajendran2018}, is excluded here and left for future work.
+\end{itemize}
+
+\TBC{Directions suggested by the results, for example the causes found in the failure analysis or, depending on the H2 result, adapting the autoencoder's normalization to the noise floor.}
+
+\section{Closing Remarks}
+\label{sec:c-closing}
+
+\TBC{Written after the results.}

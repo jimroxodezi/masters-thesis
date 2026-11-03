@@ -9,5 +9,10 @@ wheels/
 # Virtual environments
 .venv
 
-# Raw IQ captures (about 491 MB per 30 s, above GitHub's 100 MB file limit)
+# Raw IQ captures (cu8, about 115 MB per 30 s capture, above GitHub's 100 MB file limit) and surveys
 data/
+
+# Synthetic test captures and all derived data (preprocessed features, models, scores, results)
+data_synthetic/
+work/
+work_synthetic/

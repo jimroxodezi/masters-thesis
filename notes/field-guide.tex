@@ -1,0 +1,199 @@
+% notes/field-guide.tex: field guide for the data captures (compiled to notes/field-guide.pdf).
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[british]{babel}
+\usepackage[a4paper,margin=22mm]{geometry}
+\usepackage{booktabs,array,tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyvrb}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parskip}{4pt}\setlength{\parindent}{0pt}
+\setlist{itemsep=1pt,topsep=2pt}
+\definecolor{boxgrey}{HTML}{F1EFE8}
+\newcommand{\cmd}[1]{\texttt{#1}}
+\newcommand{\notebox}[1]{\par\smallskip\noindent\colorbox{boxgrey}{\begin{minipage}{\dimexpr\linewidth-2\fboxsep\relax}#1\end{minipage}}\par\smallskip}
+\fvset{fontsize=\small,frame=single,framesep=2mm,xleftmargin=2mm,xrightmargin=2mm}
+
+\title{\textbf{Field Guide: Capturing the Thesis Data}\\[2pt]\large LTE downlink occupancy with the RTL-SDR Blog V4, Benin City}
+\author{Version 2, 2 November 2026 (checked against the finished capture software)}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-8mm}
+
+\notebox{%
+\textbf{What you will collect.} A band survey (once, day and night), then at least \textbf{12 capture sessions} over at least \textbf{4 days}, by day and at night, from at least \textbf{2 positions} in Benin City. A session is 8 captures of 30\,s each and takes about 20--30 minutes. It uses about 0.9\,GB of disk, so 12 sessions need about 11\,GB plus backups. The settings come from \cmd{notes/method-design.md} and the commands from the \cmd{occupancy} package in \cmd{code/}.
+}
+
+\section{Equipment}
+\begin{tabularx}{\linewidth}{@{} >{\raggedright\arraybackslash}p{4.2cm} X @{}}
+\toprule
+Item & Notes \\
+\midrule
+RTL-SDR Blog V4 & The only receiver used in the study. Never swap in another dongle. \\
+Antenna for 700--960\,MHz & The same antenna for every session. It is passive, so the bias tee stays \textbf{off}. \\
+50\,$\Omega$ SMA terminator & Fitted in place of the antenna for the Class~A captures. \\
+Laptop (Dell Latitude 5490) & Charged or on mains power; at least 15\,GB free disk space. \\
+USB extension cable & Optional: moves the dongle away from the laptop if the laptop causes interference. \\
+External drive & At least 20\,GB, for a backup after every session. \\
+Phone or camera, notebook & For the photographs (Section~\ref{sec:photos}) and notes. \\
+Thermometer & Optional: temperature is recorded if known. \\
+\bottomrule
+\end{tabularx}
+
+\section{One-time preparation (before the first field day)}
+All commands are run from the \cmd{code/} folder of the project:
+\begin{Verbatim}
+cd ~/projects/msc-thesis/masters-thesis/code
+\end{Verbatim}
+\begin{enumerate}
+\item \textbf{Check the receiver.} Plug in the V4 and run \cmd{rtl\_test -t}. It should find the device and report the R828D tuner. The V4 needs the RTL-SDR Blog build of the driver. Then check that the study's software can see it, and note the gain steps it offers:
+\begin{Verbatim}
+uv run python -m occupancy capture --info
+\end{Verbatim}
+\item \textbf{Check the survey tool.} \cmd{rtl\_power -h} should print its help; it comes with the RTL-SDR driver package.
+\item \textbf{Install and test the cell-search tool.} Use an LTE cell scanner that works with the RTL-SDR (for example LTE-Cell-Scanner). Test it once at home, and note its name and version.
+\item \textbf{Rehearse without the dongle.} The rehearsal writes only to \cmd{data\_synthetic/}, which the thesis never uses:
+\begin{Verbatim}
+uv run python -m occupancy session --synthetic
+\end{Verbatim}
+\item \textbf{Clock.} Make sure the laptop sets its time automatically. Capture times are recorded in UTC.
+\end{enumerate}
+
+\section{Step 1: band survey (one day and one night)}
+Do this at your first position before any capture session. Fix one gain for the whole survey (40\,dB, as in the proposal):
+\begin{Verbatim}
+uv run python -m occupancy survey --range 758M:803M --gain 40 \
+    --integration 10 --duration 10m --label day --position P1
+uv run python -m occupancy survey --range 790M:894M --gain 40 \
+    --integration 10 --duration 10m --label day --position P1
+uv run python -m occupancy survey --range 925M:960M --gain 40 \
+    --integration 10 --duration 10m --label day --position P1
+\end{Verbatim}
+Repeat at night with \cmd{--label night}. The CSV files and plots are saved in \cmd{data/survey/}.
+\begin{enumerate}
+\item \textbf{Find the carriers.} An LTE carrier shows as a flat plateau of raised power, 5--20\,MHz wide. Note each plateau's centre and width.
+\item \textbf{Confirm with the cell scanner.} Run it on the strongest plateaus, and record the cell identity (PCI), the centre frequency and the bandwidth.
+\item \textbf{Choose the carrier.} It should be confirmed by the scanner, strong and steady by day and night, and preferably 10\,MHz wide or more. Only carriers of 10\,MHz or more allow the offset captures; the session helper checks this.
+\item \textbf{Choose the idle (Class~B) window.} It is a stretch of at least 1.92\,MHz with no carrier, as close to the chosen carrier as possible. The survey analysis can rank candidates:
+\begin{Verbatim}
+uv run python -m occupancy survey --parse data/survey/<file>.csv --carrier 796M
+\end{Verbatim}
+\item \textbf{Choose the two gains, $g_1$ and $g_2$.} They are fixed for the whole study.
+  \begin{itemize}
+  \item $g_1$ is the highest gain step at which a capture centred on the carrier is not flagged for clipping (more than 0.1\% of samples at the limits).
+  \item $g_2$ is lower, about 10\,dB below $g_1$ (a suggestion, not a fixed rule).
+  \item Make trial captures under the session ID \cmd{trial}. Afterwards, move \cmd{data/raw/trial} to a folder outside \cmd{data/} (e.g. \cmd{data\_trials/}) so they are never used.
+  \end{itemize}
+\item \textbf{Send me the survey plots, the scanner output, and your choice of carrier, Class~B window, $g_1$ and $g_2$} before Session~1. They go into Appendix~A of the thesis.
+\end{enumerate}
+
+\section{Step 2: capture sessions}
+\subsection*{Plan}
+Use the same carrier, Class~B window, antenna and gains $g_1$, $g_2$ in every session. Spread the sessions so that day and night, and the positions, are balanced. A possible plan, to adapt:
+
+\begin{center}
+\begin{tabular}{@{} l l l l @{\hspace{12mm}} l l l l @{}}
+\toprule
+Session & Day & Time & Position & Session & Day & Time & Position \\
+\midrule
+S01 & 1 & day & P1 & S07 & 3 & day & P2 \\
+S02 & 1 & night & P1 & S08 & 3 & night & P1 \\
+S03 & 2 & day & P2 & S09 & 4 & day & P1 \\
+S04 & 2 & night & P2 & S10 & 4 & night & P2 \\
+S05 & 3 & day & P1 & S11 & 5 & day & P2 \\
+S06 & 3 & night & P2 & S12 & 5 & night & P1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Procedure for every session}
+\begin{enumerate}
+\item \textbf{Set up} at the position: antenna mounted as before at that position (see its photo), dongle plugged in, laptop on. Wait about 5 minutes before the first capture, so the dongle warms up.
+\item \textbf{Cell search} on the chosen carrier. Note the PCI; it should be the same cell as in the survey.
+\item \textbf{Start the guided session} and answer its questions:
+\begin{Verbatim}
+uv run python -m occupancy session
+\end{Verbatim}
+\begin{itemize}
+\item It asks for: the session ID (S01, S02, \dots); the position; $g_1$ and $g_2$; the frequency correction (enter 0); the antenna; the temperature; notes on weather and surroundings; the cell-search tool; the carrier's centre frequency, PCI and bandwidth; which side of the carrier to use for the offset window (+ or $-$); and the Class~B and Class~A frequencies.
+\item It then shows the plan.
+\end{itemize}
+\item \textbf{Follow the screen for the 8 captures} of 30\,s each, pressing Enter to start each one:
+  \begin{enumerate}[label=\alph*.]
+  \item Class~A at $g_1$, then at $g_2$: \textbf{terminator fitted}.
+  \item Class~B at $g_1$, then $g_2$: \textbf{remove the terminator and connect the antenna}.
+  \item Class~C centred at $g_1$, then $g_2$.
+  \item Class~C offset at $g_1$, then $g_2$. These are skipped automatically if the carrier is narrower than 10\,MHz.
+  \end{enumerate}
+\item \textbf{Check after each capture.} The helper prints the clipping fraction and the mean power, and saves a quick-look image.
+  \begin{itemize}
+  \item If a capture is flagged or something went wrong (a bumped cable, a sudden noise), retake it. The first attempt is kept and marked ``retaken''.
+  \item In the quick-looks, Class~A should be flat and the lowest, Class~B flat, and Class~C a raised band.
+  \end{itemize}
+\item \textbf{Back up} the session folder \cmd{data/raw/S01/} (and so on) to the external drive the same day.
+\end{enumerate}
+
+\notebox{%
+\textbf{Do not}:
+\begin{itemize}
+\item change the gain, antenna or position during a session;
+\item use automatic gain (the software refuses it);
+\item switch the bias tee on;
+\item run other heavy programs during a capture;
+\item touch the cable while a capture runs.
+\end{itemize}
+}
+
+\section{Step 3: labelling check (on a later day)}
+Run the cell scanner once more on the carrier. Then make quick-look images of every capture and a checklist to fill in:
+\begin{Verbatim}
+uv run python -m occupancy inspect
+\end{Verbatim}
+It writes the images and \cmd{labelling\_check.csv} to \cmd{work/inspect/}. For each capture, look at its image and fill in the \cmd{second\_pass\_class} column (A, B, C\_centre or C\_offset), whether you re-ran the cell search, and any notes. Look especially for an idle window that shows a carrier, or an active capture that looks flat. Then report the agreement between the two passes, which goes into the thesis:
+\begin{Verbatim}
+uv run python -m occupancy inspect --agreement work/inspect/labelling_check.csv
+\end{Verbatim}
+
+\section{Photographs and screenshots for the thesis}\label{sec:photos}
+Yes, photographs help: they show the examiners the real set-up behind the figures. Please take:
+\begin{itemize}
+\item the V4 with the antenna connected, as a close-up on a plain background with a coin or ruler for scale;
+\item the V4 with the 50\,$\Omega$ terminator fitted (the Class~A set-up);
+\item the complete set-up at each position (laptop, dongle and antenna), as a wide shot;
+\item how the antenna is mounted at each position, which also helps you repeat it exactly.
+\end{itemize}
+For screen content, take \textbf{screenshots}, not photos of the screen, e.g. of the real-time demonstration running (I'll tell you when it is ready). The survey plots are produced by the software, so no picture of them is needed. A photo of the laptop's model label is not needed: the thesis lists the hardware, and the software logs the CPU model automatically when it measures speed.
+
+\textbf{Tips:}
+\begin{itemize}
+\item Landscape, in daylight, without flash glare; keep the original files.
+\item No faces, house numbers or anything that reveals a private address.
+\item Put them in a \cmd{photos/} folder in the project, with names like \cmd{2026-11-05\_P1\_setup.jpg}.
+\end{itemize}
+
+\section{Troubleshooting}
+\begin{tabularx}{\linewidth}{@{} >{\raggedright\arraybackslash}p{4.6cm} X @{}}
+\toprule
+Problem & What to do \\
+\midrule
+Device not found & Replug the dongle, run \cmd{rtl\_test -t}, close any other SDR program. \\
+Capture flagged for clipping & Retake once. If it persists, note it and tell me. Do \emph{not} change $g_1$ or $g_2$ during the study. \\
+Messages about lost samples & Close other programs and retake the capture. \\
+Cell scanner finds no cell & Do not capture Class~C that day; note it and tell me. \\
+Disk nearly full & Move backed-up sessions to the external drive. \\
+\bottomrule
+\end{tabularx}
+
+\section{Safety and ethics}
+Reception is passive: nothing is transmitted, and no content is decoded or recorded. Ask permission before using a private place, and take care of your own safety during night sessions.
+
+\section{What to give me after the fieldwork}
+\begin{itemize}
+\item The \cmd{data/} folder (raw captures with their \cmd{.json} records, quick-looks and the survey). I can work on it directly on the laptop.
+\item The cell-scanner outputs, your notes and the photographs.
+\end{itemize}
+\end{document}

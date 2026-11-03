@@ -1,0 +1,24 @@
+<svg width="100%" viewBox="0 0 680 262" role="img"><title>Placement of the receiver windows</title><desc>To scale at 40 px per MHz: a 10 MHz carrier occupying 9 MHz, its central 6 resource blocks, and three 1.92 MHz windows: centred on the carrier, offset 2.52 MHz inside it, and in a stretch with no carrier.</desc>
+<!-- Scale 40 px/MHz. Carrier centre x=250; occupied 9 MHz = 360 px (70-430); central 6 RBs 1.08 MHz = 43.2 px (228.4-271.6); window 1.92 MHz = 76.8 px.
+     C centre window 211.6-288.4; C offset centre 250+2.52*40=350.8 -> 312.4-389.2; B window centred at 570 -> 531.6-608.4.
+     Sources: 3GPP TS 36.101 Table 5.6-1; TS 36.211 Table 6.2.3-1 and clause 6.11. -->
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-teal"><rect x="70" y="120" width="360" height="70" stroke-width="0.5"/><text class="th" x="140" y="145" text-anchor="middle" dominant-baseline="central">LTE carrier</text><text class="ts" x="140" y="165" text-anchor="middle" dominant-baseline="central">9 MHz occupied</text></g>
+<g class="c-purple"><rect x="228.4" y="120" width="43.2" height="70" stroke-width="0.5"/></g>
+<rect x="211.6" y="80" width="76.8" height="110" style="fill:none;stroke:#993C1D;stroke-width:1.5;stroke-dasharray:6 4"/>
+<rect x="312.4" y="80" width="76.8" height="110" style="fill:none;stroke:#993C1D;stroke-width:1.5;stroke-dasharray:6 4"/>
+<rect x="531.6" y="80" width="76.8" height="110" style="fill:none;stroke:#993C1D;stroke-width:1.5;stroke-dasharray:6 4"/>
+<text class="th" x="250" y="44" text-anchor="middle" dominant-baseline="central" style="fill:#712B13">Class C</text><text class="ts" x="250" y="62" text-anchor="middle" dominant-baseline="central" style="fill:#993C1D">centred</text>
+<text class="th" x="350.8" y="44" text-anchor="middle" dominant-baseline="central" style="fill:#712B13">Class C</text><text class="ts" x="350.8" y="62" text-anchor="middle" dominant-baseline="central" style="fill:#993C1D">offset</text>
+<text class="th" x="570" y="44" text-anchor="middle" dominant-baseline="central" style="fill:#712B13">Class B</text><text class="ts" x="570" y="62" text-anchor="middle" dominant-baseline="central" style="fill:#993C1D">no carrier</text>
+<text class="ts" x="570" y="155" text-anchor="middle" dominant-baseline="central">noise only</text>
+<line x1="20" y1="200" x2="660" y2="200" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="660" y="216" text-anchor="end" dominant-baseline="central">Frequency</text>
+<line x1="250" y1="194" x2="250" y2="206" stroke="#5F5E5A" stroke-width="1.5"/><text class="ts" x="250" y="216" text-anchor="middle" dominant-baseline="central">Carrier centre</text>
+<line x1="250" y1="232" x2="350.8" y2="232" stroke="#5F5E5A" stroke-width="1"/><line x1="250" y1="226" x2="250" y2="238" stroke="#5F5E5A" stroke-width="1"/><line x1="350.8" y1="226" x2="350.8" y2="238" stroke="#5F5E5A" stroke-width="1"/>
+<text class="ts" x="360" y="232" dominant-baseline="central">2.52 MHz offset</text>
+<line x1="471.6" y1="232" x2="511.6" y2="232" stroke="#5F5E5A" stroke-width="1"/><line x1="471.6" y1="226" x2="471.6" y2="238" stroke="#5F5E5A" stroke-width="1"/><line x1="511.6" y1="226" x2="511.6" y2="238" stroke="#5F5E5A" stroke-width="1"/>
+<text class="ts" x="491.6" y="246" text-anchor="middle" dominant-baseline="central">1 MHz</text>
+<text class="ts" x="250" y="102" text-anchor="middle" dominant-baseline="central">1.92 MHz</text>
+<g class="c-purple"><rect x="20" y="238" width="22" height="14" stroke-width="0.5"/></g><text class="ts" x="48" y="245" dominant-baseline="central">Central 6 resource blocks (PSS and SSS)</text>
+</svg>

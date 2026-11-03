@@ -1,0 +1,145 @@
+\chapter{Code Listings}
+\label{app:code}
+
+% Author's request, 2 November 2026: the code and what it does; trimmed on
+% 3 November 2026 to the modules that compute what the thesis reports (the rest
+% is on GitHub); evaluate.py dropped on the author's request the same day, as
+% Section 3.11 specifies the evaluation. The listings are read from the source files at compile time
+% (\lstinputlisting), so they always match the code. Keep Table B.1 in step
+% with code/occupancy/ and the test counts of Table B.2 with code/tests/.
+
+% Keep the table of contents short: chapter and sections only in this appendix.
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+
+The method of Chapter~3 is implemented in the Python package \texttt{occupancy}, in the folder \texttt{code/occupancy/} of the project, with its tests in \texttt{code/tests/} and the notebook and script for training on Google Colab in \texttt{code/colab/}. The complete code is available at \url{https://github.com/jimroxodezi/masters-thesis} (folder \texttt{code/}).% The author makes the repository public at submission (3 November 2026).
+
+
+This appendix lists only the modules that compute what the thesis reports: the frames and the session-level folds, the spectrograms, the controlled-SNR test set, the detectors and their scores, the thresholds and the timing. The evaluation (pooling over the folds, metrics, session bootstrap and the tests of H1 and H2) is specified in full in \cref{sec:m-eval}, and its code is on GitHub. The other modules handle the capture, the file formats and records, the training runs, the Colab workflow, the demonstration, the command line and testing; \cref{tab:app-modules} describes every module in one line, and those not listed here can be read on GitHub. The listings are read from the source files when the thesis is compiled, so they match the code that produced the results. The version of the code is identified by the Git commit and a checksum of the source files, both recorded in every result file (the checksum alone for the models trained on Colab, where Git is not available): \TBC{commit and checksum of the final run}. Lines too long for the page are wrapped and marked with~$\hookrightarrow$.
+
+The commands are run from the \texttt{code/} folder, for example \texttt{uv run python -m occupancy session} for a guided capture session (\texttt{--help} lists them all). The tests are run with \texttt{uv run python -m unittest discover -s tests}.
+
+\begin{table}[tbp]
+  \centering
+  \small
+  \caption[Modules of the code]{Modules of the code, by stage of the method. Only the modules with a section number are listed in this appendix; the others are on GitHub.}
+  \label{tab:app-modules}
+  \begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}p{3.3cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{1.9cm} @{}}
+    \toprule
+    Module & Purpose & Listing \\
+    \midrule
+    \texttt{config} & Every setting of the experiment & GitHub \\
+    \texttt{provenance} & Code version, library versions, host and power state of every result & GitHub \\
+    \texttt{iqio} & Raw capture files and their metadata records & GitHub \\
+    \texttt{capture} & One capture, enforcing the capture rules (\cref{sec:m-capture}) & GitHub \\
+    \texttt{session} & Guided capture session of eight captures (\cref{sec:m-sessions}) & GitHub \\
+    \texttt{survey} & Band survey with \texttt{rtl\_power} (\cref{sec:m-survey}) & GitHub \\
+    \texttt{quicklook} & Quick-look figures and the labelling check (\cref{sec:m-labels}) & GitHub \\
+    \midrule
+    \texttt{dataset} & Frames, DC removal and session-level folds (\cref{sec:m-splits}) & \Cref{app:code-data} \\
+    \texttt{preprocess} & Spectrograms and their standardization (\cref{sec:m-preproc}) & \Cref{app:code-data} \\
+    \texttt{injection} & Controlled-SNR test set (\cref{sec:m-injection}) & \Cref{app:code-data} \\
+    \midrule
+    \texttt{models} & The three networks, the PER score and the scoring copy (\cref{sec:m-detectors,sec:m-optim}) & \Cref{app:code-detectors} \\
+    \texttt{pss} & PSS correlator (\cref{sec:m-pss}) & \Cref{app:code-detectors} \\
+    \texttt{detectors} & Scores of every detector & \Cref{app:code-detectors} \\
+    \texttt{train} & Training of the networks and fitting of PCA, with checkpoints and resume (\cref{sec:m-training}) & GitHub \\
+    \midrule
+    \texttt{scoring} & Frames that each fold scores, and score files & GitHub \\
+    \texttt{calibrate} & Thresholds at fixed false-alarm rates (\cref{sec:m-thresholds}) & \Cref{app:code-eval} \\
+    \texttt{evaluate} & Metrics, session bootstrap and the tests of H1 and H2 (\cref{sec:m-eval}) & GitHub \\
+    \midrule
+    \texttt{latency} & Latency, throughput, real-time factor and the effect of the optimization (\cref{sec:m-compute}) & \Cref{app:code-cost} \\
+    \texttt{realtime} & Real-time demonstration (\cref{sec:m-demo}) & GitHub \\
+    \midrule
+    \texttt{device}, \texttt{pack}, \texttt{unpack}, \texttt{budget} & Training device, training pack for Colab, import of the trained models, compute budget & GitHub \\
+    \texttt{colab/} & Script and notebook for training on the Colab GPU & GitHub \\
+    \texttt{cli}, \texttt{\_\_main\_\_}, \texttt{\_\_init\_\_} & Command line and package entry point & GitHub \\
+    \texttt{synthetic} & Synthetic test data, never used for a result & GitHub \\
+    \texttt{tests/} & Tests of the code (\cref{tab:app-tests}) & GitHub \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\begin{singlespace}
+
+\section{Data Preparation}
+\label{app:code-data}
+
+\subsection*{\texttt{occupancy/dataset.py}}
+Builds the index of all captures from their metadata records, refusing synthetic captures unless they are explicitly allowed and never mixing them with real ones. It cuts each capture into non-overlapping frames of \num{16384} samples with the frame mean removed, and forms the session-level folds of \cref{sec:m-splits}.
+\lstinputlisting{code/occupancy/dataset.py}
+
+\subsection*{\texttt{occupancy/preprocess.py}}
+Computes the spectrogram of each frame (\cref{sec:m-preproc}) and the global standardization fitted on a fold's training frames only. The spectrograms are stored on disk as half-precision arrays, one file per capture.
+\lstinputlisting{code/occupancy/preprocess.py}
+
+\subsection*{\texttt{occupancy/injection.py}}
+Builds the controlled-SNR test set of \cref{sec:m-injection} for each test session, gain and source class: the power estimates, the scale factor $\alpha$, the effective SNR of each mixture and the admissibility rule for the active frames. The random choice of frames is seeded, so the set can be rebuilt exactly.
+\lstinputlisting{code/occupancy/injection.py}
+
+\section{Detectors}
+\label{app:code-detectors}
+
+\subsection*{\texttt{occupancy/models.py}}
+The three neural networks of \cref{sec:m-convae,sec:m-fcae,sec:m-vae}: the convolutional autoencoder, the fully connected autoencoder and the convolutional VAE, with the percentile score of \textcite{tian2022} and the list of models and ablations to train. It also prepares the copy of a trained network with which every score is computed (\cref{sec:m-optim}): each batch-normalization layer is folded into the convolution before it, and the convolutional networks use the channels-last memory order. The original percentile computation is kept as the reference that the tests and the timing compare with.
+\lstinputlisting{code/occupancy/models.py}
+
+\subsection*{\texttt{occupancy/pss.py}}
+The \syncsignal{} correlator (\cref{sec:m-pss}): the three PSS Zadoff--Chu sequences, their mapping to subcarriers, the 128-sample time-domain templates and the normalized correlation of \cref{eq:m-pss}, computed with FFTs over every lag at which the template lies inside the frame.
+\lstinputlisting{code/occupancy/pss.py}
+
+\subsection*{\texttt{occupancy/detectors.py}}
+Computes the score of every detector on the same DC-removed frames: the reconstruction errors of the networks and of PCA, the percentile score, the average power for the fixed energy detector, the running noise estimate of the adaptive energy detector, and the PSS correlation.
+\lstinputlisting{code/occupancy/detectors.py}
+
+\section{Calibration}
+\label{app:code-eval}
+
+\subsection*{\texttt{occupancy/calibrate.py}}
+Sets the thresholds of \cref{sec:m-thresholds} for every detector, fold and seed, as the empirical quantile of the idle validation scores, including the constant $\kappa$ of the adaptive energy detector and the theoretical chi-square threshold reported for comparison.
+\lstinputlisting{code/occupancy/calibrate.py}
+
+\section{Computational Cost}
+\label{app:code-cost}
+
+\subsection*{\texttt{occupancy/latency.py}}
+Measures the computational cost on the laptop (\cref{sec:m-timing}). After a settling period of \qty{5}{\second} and a warm-up, it times each detector frame by frame, separately for preprocessing, for scoring and end to end, and measures the throughput with batches of 64 frames and the real-time factor. It also times each neural network as trained and in its scoring form, alternating frame by frame, to measure the effect of the optimization of \cref{sec:m-optim}. It refuses to time unless the laptop is on mains power with the Performance power profile.
+\lstinputlisting{code/occupancy/latency.py}
+
+\section{Tests}
+\label{app:code-tests}
+
+The tests check the parts of the method that can be checked without real data (\cref{tab:app-tests}). They run on the laptop in under a minute. The end-to-end test uses a tiny synthetic data set and checks only that the stages connect correctly; its numbers mean nothing.
+
+% Keep the counts in step with code/tests/ (grep -c "def test_" code/tests/test_*.py).
+\begin{table}[tbp]
+  \centering
+  \small
+  \caption[Tests of the code]{Tests of the code in \texttt{code/tests/}. All 94 tests pass.}
+  \label{tab:app-tests}
+  \begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}p{4.1cm} >{\raggedright\arraybackslash}X r @{}}
+    \toprule
+    File & What it checks & Tests \\
+    \midrule
+    \texttt{test\_capture\_io} & Frequency parsing; manual gain, gain steps and tuning range; the offset-window rule; the capture file format and metadata; stopping a capture safely & 11 \\
+    \texttt{test\_session} & Capture order; omission of C\textsubscript{offset} for narrow carriers; retakes; resuming an interrupted session & 4 \\
+    \texttt{test\_survey} & Reading \texttt{rtl\_power} output; the command used; suggested carriers and Class~B windows & 4 \\
+    \texttt{test\_split} & Folds for twelve and other numbers of sessions; session order & 4 \\
+    \texttt{test\_preprocess} & Spectrogram shape, bin spacing and orientation; the Hann window and decibel scale; DC removal; normalization from training data only & 5 \\
+    \texttt{test\_injection} & SNR grid; scale factor; effective SNR within \qty{0.5}{\decibel} of the target; admissibility; reproducible draws & 5 \\
+    \texttt{test\_pss} & PSS sequences and their subcarrier mapping; templates; detection of a PSS but not of noise & 7 \\
+    \texttt{test\_models} & Shapes of the three networks; the percentile score; one training epoch & 7 \\
+    \texttt{test\_ed\_adaptive} & The adaptive energy detector, including that occupied frames do not update the noise estimate and that $\kappa$ is calibrated on an idle stream & 5 \\
+    \texttt{test\_calibrate} & Thresholds give at most the requested false-alarm rate; decisions are strict; the chi-square threshold & 4 \\
+    \texttt{test\_bootstrap} & Session-bootstrap intervals are reproducible with a fixed seed & 3 \\
+    \texttt{test\_synthetic\_guard} & Synthetic data are marked, refused without the flag and never mixed with real data & 6 \\
+    \texttt{test\_pipeline} & End-to-end run on a tiny synthetic data set (plumbing only) & 6 \\
+    \texttt{test\_resume} & An interrupted and resumed training run ends in the same state as an uninterrupted one; a checkpoint written with other settings is not resumed; a finished run is retrained only on request; the fallback to the CPU; the record of the runtime environment & 5 \\
+    \texttt{test\_cost\_and\_demo} & The scoring copy of each network gives the same reconstructions; the percentile score equals the original computation; both forms of each network are timed; the power-condition check; the demonstration's queue, lost-sample estimate and live-view limits & 8 \\
+    \texttt{test\_colab} & The pack holds only Class~B spectrograms at $g_1$; corrupted packs and unsafe zip files are refused; training from the pack gives the same models as training from the local data; training through the Colab script without the receiver library; unpacking; the epoch-timing output; a valid notebook & 10 \\
+    \texttt{helpers} & Shared test helpers (tiny configurations and data sets) & --- \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\end{singlespace}

@@ -103,12 +103,14 @@ Rejecting H1 and/or H2 is a valid and publishable result.
 
 ## 8. Methodology
 
+> **Detailed design approved on 2 November 2026: `notes/method-design.md`.** Where the settings below differ, the design file supersedes them. Examples: 1.92 MS/s, 16,384-sample frames with a 128-point STFT, Class B training data, injection noise from Class B, and session-level 4-fold cross-validation.
+
 ### 8.1 Hardware and band selection
-- **Receiver:** RTL-SDR Blog **V4**. The unit has the Rafael Micro R828D tuner, the RTL2832U 8-bit ADC, a 1 PPM TCXO, a software-switchable bias tee and a built-in HF upconverter. Published V4 specifications (RTL-SDR Blog, 2024): 500 kHz–1.766 GHz, about 2.56 MHz stable bandwidth (up to 3.2 MHz with dropped samples), 50 Ω input. Sample rate 2.4 MS/s.
+- **Receiver:** RTL-SDR Blog **V4**. The unit has the Rafael Micro R828D tuner, the RTL2832U 8-bit ADC, a 1 PPM TCXO, a software-switchable bias tee and a built-in HF upconverter. Published V4 specifications (RTL-SDR Blog, 2024): 500 kHz–1.766 GHz, about 2.56 MHz stable bandwidth (up to 3.2 MHz with dropped samples), 50 Ω input. Sample rate 1.92 MS/s (30.72 MHz/16; approved 2 November 2026).
   - The HF upconverter only affects reception below about 28.8 MHz and plays no part in this study.
   - The bias tee supplies DC to the antenna port. Its state (on/off) is logged for every capture. It must be off when the 50 Ω terminator is fitted (Class A) and when a passive antenna is used.
   - A later model, the RTL-SDR Blog V4L, uses a different tuner (R828S) and front end. If any further dongle is bought, it must be a V4 (R828D), or the model must be recorded per capture and treated as a separate receiver.
-- **Host computer:** Dell Latitude 5490 laptop with an Intel Core i5-8250U (8th generation, 4 cores/8 threads), 16 GB RAM and integrated Intel UHD Graphics 620 (no CUDA GPU, so PyTorch runs on the CPU), running Ubuntu 26.04 LTS. The dongle connects to it over USB. It runs capture, training, evaluation, latency measurement and the real-time demonstration; no embedded board is used.
+- **Host computer:** Dell Latitude 5490 laptop with an Intel Core i5-8250U (8th generation, 4 cores/8 threads), 16 GB RAM and integrated Intel UHD Graphics 620 (no CUDA GPU, so PyTorch runs on the CPU), running Ubuntu 26.04 LTS. The dongle connects to it over USB. It runs capture, preprocessing, evaluation, latency measurement and the real-time demonstration; no embedded board is used. The neural networks are trained on a Google Colab GPU (decided 2 November 2026), using only preprocessed idle spectrograms uploaded from the laptop.
 - **Band choice (not yet decided):** candidates within range, in the order to survey them in Benin City (band edges `[CITE: 3GPP TS 36.101]`):
   1. **800 MHz band** (Band 20, downlink 791–821 MHz, or another 800/850 MHz plan). News reports confirm that the Nigerian Communications Commission (NCC) approved MTN Nigeria's use of 2 × 10 MHz in the 800 MHz band for LTE, but do not state the band plan. Secondary sources list MTN LTE in Band 20 at 791–811 MHz; an 850 MHz plan (e.g. Band 5, downlink 869–894 MHz) cannot be ruled out, so the survey covers 790–894 MHz.
   2. **Band 28**, downlink 758–803 MHz. Secondary sources list Glo LTE on 700 MHz, with an MTN layer also reported at 768–778 MHz.

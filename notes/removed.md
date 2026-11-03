@@ -150,3 +150,111 @@ At the author's request, statements that no longer matched the project's state w
 % Use biblatex + biber (style=apa).
 ```
 - CLAUDE.md, "Core idea": "Benchmark against strong classical baselines (adaptive energy detector, CFAR-style, PCA reconstruction) across SNR and across capture sessions." The CFAR-style detector was dropped from the scope; the baseline list now matches the confirmed scope.
+
+## Method design approved (2 November 2026)
+
+The author approved the Chapter 3 outline with recommendations D1–D5; the detailed design is in `notes/method-design.md`. Text replaced in `notes/proposal.md`, Section 8.1:
+
+- "50 Ω input. Sample rate 2.4 MS/s."
+
+## Capture order aligned with the code (2 November 2026)
+
+The guided session in `code/occupancy/session.py` captures each class at g1 and then g2 before moving on, so the 50 Ω terminator is fitted and removed only once. Chapter 3 and the design file were aligned with it. Text replaced in `chapters/chapter3.tex`, Section 3.4.2:
+
+- "A session is one visit to one position, during which all classes are captured at both gain settings in a fixed order: A, B, C\textsubscript{centre}, C\textsubscript{offset}, first at $g_1$ and then at $g_2$."
+- Table 3.4, order column: "1, 5 / 2, 6 / 3, 7 / 4, 8".
+
+## Chapter 3 aligned with the implemented code (2 November 2026)
+
+After the rewritten `code/` was verified (71 tests passing), Chapter 3 was made exact where the draft was less specific. Replaced phrases in `chapters/chapter3.tex`:
+
+- "and the frequency axis is ordered from the lowest to the highest frequency of the window." (orientation now stated as in the code)
+- "The decoder mirrors the encoder with $2 \times$ upsampling and $3 \times 3$ convolutions, and its output layer is linear."
+- "Results are reported separately for C\textsubscript{centre} and C\textsubscript{offset} mixtures." (the code's primary H1 test pools both sources)
+
+The other changes only added sentences: the 68 ms discard, the parameter counts, the per-target adaptive runs, the PSS lag range, the quantile rule, the pooled-ROC scaling and the seed-averaged bootstrap.
+
+## Training moved to Google Colab (2 November 2026)
+
+The author decided that the neural networks are trained on a Google Colab GPU, and that everything else stays on the laptop. Replaced text:
+
+- `CLAUDE.md`: "Capture, training, evaluation, latency measurement and the real-time demo all run on it."
+- `chapters/chapter1.tex`: "All processing, including capture, training, evaluation, latency measurement and the real-time demonstration, runs on the CPU of a Dell Latitude 5490 laptop (Intel Core i5-8250U processor, \qty{16}{\giga\byte} of memory)."
+- `chapters/chapter3.tex`: "All processing, from capture to evaluation, runs on the laptop's CPU."
+- `notes/proposal.md`: "It runs capture, training, evaluation, latency measurement and the real-time demonstration; no embedded board is used."
+- `chapters/chapter3.tex`, Table 3.7 row: "CPU threads & 4".
+
+## Appendix B: tests described, not listed (3 November 2026)
+
+At the author's request, the full listings of the 14 test files were removed from Appendix B and replaced by Table B.2, which describes each file and counts its tests. The bullet list of test descriptions became that table. The test code remains in `code/tests/`.
+
+## Chapter 3: Colab training and reproducibility aligned with the implemented code (3 November 2026)
+
+Replaced after the Colab workflow was implemented in `code/` (pack, unpack, device, budget modules). Each sentence was replaced by a more precise one; the old text was:
+
+- because training every model, fold and seed on the laptop's CPU would take weeks.
+- Raw captures, active captures and test data stay on the laptop.
+- The trained models are returned to the laptop, where they are checked for completeness and then calibrated, evaluated and timed.
+- Every result file records the configuration, the seeds, the Git commit of the code and the library versions, and every trained model also records the device it was trained on.
+
+Appendix B intro, old sentence: The version of the code is identified by the Git commit recorded in every result file (\TBC{commit of the final run}).
+
+## Chapter 3: power condition, scoring copy and demo behaviour (3 November 2026)
+
+The author fixed the timing condition (mains power, Performance profile; no battery condition) and approved the demo fixes. Two sentences were extended; the old versions were:
+
+- Section 3.12 (sec:m-compute): "The CPU model, the thread count and the library versions are recorded with each measurement."
+- Section 3.13 (sec:m-demo): "The time, centre frequency, gain, score, decision and processing time of every frame are logged, and an optional live view shows the rolling spectrogram and the occupancy decisions."
+
+## Chapter 3, Section 3.12 (Computational Cost) restructured (3 November 2026)
+
+At the author's request, the code optimizations were written up in their own subsection (3.12.1 Optimization of Scoring, sec:m-optim), and the timing protocol became 3.12.2 (Timing, sec:m-timing), with the settling period added. The previous single paragraph was:
+
+> Latency and throughput are measured on the host laptop with the library versions of \cref{tab:m-hw-sw} and PyTorch limited to four threads. After \num{50} warm-up frames, each detector scores \num{1000} frames one at a time, and the time per frame is measured with Python's high-resolution performance counter. The median and the 95th percentile are reported separately for preprocessing (DC removal, spectrogram and standardization), for scoring, and end to end. Throughput is measured in frames per second with batches of 64 frames. The real-time factor is the processing time per frame divided by the frame duration, \qty{8.533}{\milli\second}; a value below one means the detector keeps up with the receiver. All timings are taken with the laptop on mains power and set to its Performance power profile, so that the processor runs at full speed and the timings are comparable; the timing program refuses any other known power state. The CPU model, the thread count, the library versions and the power state are recorded with each measurement. The detectors are timed exactly as they are evaluated: for scoring, every batch-normalization layer of the convolutional networks is folded into the convolution before it and the data are stored in the channels-last memory layout, which the processor handles faster. This changes the reconstructions only by floating-point rounding, and the same scoring code is used in the evaluation, in the timing and in the demonstration.
+
+## Appendix B trimmed to the relevant listings (3 November 2026)
+
+At the author's request, Appendix B now lists only the modules that compute what the thesis reports (dataset, preprocess, injection, models, pss, detectors, calibrate, evaluate, latency); the rest of the code is on GitHub. Table B.1 now gives a one-line purpose for every module. The descriptions of the modules no longer listed were:
+
+- **occupancy/init.py and occupancy/main.py**: The package marker, with a summary of what the package contains, and the entry point that makes \texttt{python -m occupancy} run the command line of \texttt{cli.py}.
+- **occupancy/config.py**: Every setting of the experiment, and no setting anywhere else. Each value carries the label it has in the design (fixed, default, field or implementation detail), and a run can override values with a JSON file whose unknown keys are rejected, so a typing error cannot silently fall back to a default. It also holds the training-device setting: by default a GPU when one is available, as on Colab, and otherwise the CPU. Derived quantities, such as the frame duration, are computed here from the basic settings.
+- **occupancy/provenance.py**: Records what produced a file: the version of the code, the library versions, the host computer and its power mode. Because Git is not available on Colab, the code version is a checksum of the package's source files, recorded together with the Git state where Git is available. Every capture record and every result file embeds this record, which is what makes each number in Chapter~4 traceable to the code and settings that produced it.
+- **occupancy/iqio.py**: Reads and writes the raw capture files: interleaved unsigned 8-bit in-phase and quadrature samples, exactly as the receiver delivers them, and the JSON metadata record written last. A capture without a valid record is never used. The file also defines the conversion of the 8-bit values to complex samples.
+- **occupancy/capture.py**: Records one capture from the RTL-SDR Blog V4 together with its metadata (\cref{sec:m-capture}). It enforces the capture rules: manual gain only, a gain that is one of the tuner's steps, the bias tee off, \qty{1.92}{MS/s}, a frequency inside the tuning range, and a receiver that identifies itself as a V4. Samples are streamed in blocks, the first \num{131072} samples are discarded, and the clipping fraction and mean power are measured. The file also contains the rule that places the C\textsubscript{offset} window.
+- **occupancy/session.py**: The guided capture session (\cref{sec:m-sessions}). It asks for the session details and frequencies, plans the C\textsubscript{offset} window and checks the Class~B window against the carrier. It then walks the operator through the eight captures in order, telling them when to fit and remove the terminator, and reports each capture's clipping and power. A capture can be retaken, and a session manifest is rewritten after every step so that an interrupted session leaves a consistent record.
+- **occupancy/survey.py**: The band survey (\cref{sec:m-survey}). It runs \texttt{rtl\_power} at a fixed gain, reads its CSV output, plots mean power against frequency and a waterfall, and lists the plateaus that may be LTE carriers and the idle stretches at least \qty{1.92}{\mega\hertz} wide that could serve as Class~B windows. These lists are aids for the operator; carriers are confirmed with a cell scanner.
+- **occupancy/quicklook.py**: The quick-look figure of each capture (its mean spectrum and a sample spectrogram), shown right after recording, and the labelling check of \cref{sec:m-labels}: a template for the second labelling pass and the computation of the agreement between the two passes.
+- **occupancy/train.py**: Trains the neural networks and fits the PCA detector for every fold (\cref{sec:m-training}). The normalization is fitted on the fold's training frames and shared by every model of that fold. The weights with the lowest validation loss are kept. Training reads either the local data or a training pack (used on Colab), runs on the CPU or a GPU, saves a checkpoint after every epoch, and resumes an interrupted run from its last checkpoint. A finished run is marked complete and is skipped when training is started again.
+- **occupancy/scoring.py**: Decides which frames each fold scores: the idle validation frames used for calibration, and every capture of the test sessions with their controlled-SNR mixtures. It also defines how score files are stored.
+- **occupancy/realtime.py**: The real-time demonstration (\cref{sec:m-demo}). It reads the receiver one frame at a time, scores each frame with the chosen detector and its calibrated threshold, and logs every decision. A short queue separates reading from processing. If processing falls behind, the oldest blocks are dropped and counted, so that the decisions stay current, and samples lost on the USB link are estimated from the arrival times of the blocks. An optional live view, redrawn at most four times per second, can be enabled.
+- **occupancy/cli.py**: The command line, \texttt{python -m occupancy} followed by a subcommand: \begin{itemize} \item field work: \texttt{survey}, \texttt{capture}, \texttt{session} and \texttt{inspect}; \item the experiment: \texttt{preprocess}, \texttt{train}, \texttt{calibrate} and \texttt{evaluate}; \item training on Colab: \texttt{pack} and \texttt{unpack} on the laptop, and \texttt{train} with the option \texttt{--pack} on Colab (with \texttt{--time-epoch}, it estimates the compute budget); \item cost and demonstration: \texttt{latency} and \texttt{demo}; \item testing only: \texttt{synthetic}. \end{itemize} The commands that read captures refuse synthetic ones unless explicitly allowed, and then read from and write to separate folders.
+- **occupancy/device.py**: Chooses where training runs (a GPU when one is available, otherwise the CPU) and switches on the deterministic options of the GPU libraries. It also writes a record of the runtime environment into every training output: the device and GPU, the library and driver versions, the determinism settings, the thread count and the code version. The backward pass of the bilinear upsampling in the convolutional decoders has no deterministic GPU implementation, so training on a GPU is not guaranteed to give bit-identical weights when a run is repeated; the seed still fixes the initial weights and the order of the training frames.
+- **occupancy/pack.py**: Builds the training pack on the laptop: the spectrograms of every session's idle captures at $g_1$, stored once per session, together with the folds, each fold's normalization statistics, the frozen configuration, the code version and a manifest of SHA-256 checksums. It also writes a zip file of the pack and of the code for uploading. Raw captures, active captures, captures at $g_2$, the controlled-SNR sets and all scores stay on the laptop.
+- **occupancy/unpack.py**: Imports the models trained on Colab into the laptop's working folder. Before copying anything, it checks that the models were trained on a pack made from this working folder, with the same folds, training settings, code and normalization statistics, and that every expected run is complete and matches its checksums. Every check and its result is recorded.
+- **occupancy/budget.py**: Estimates the compute needed for training. It times one training epoch of each of the three main networks on one fold, and the writing of one checkpoint, on the chosen device. From these it estimates the time of every run in the design at 30, 60 and 100 epochs per run (early stopping ends most runs before 100), the Colab compute units at the hourly rate Colab shows, and the volume of checkpoints written to Google Drive.
+- **colab/colabtrain.py**: The logic behind the Colab notebook. It checks the environment and the GPU, copies the training pack from Google Drive to the runtime and verifies its checksums, times an epoch, runs (and after a disconnect resumes) the training of every model, fold and seed, retries an attempt that fails (for example on a Google Drive input/output error), reports progress, and zips the trained models, without checkpoints, for download. It never needs the receiver.
+- **colab/trainoncolab.ipynb**: The notebook that runs the training on Colab. Its explanatory text cells guide the author through ten steps: settings, mounting Google Drive, checking the GPU, copying the code and the pack, installing missing packages, timing one epoch, training (re-run after a disconnect), checking progress, zipping the outputs, and the steps that follow on the laptop. Its code cells, most of which call \texttt{colab\_train.py}, are listed below in order. % Generated from the notebook (appendices/generated/train_on_colab_cells.py); % regenerate whenever the notebook changes.
+- **occupancy/synthetic.py**: Generates simple LTE-like signals and noise for testing the code without a receiver. Nothing generated here is used for any result in this thesis. Every synthetic capture is marked as synthetic in its metadata and written to a separate folder, and the rest of the package refuses it unless explicitly allowed.
+
+Also removed: the section introductions "Training on Google Colab" ("The neural networks are trained on a Colab GPU (\cref{sec:m-training}). The following modules move the training data to Colab and the trained models back, and estimate the compute needed.") and the generated listing of the notebook's code cells (appendices/generated/train_on_colab_cells.py, deleted; it can be regenerated from code/colab/train_on_colab.ipynb). The previous Table B.1 grouped the modules by stage with columns Stage, Modules and Method.
+
+
+## Chapter 3, Reproducibility (3 November 2026)
+
+Old sentence, replaced when the code listings were trimmed and the GitHub address added: "The code is released, and the captures and labels are released if the supervisor approves."
+
+## Chapter 3, evaluation made self-contained (3 November 2026)
+
+The listing of evaluate.py was removed from Appendix B at the author's request ("rely on chapter 3's description of the evaluation"), so three details that were only in the code were added to Sections 3.11.3 and 3.11.5. The old sentences were:
+
+- "\emph{H1.} On the controlled-SNR set at $\gamma \le \qty{-4}{\decibel}$, the difference"
+- "The first is the absolute difference between the realized and the target $\Pfa$. The second is the absolute difference between $\Pd$ at $g_2$ and at $g_1$, compared on the same controlled-SNR levels. H2 is supported if both departures of the convolutional autoencoder are smaller than those of the fixed-threshold energy detector, with \pct{95} bootstrap intervals of the paired differences entirely on that side."
+- "Variability due to training is the mean and standard deviation of each metric over the five seeds."
+
+## Appendix B: evaluate.py listing removed (3 November 2026)
+
+At the author's request ("rely on chapter 3's description of the evaluation"). Its description was: "The evaluation protocol of \cref{sec:m-eval}. It pools the test predictions of the four folds, computes the metrics of \cref{tab:m-metrics}, overall and by SNR level, and gives the mean and standard deviation over seeds and the session-bootstrap intervals. It also performs the H1 and H2 tests exactly as defined in \cref{sec:m-hypotheses}, and writes every result with its provenance." Section B.3 was renamed from "Calibration and Evaluation" to "Calibration".
+
+## code/chapter4_implementation_report.docx deleted (3 November 2026)
+
+Deleted at the author's request as no longer relevant: a 12,400-word Word report, "Chapter 4: System Implementation", describing the earlier pipeline (an autoencoder trained on normal LTE signal, framed as anomaly detection), which the current design replaced. It was not referenced anywhere. It is kept in git: `git show 1c4d7f6:code/chapter4_implementation_report.docx > chapter4_implementation_report.docx`.

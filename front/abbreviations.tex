@@ -1,7 +1,7 @@
 % front/abbreviations.tex: list of abbreviations and symbols.
 % Maintained by hand: add an entry whenever a chapter defines a new acronym or
 % symbol, and keep the symbols in step with the notation macros in preamble.tex.
-% Current contents: everything defined in Chapters 1 and 2.
+% Current contents: everything defined in Chapters 1 to 3.
 \chapter*{List of Abbreviations and Symbols}
 \addcontentsline{toc}{chapter}{List of Abbreviations and Symbols}
 
@@ -55,6 +55,7 @@
   \item[STFT]         Short-time Fourier transform
   \item[TCXO]         Temperature-compensated crystal oscillator
   \item[USB]          Universal serial bus
+  \item[UTC]          Coordinated Universal Time
   \item[USRP]         Universal Software Radio Peripheral
   \item[VAE]          Variational autoencoder
   \item[VHF]          Very high frequency
@@ -84,4 +85,13 @@
   \item[$D$, $d$]   Number of input elements and code dimension
   \item[$e(\mathbf{x})$] Reconstruction-error score of input $\mathbf{x}$
   \item[$\mathbf{W}$] PCA projection matrix (rows: leading eigenvectors)
+  \item[$g_1$, $g_2$] Primary and secondary fixed receiver gain settings
+  \item[$f_\mathrm{off}$, $W_\mathrm{occ}$] Offset of the C\textsubscript{offset} window from the carrier centre; occupied width of the carrier
+  \item[$P_s$, $P_n$, $\hat{P}_{n,C}$] Signal power, noise power, and the session's median idle noise power at the same gain
+  \item[$\alpha$]   Scale factor applied to an active frame in the controlled-SNR set
+  \item[$\gamma_\mathrm{eff}$] Effective SNR of a controlled-SNR mixture
+  \item[$\hat{\sigma}^2$, $M$, $\kappa$] Running noise estimate, its window (frames) and the threshold of the adaptive energy detector
+  \item[$d_u(n)$, $p_u(m)$] PSS Zadoff--Chu sequence with root $u$, and its 128-sample time-domain template
+  \item[$\Lambda_\mathrm{PSS}$] Score of the \syncsignal{} correlator
+  \item[$\Delta\Pd$] Difference in detection probability between two detectors
 \end{description}
