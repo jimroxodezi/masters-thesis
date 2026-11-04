@@ -28,7 +28,7 @@ import numpy as np
 from . import provenance
 from .capture import c_offset_plan, check_centre_freq, parse_freq, record_capture, validate_gain
 from .config import Config
-from .dataset import natural_key
+from .dataset import natural_key, time_of_day
 from .quicklook import capture_quicklook
 
 
@@ -210,13 +210,19 @@ def run_session(cfg: Config, data_dir: Path, *, synthetic: bool = False, input_f
     log(f"Disk: {need / 1e6:.0f} MB needed, {free / 1e9:.1f} GB free")
     if free < need * cfg.capture.min_free_disk_factor:
         raise SessionAbort("not enough free disk space")
+    tod = time_of_day(provenance.utc_now(), cfg)
+    if tod == "off-schedule":
+        log(f"WARNING: sessions start at {cfg.capture.day_start_local} (day) or "
+            f"{cfg.capture.night_start_local} (night) local time; this one will be labelled off-schedule")
+    else:
+        log(f"Time of day: {tod}")
     if not _yes(input_fn, "Start?", True):
         raise SessionAbort("cancelled before the first capture")
 
     manifest_path = out_dir / "session.json"
     manifest = provenance.read_json(manifest_path) if manifest_path.exists() else {
         "kind": "session", "session_id": info["session_id"], "captures": [], "started_utc": provenance.utc_iso()}
-    manifest.update({"synthetic": synthetic, "position_id": info["position_id"],
+    manifest.update({"synthetic": synthetic, "position_id": info["position_id"], "time_of_day": tod,
                      "g1_db": info["g1_db"], "g2_db": info["g2_db"], "ppm": info["ppm"],
                      "antenna": info["antenna"], "temperature_c": info["temperature_c"], "notes": info["notes"],
                      "frequencies_hz": {"A": info["f_a_hz"], "B": info["f_b_hz"], "C_centre": info["f_c_hz"],

@@ -33,6 +33,24 @@ from .iqio import META_SUFFIX, open_raw, u8_to_complex
 LABEL = {"A": 0, "B": 0, "C_centre": 1, "C_offset": 1}
 
 
+def time_of_day(t_utc: _dt.datetime, cfg: Config) -> str:
+    """Label of a session or survey that starts at t_utc (design section 3).
+
+    Day sessions start at 07:00 and night sessions at 22:00 local time (West
+    Africa Time, UTC+1). A start within cfg.capture.schedule_tolerance_h of
+    one of these times gets its label; any other start is 'off-schedule'.
+    """
+    c = cfg.capture
+    local = t_utc + _dt.timedelta(hours=c.utc_offset_h)
+    h = local.hour + local.minute / 60 + local.second / 3600
+    for label, start in (("day", c.day_start_local), ("night", c.night_start_local)):
+        hh, mm = (int(x) for x in start.split(":"))
+        d = abs(h - (hh + mm / 60)) % 24
+        if min(d, 24 - d) <= c.schedule_tolerance_h:
+            return label
+    return "off-schedule"
+
+
 class SyntheticDataError(RuntimeError):
     """Synthetic captures reached code that produces results without permission."""
 
@@ -94,6 +112,11 @@ class CaptureIndex:
 
     def session_records(self, session_id: str) -> list[CaptureRecord]:
         return [r for r in self.records if r.session_id == session_id]
+
+    def time_of_day_of(self, session_id: str, cfg: Config) -> str:
+        """'day', 'night' or 'off-schedule', from the session's first capture (design section 3)."""
+        starts = [provenance.parse_utc(r.utc_start) for r in self.session_records(session_id)]
+        return time_of_day(min(starts), cfg) if starts else "off-schedule"
 
     def position_of(self, session_id: str) -> str:
         pos = {r.position_id for r in self.session_records(session_id)}

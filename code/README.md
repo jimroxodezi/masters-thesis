@@ -61,17 +61,14 @@ legacy/               the earlier pipeline, unchanged
 1. Python environment (already locked): `uv sync` in `code/`. The project uses
    only the locked dependencies: numpy, scipy, scikit-learn, torch (CPU build),
    matplotlib and pyrtlsdr.
-2. The V4 needs the **RTL-SDR Blog build of librtlsdr** (the `rtl-sdr-blog`
-   driver fork); older distribution packages do not support the V4 properly.
-   Follow the RTL-SDR Blog V4 quick-start guide: remove the distribution
-   librtlsdr packages, build and install the fork with its udev rules, and
-   blacklist the `dvb_usb_rtl28xxu` kernel module. The same build provides
+2. The V4 needs a librtlsdr with V4 (R828D) support. This laptop uses the
+   RTL-SDR Blog fork (https://github.com/rtlsdrblog/rtl-sdr-blog, commit
+   aed0ea1, source in `~/projects/rtl-sdr-blog`), built from source with its
+   udev rules as in the fork's README (steps in thesis Appendix C), with the
+   `dvb_usb_rtl28xxu`, `rtl2832` and `rtl2830` kernel modules blacklisted. The same build provides
    `rtl_power`, which the survey uses, and `rtl_eeprom`.
-   On this laptop the Blog build is in `/usr/local/lib` and the distribution
-   library is still in `/usr/lib/x86_64-linux-gnu`. The dynamic linker
-   currently picks `/usr/local/lib` first. Each capture sidecar records which
-   librtlsdr file was loaded and whether it is the Blog build
-   (`radio.librtlsdr`).
+   Each capture sidecar records which librtlsdr file was loaded and whether
+   it is the Blog build (`radio.librtlsdr`).
 3. Check the receiver (this opens the dongle but does not stream):
 
    ```bash
@@ -114,11 +111,11 @@ All commands below are run from `code/` as `uv run python -m occupancy ...`.
 
 ### Before the first session (band survey)
 
-1. Survey the candidate downlink ranges at the capture site, by day and at
-   night, with a fixed gain:
+1. Survey the candidate downlink ranges at the capture site, starting at
+   07:00 (`--label day`) and at 22:00 (`--label night`) WAT, with a fixed gain:
 
    ```bash
-   uv run python -m occupancy survey --range 758M:803M --gain 28 --label day --position P1 --duration 10m
+   uv run python -m occupancy survey --range 758M:803M --gain 40.2 --label day --position P1 --duration 10m
    ```
 
    It first opens the dongle to switch the bias tee off, then runs
@@ -127,19 +124,32 @@ All commands below are run from `code/` as `uv run python -m occupancy ...`.
    Ctrl-C stops the sweep early, and the sweeps already written are kept and
    analysed. It also
    prints plateaus (LTE carriers appear as flat plateaus 5-20 MHz wide) and
-   idle stretches that can hold a 1.92 MHz window. An existing CSV can be
+   quiet stretches that can hold a 1.92 MHz window: every bin within 3 dB of
+   the floor in the mean and 6 dB in the max hold, so narrow (e.g. GSM) and
+   intermittent signals are avoided; the dongle's own spike at each rtl_power
+   hop centre is ignored. An existing CSV can be
    re-analysed with `--parse FILE --carrier 796M`, which ranks candidate Class B
    windows by distance from the carrier. These lists are visual aids only.
-2. Confirm the carrier with an LTE cell-search tool (LTE-Cell-Scanner is the
-   candidate; it is not part of this package). Note the carrier centre, the
-   PCI and the bandwidth.
+2. Confirm the carrier with `CellSearch` from LTE-Cell-Scanner (Jiao's fork,
+   commit e7f71cb, built in `~/tools/LTE-Cell-Scanner`; not part of this
+   package; installation in thesis Appendix C). Search 0.5 MHz either side of
+   each plateau at a fixed gain step:
+
+   ```bash
+   ~/tools/LTE-Cell-Scanner/build/src/CellSearch -s 795.5e6 -e 796.5e6 -g 40.2 -n 2
+   ```
+
+   Note CID (the PCI), fc (carrier centre) and nRB (6/15/25/50/75/100 =
+   1.4/3/5/10/15/20 MHz). Use only `CellSearch`, never `LTE-Tracker`.
 3. Choose **g1** (primary) and **g2** (gain-change test): two of the tuner's
    gain steps that do not clip on the strongest Class C capture. Short test
    captures (`capture --duration 2 ...`) report the clipping fraction; above
    0.1 % the capture is flagged.
 4. Choose the **Class B** frequency: a stretch of the surveyed range at least
    1.92 MHz wide with no carrier (survey plus cell search), as close as
-   possible to the carrier.
+   possible to the carrier. CellSearch finds a carrier only at its centre, so
+   check that the window lies outside every nearby carrier (centre +- half
+   its bandwidth) rather than searching the window itself.
 5. **C_offset** is placed at f_off = (0.54 MHz + W_occ/2)/2 from the carrier
    centre, with W_occ = N_RB x 0.18 MHz. This is feasible only for a channel
    bandwidth of 10 MHz or more (a 10 MHz carrier gives f_off = 2.52 MHz, window
@@ -148,11 +158,15 @@ All commands below are run from `code/` as `uv run python -m occupancy ...`.
 
 ### One session (8 captures, about 1 GB)
 
-At least 12 sessions over at least 4 days, by day and at night, from at least
-2 positions. For each session:
+At least 12 sessions over at least 4 days, from at least 2 positions. Day
+sessions start at 07:00 and night sessions at 22:00 WAT; `session` prints the
+label and warns if the start is more than 2 h from both times (such a session
+is labelled `off-schedule`). For each session:
 
-1. Re-run cell search: the carrier must be on air, and the Class B window must
-   show no cell.
+1. Re-run cell search at the chosen carrier and keep the samples
+   (`CellSearch -s <fc> -g <gain> -n 2 --recbin <session>_cellsearch.bin`):
+   the carrier must be on air with the same CID. Run it before `session`;
+   both need the dongle.
 2. Start the guided session:
 
    ```bash

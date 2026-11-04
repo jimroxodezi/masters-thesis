@@ -131,6 +131,7 @@ class Pooled:
     positions: list                     # position of each session
     units: list                         # unit info dicts
     grid: np.ndarray                    # SNR grid (dB)
+    times_of_day: list = None           # day / night / off-schedule of each session
     fold: np.ndarray = None
     sess: np.ndarray = None
     unit: np.ndarray = None
@@ -173,7 +174,7 @@ def build_pooled(index: CaptureIndex, folds: list[Fold], cfg: Config, work_dir: 
     sessions = index.sessions()
     s_idx = {s: i for i, s in enumerate(sessions)}
     P = Pooled(sessions=sessions, positions=[index.position_of(s) for s in sessions], units=[],
-               grid=grid, n_folds=len(folds))
+               grid=grid, times_of_day=[index.time_of_day_of(s, cfg) for s in sessions], n_folds=len(folds))
     cols = {k: [] for k in ("fold", "sess", "unit", "frame", "cls", "gain", "label", "stratum", "snr_eff")}
     fold_units = []
     for fold in folds:
@@ -635,6 +636,7 @@ def _evaluate(index, folds, cfg, work_dir, out_dir, models, ablation, seeds, fai
     # ── curves, positions, ED theory, failure samples
     curves_roc, curves_pr = roc_pr_curves(P, cfg)
     positions = position_table(P, counts, groups, pfas)
+    times = time_of_day_table(P, counts, groups, pfas)
     theory = ed_theory_table(P, folds, cfg, work_dir)
     failures = failure_samples(P, cfg, work_dir, index, out_dir if failure_figures else None)
 
@@ -652,6 +654,7 @@ def _evaluate(index, folds, cfg, work_dir, out_dir, models, ablation, seeds, fai
     write_csv(out_dir / "roc_curves.csv", curves_roc)
     write_csv(out_dir / "pr_curves.csv", curves_pr)
     write_csv(out_dir / "positions.csv", positions)
+    write_csv(out_dir / "time_of_day.csv", times)
     write_csv(out_dir / "ed_theoretical_threshold.csv", theory)
     write_csv(out_dir / "failure_samples.csv", failures)
     write_csv(out_dir / "noise_floor.csv", h2["noise_floor"])
@@ -840,7 +843,17 @@ def _curve_rows(roc_rows, pr_rows, name, det, seed, g, sname, u, neg_m, pos_m, f
 
 
 def position_table(P: Pooled, counts, groups, pfas) -> list[dict]:
-    positions = sorted(set(P.positions))
+    return _breakdown_table(P, counts, groups, pfas, P.positions, "position_id")
+
+
+def time_of_day_table(P: Pooled, counts, groups, pfas) -> list[dict]:
+    """P_D and realized P_FA (natural captures, g1) for day and night sessions separately."""
+    return _breakdown_table(P, counts, groups, pfas, P.times_of_day or [], "time_of_day")
+
+
+def _breakdown_table(P: Pooled, counts, groups, pfas, values, column: str) -> list[dict]:
+    """Pooled P_D and P_FA per value of a session attribute (position, time of day)."""
+    positions = sorted(set(values))
     if len(positions) < 2:
         return []
     rows = []
@@ -850,7 +863,7 @@ def position_table(P: Pooled, counts, groups, pfas) -> list[dict]:
             if own_p is not None and own_p != p:
                 continue
             for pos in positions:
-                w = np.array([1.0 if q == pos else 0.0 for q in P.positions])
+                w = np.array([1.0 if q == pos else 0.0 for q in values])
                 vals = {"pd": [], "pfa": []}
                 for sd in groups[det]:
                     c = counts.get((det, sd, p), {}).get(("natural", 0))
@@ -858,7 +871,7 @@ def position_table(P: Pooled, counts, groups, pfas) -> list[dict]:
                         continue
                     vals["pd"].append(_ratio(w @ c["tp"], w @ (c["tp"] + c["fn"])))
                     vals["pfa"].append(_ratio(w @ c["fp"], w @ (c["fp"] + c["tn"])))
-                rows.append({"detector": name, "variant": det, "pfa_target": p, "position_id": pos,
+                rows.append({"detector": name, "variant": det, "pfa_target": p, column: pos,
                              "n_sessions": int(w.sum()), "gain": "g1", "eval_set": "natural",
                              "pd_mean": float(np.nanmean(vals["pd"])) if vals["pd"] else np.nan,
                              "pfa_mean": float(np.nanmean(vals["pfa"])) if vals["pfa"] else np.nan})

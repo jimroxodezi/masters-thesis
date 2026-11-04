@@ -76,6 +76,11 @@ class CaptureConfig:
     terminator_label: str = "50 ohm terminator"  # [fixed] Class A input
     session_order: tuple = CLASSES               # [fixed] A, B, C_centre, C_offset
     gain_order: tuple = GAIN_ROLES               # [impl] within a class: g1 then g2
+    # Session times (design section 3; author, 4 November 2026)
+    utc_offset_h: float = 1.0                    # [fixed] local time is West Africa Time, UTC+1 (no daylight saving)
+    day_start_local: str = "07:00"               # [fixed] day sessions and surveys start
+    night_start_local: str = "22:00"             # [fixed] night sessions and surveys start
+    schedule_tolerance_h: float = 2.0            # [impl] a start within this of a scheduled time gets its label
     # C_offset window placement (design section 3)
     rb_width_hz: float = 180_000.0               # [fixed] 12 subcarriers x 15 kHz
     central_rbs_half_width_hz: float = 540_000.0 # [fixed] central 6 RBs span +-0.54 MHz
@@ -97,7 +102,10 @@ class SurveyConfig:
     window: str = "hamming"                      # [impl] -w (rtl_power default is rectangle; "" keeps it)
     plateau_threshold_db: float = 6.0            # [impl] visual aid: level above the noise floor
     plateau_min_width_hz: float = 1_000_000.0    # [impl] visual aid: narrower bumps are ignored
-    b_window_margin_hz: float = 250_000.0        # [impl] keep a suggested B window this far from a plateau
+    b_window_margin_hz: float = 250_000.0        # [impl] keep a suggested B window this far from any signal
+    b_window_quiet_mean_db: float = 3.0          # [impl] a bin is quiet if its mean is at most this above the floor
+    b_window_quiet_max_db: float = 6.0           # [impl] ... and its maximum over the sweeps at most this
+    hop_spike_halfwidth_bins: int = 3            # [impl] the dongle's own spike at each hop centre: ignored
 
 
 # ── Section 4: frames and preprocessing ───────────────────────────────────────

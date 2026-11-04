@@ -96,5 +96,23 @@ class TestRetryAndResume(unittest.TestCase):
             self.assertEqual(len(index_captures(d, cfg, allow_synthetic=True, log=lambda *a: None)), 2)
 
 
+
+class TimeOfDayTest(unittest.TestCase):
+    def test_labels_from_the_start_time(self):
+        import datetime as dt
+        from occupancy.config import default_config
+        from occupancy.dataset import time_of_day
+        cfg = default_config()
+
+        def utc(h, m=0):
+            return dt.datetime(2026, 11, 5, h, m, tzinfo=dt.timezone.utc)
+        self.assertEqual(time_of_day(utc(6, 0), cfg), "day")              # 07:00 WAT
+        self.assertEqual(time_of_day(utc(7, 50), cfg), "day")             # 08:50 WAT
+        self.assertEqual(time_of_day(utc(21, 0), cfg), "night")           # 22:00 WAT
+        self.assertEqual(time_of_day(utc(22, 59), cfg), "night")          # 23:59 WAT
+        self.assertEqual(time_of_day(utc(23, 30), cfg), "off-schedule")   # 00:30 WAT, 2.5 h after 22:00
+        self.assertEqual(time_of_day(utc(12, 0), cfg), "off-schedule")    # 13:00 WAT
+
+
 if __name__ == "__main__":
     unittest.main()
