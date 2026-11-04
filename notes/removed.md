@@ -258,3 +258,147 @@ At the author's request ("rely on chapter 3's description of the evaluation"). I
 ## code/chapter4_implementation_report.docx deleted (3 November 2026)
 
 Deleted at the author's request as no longer relevant: a 12,400-word Word report, "Chapter 4: System Implementation", describing the earlier pipeline (an autoencoder trained on normal LTE signal, framed as anomaly detection), which the current design replaced. It was not referenced anywhere. It is kept in git: `git show 1c4d7f6:code/chapter4_implementation_report.docx > chapter4_implementation_report.docx`.
+
+## Chapter 3: session times and the cell-search tool (4 November 2026)
+
+The author fixed the session and survey times (day 07:00, night 22:00 WAT) and chose LTE-Cell-Scanner (`CellSearch`) as the cell-search tool. The sentences replaced were:
+
+- "The software is written in Python and uses PyTorch \parencite{paszke2019} for the neural networks and scikit-learn \parencite{pedregosa2011} for PCA. \Cref{tab:m-hw-sw} lists the hardware and software."
+- "    Survey tool & \texttt{rtl\_power} (from the RTL-SDR driver package) \\
+    Cell-search tool & \TBC{RTL-SDR-compatible LTE cell-search tool, to be chosen} \\"
+- "Each range is swept with \texttt{rtl\_power} at a fixed gain, by day and at night, and the mean power is plotted against frequency. An active LTE carrier appears as a flat plateau of raised power whose width matches one of the channel bandwidths of \cref{tab:lte-bandwidths}. A cell-search tool then confirms the carrier and records its physical-layer cell identity and centre frequency."
+- "At least twelve sessions are planned, spread over at least four days, by day and at night, and over at least two positions in Benin City."
+- "A Class~B capture is labelled idle in every frame if neither the survey nor the cell search finds a carrier in its window."
+- "they are also broken down by session, by time of day and, where more than one position exists, by position."
+- "The \syncsignal{} correlator tests only for the presence of known sequences; no system information, user data or other content is decoded or recorded."
+
+## Appendix C driver section corrected (4 November 2026)
+
+The first version quoted the RTL-SDR Blog V4 users guide, which now builds the Osmocom library; the laptop actually uses the RTL-SDR Blog fork (rtl-sdr-blog, commit aed0ea1). The old section and the bib entry it cited were:
+
+```
+\section{Receiver Driver}
+\label{app:install-driver}
+
+The RTL-SDR Blog V4 needs a version of the RTL-SDR library that supports its R828D tuner. The manufacturer's guide installs it from source \parencite{rtlsdrblognd}. It first removes any earlier copies of the library and its tools (\texttt{sudo apt purge \textasciicircum librtlsdr}, followed by the removal of leftover files from the system folders), then builds and installs the library, and finally stops the television driver of the Linux kernel from claiming the receiver:
+\begin{lstlisting}[language=bash]
+sudo apt-get install libusb-1.0-0-dev git cmake pkg-config build-essential
+git clone https://github.com/osmocom/rtl-sdr
+cd rtl-sdr
+mkdir build
+cd build
+cmake ../ -DINSTALL_UDEV_RULES=ON
+make
+sudo make install
+sudo cp ../rtl-sdr.rules /etc/udev/rules.d/
+sudo ldconfig
+echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
+\end{lstlisting}
+The laptop is then restarted. The same build installs \texttt{rtl\_test} and the survey tool \texttt{rtl\_power}. On the host laptop the library built from source is in \texttt{/usr/local/lib}, and \texttt{rtl\_test -t} identifies the receiver:
+\begin{lstlisting}[language=bash]
+Found 1 device(s):
+  0:  RTLSDRBlog, Blog V4, SN: 00000001
+Found Rafael Micro R828D tuner
+RTL-SDR Blog V4 Detected
+\end{lstlisting}
+It also lists the 29 gain steps of the tuner, from \qty{0.0}{\decibel} to \qty{49.6}{\decibel}; the gains $g_1$ and $g_2$ are chosen from these steps.
+```
+
+```
+@online{rtlsdrblognd,
+  author  = {{RTL-SDR Blog}},
+  title   = {{RTL-SDR Blog V4} users guide},
+  url     = {https://www.rtl-sdr.com/V4/},
+  urldate = {2026-11-04}
+}
+% Opened 2026-11-04; no date on the page. Linux driver steps: purge old
+% librtlsdr packages, build the Osmocom rtl-sdr library with
+% -DINSTALL_UDEV_RULES=ON, install the udev rules, ldconfig, blacklist
+% dvb_usb_rtl28xxu, reboot.
+```
+
+## Appendix C and README: Ubuntu's librtlsdr purged (4 November 2026)
+
+At the author's request Ubuntu's librtlsdr0, librtlsdr2, librtlsdr-dev and rtl-sdr packages (2.0.2) were purged; the RTL-SDR Blog fork in /usr/local is now the only librtlsdr. Old Appendix C sentence: "The fork's instructions first remove any copy of the library installed by the package manager. On the host laptop, Ubuntu's own copy (version 2.0.2) is still installed, but programs load the fork's library from \texttt{/usr/local/lib}, which is searched first: the cell-search tool is linked to it (\cref{app:install-cellsearch}), and the capture program records the library it loaded with every capture. \texttt{rtl\_test -t} identifies the receiver:" Old README lines: "On this laptop the Blog build is in `/usr/local/lib` and the distribution library is still in `/usr/lib/x86_64-linux-gnu`. The dynamic linker currently picks `/usr/local/lib` first."
+
+## Appendix C: purge paragraph removed (4 November 2026)
+
+The author judged it irrelevant to the thesis. Removed text:
+
+```
+The fork's instructions first remove any copy of the library installed by the package manager. On the host laptop, Ubuntu's own packages of the library and its tools (version 2.0.2) were removed after the fork had been installed, so that the fork's library is the only one:
+\begin{lstlisting}[language=bash]
+sudo apt purge librtlsdr0 librtlsdr2 librtlsdr-dev rtl-sdr
+sudo udevadm control --reload-rules
+\end{lstlisting}
+The fork's own udev rule gives the \texttt{plugdev} group access to the receiver. The cell-search tool is linked to the fork's library (\cref{app:install-cellsearch}), and the capture program records the library it loaded with every capture. \texttt{rtl\_test -t} identifies the receiver:
+```
+
+## code/README.md: purge note removed (4 November 2026)
+
+At the author's request. Removed lines:
+>    Ubuntu's own librtlsdr packages (2.0.2) were purged on 4 November 2026, so
+>    `/usr/local/lib/librtlsdr.so.0.6git` is the only librtlsdr on the laptop.
+
+## Chapter 3, Band Survey expanded (4 November 2026)
+
+At the author's request, the purpose of the survey is explained in full (Table 3.x, settings decided by the survey; sweeps; idle window; times). Previous subsection text:
+
+```
+\subsection{Band Survey}
+\label{sec:m-survey}
+
+The band is chosen after a survey at the capture site, because an allocation is not the same as a live LTE carrier. The candidate downlink ranges are those of \cref{tab:lte-bands} that the receiver can tune: \qtyrange{758}{803}{\mega\hertz} (Band~28), \qtyrange{790}{894}{\mega\hertz} (Bands~20 and~5 together) and \qtyrange{925}{960}{\mega\hertz} (Band~8). Each range is swept with \texttt{rtl\_power} at a fixed gain, once by day and once at night, starting at the session times of \cref{sec:m-sessions}, and the mean power is plotted against frequency. An active LTE carrier appears as a flat plateau of raised power whose width matches one of the channel bandwidths of \cref{tab:lte-bandwidths}.
+
+Each plateau is then examined with \texttt{CellSearch}, the cell-search program of LTE-Cell-Scanner, which was written for RTL2832-based receivers and is built here for the RTL-SDR \parencite{peroulas2024}. It tunes the receiver, at a fixed gain, to each frequency of a range around the plateau in steps of \qty{100}{\kilo\hertz}, looks for the primary and secondary synchronization signals of a cell, and decodes the master information block (MIB) that the cell broadcasts. For each cell found it reports the physical-layer cell identity, the carrier frequency, the frequency offset, the received power and the bandwidth in resource blocks \parencite{peroulas2024}, which gives the carrier's channel bandwidth (\cref{tab:lte-bandwidths}). A plateau counts as a carrier only if a cell is found at its centre. The band studied is the one with the best confirmed carrier at the site: \TargetBand. The survey outputs are kept as evidence for the choice (\cref{app:survey}).
+
+The survey also fixes where the receiver's \qty{1.92}{\mega\hertz} window is placed (\cref{fig:m-windows}). For idle captures (Class~B, \cref{sec:m-data}), the window is placed on a stretch of the surveyed range at least \qty{1.92}{\mega\hertz} wide with no carrier, as close as possible to the carrier used for the active captures. For active captures (Class~C) it is placed either on the carrier's centre, where it contains the synchronization signals, or inside the carrier away from its centre, where it does not (\cref{sec:lte-sync}).
+```
+
+Chapter 2 (Section 2.6.1), old ending: "any LTE energy left in the training frames would be learned as normal, which is why idle frames are screened before training (Chapter~3)." (it implied frame-level screening, which Chapter 3 excludes).
+
+## Chapter 3: idle-window rule made explicit (4 November 2026)
+
+After the test survey showed GSM-like narrow peaks and an intermittent signal that the plateau-only rule missed. Replaced text:
+
+- chapters/chapter3.tex: "    Idle (Class~B) window & A stretch of at least \qty{1.92}{\mega\hertz} with no plateau, outside every carrier found &"
+- chapters/chapter3.tex: "The readings are plotted as the mean power against frequency, together with the maximum over the readings, and as a waterfall of power against frequency and time."
+- chapters/chapter3.tex: "the window has to be shown to be empty before any idle data are captured: the survey must show no plateau in it, and it must lie outside the band occupied by every carrier that the cell search finds near it."
+- chapters/chapter3.tex: "A Class~B capture is labelled idle in every frame if the survey shows no plateau in its window and no carrier found by the cell search occupies any part of it."
+
+## Chapter 3: positions recorded (4 November 2026)
+
+The author chose two balconies at home (P1 parlour, P2 bedroom). Replaced sentences:
+
+- chapters/chapter3.tex: "At least twelve sessions are planned, spread over at least four days and over at least two positions in Benin City."
+- chapters/chapter3.tex: "The survey is made at the first capture position, before the first session; each of its two runs takes about half an hour for the sweeps, followed by the cell searches."
+- chapters/chapter3.tex: "Different positions and times within Benin City widen the conditions but do not remove this limit."
+
+## Chapter 3: cell search why and how (4 November 2026)
+
+At the author's request the reasons for the cell search and its procedure were written out. Old paragraph:
+
+> \emph{Cell search.} Each plateau is then examined with \texttt{CellSearch}, the cell-search program of LTE-Cell-Scanner, which was written for RTL2832-based receivers and is built here for the RTL-SDR \parencite{peroulas2024}. It tunes the receiver, at a fixed gain, to each frequency of a range around the plateau in steps of \qty{100}{\kilo\hertz}, looks for the primary and secondary synchronization signals of a cell, and decodes the master information block (MIB) that the cell broadcasts. For each cell found it reports the physical-layer cell identity, the carrier frequency, the frequency offset, the received power and the bandwidth in resource blocks \parencite{peroulas2024}, which gives the carrier's channel bandwidth (\cref{tab:lte-bandwidths}). A plateau counts as a carrier only if a cell is found at its centre.
+
+## Thesis title changed (4 November 2026)
+
+The author chose the final title "AI-Based LTE Spectrum Occupancy Detection with a Low-Cost RTL-SDR: A Session-Level Evaluation Against Classical Detectors". Previous working title: "Real-Capture Evaluation of Autoencoder-Based and Classical Detection for LTE Downlink Spectrum Occupancy Using a Low-Cost RTL-SDR" (still the title of the revised proposal, notes/proposal.md, which is left as written).
+
+## Thesis title revised (4 November 2026)
+
+The author added "Autoencoders": now "AI-Based LTE Spectrum Occupancy Detection Using Autoencoders and a Low-Cost RTL-SDR: A Session-Level Evaluation Against Classical Detectors". Previous: "AI-Based LTE Spectrum Occupancy Detection with a Low-Cost RTL-SDR: A Session-Level Evaluation Against Classical Detectors".
+
+## Title alignment: AI-based, autoencoders, session-level (4 November 2026)
+
+At the author's request, Chapters 1, 2 and 5 were aligned with the new title. Replaced text:
+
+- chapters/chapter1.tex: "This thesis evaluates whether an autoencoder trained only on idle spectrum, captured with a low-cost RTL-SDR receiver, can detect when a Long Term Evolution (LTE) downlink band is occupied, and compares it with classical detectors tuned with equal care."
+- chapters/chapter1.tex: "Learned detectors have been proposed as a way past these limits, with mixed results."
+- chapters/chapter1.tex: "The aim of this study is to design, implement and rigorously evaluate an autoencoder-based occupancy detector for an LTE downlink band using only RTL-SDR captures, and to compare it with classical baselines under controlled and uncontrolled conditions."
+- chapters/chapter1.tex: "\item a controlled benchmark of noise-trained autoencoders against fixed-threshold"
+- chapters/chapter1.tex: "\item an analysis of how these detectors generalize across capture sessions,"
+- chapters/chapter2.tex: "\section{Autoencoders and Anomaly Detection}
+\label{sec:ae}"
+- chapters/chapter5.tex: "This thesis examines whether an autoencoder trained only on idle spectrum, captured with a low-cost RTL-SDR receiver, detects the occupancy of an LTE downlink band better than carefully tuned classical detectors."
+- chapters/chapter5.tex: "Four are learned from idle frames: a convolutional autoencoder, a fully connected autoencoder, a variational autoencoder and a PCA detector."
+- chapters/chapter3.tex: "Seven detectors are compared (\cref{tab:m-detectors}). Four are learned from idle data, two are classical energy detectors and one exploits the known LTE synchronization signals."

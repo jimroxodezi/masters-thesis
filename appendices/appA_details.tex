@@ -8,7 +8,59 @@
 \section{Band Survey}
 \label{app:survey}
 
-\TBC{Survey spectra (day and night) of each candidate range, cell-search results and the reasons for the choice of band (\cref{sec:m-survey}).}
+The survey was made at P1, the sitting-room balcony (\cref{sec:m-sessions}), with the procedure of \cref{sec:m-survey}. The night run began at 22:10 WAT on 4 November 2026 (21:10 UTC); the three candidate ranges were swept one after another, each for \qty{10}{\minute} at a gain of \qty{40.2}{\decibel}, giving 60 readings per frequency bin in bins of about \qty{21}{\kilo\hertz}. The cell searches followed between 22:48 and 23:05 WAT, each from \qty{0.5}{\mega\hertz} below to \qty{0.5}{\mega\hertz} above the plateau's centre, at the same gain and with two tries at each frequency. \TBC{The day run, on 5 November 2026 at 07:00 WAT.} \Cref{fig:app-survey} shows the mean power in each range, \cref{tab:app-survey-night} the plateaus found and the result of the cell search on each, and \cref{tab:app-quiet-night} the quiet stretches that could hold the idle window.
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\textwidth]{figA-survey}
+  \caption[Band survey at P1]{Band survey at P1: mean power over the 60 readings of each candidate range, on the receiver's uncalibrated scale. Shaded: carriers confirmed by the cell search, drawn over their occupied width (number of resource blocks $\times$ \qty{0.18}{\mega\hertz}). The narrow spikes evenly spaced about \qty{2.2}{\mega\hertz} apart are produced by the receiver at the centre of each tuning step and are not signals.}
+  \label{fig:app-survey}
+\end{figure}
+
+\begin{table}[tbp]
+  \centering
+  \small
+  \caption[Night survey: plateaus and cell searches]{Night survey at P1, 4 November 2026: plateaus found in each candidate range and the result of the cell search on each. Frequencies and widths in \unit{\mega\hertz}; level in \unit{\decibel}: median mean power of the plateau above the noise floor of its range. The received power is as reported by the cell-search program, on its own relative scale.}
+  \label{tab:app-survey-night}
+  \begin{tabularx}{\textwidth}{@{} l l r r >{\raggedright\arraybackslash}X @{}}
+    \toprule
+    Range & Plateau & Width & Level & Cell search \\
+    \midrule
+    758--803 & 768.4--777.7 & 9.23 & 26.1 & LTE, FDD, cell 145, 50 resource blocks (\qty{10}{\mega\hertz}), centre \qty{773}{\mega\hertz}, \qty{-10.1}{\decibel} \\
+     & 778.3--787.5 & 9.18 & 12.7 & LTE, FDD, cell 221, 50 resource blocks (\qty{10}{\mega\hertz}), centre \qty{783}{\mega\hertz}, \qty{-25.8}{\decibel} \\
+     & 792.0--803.0 & 11.07 & 20.3 & Cut off at the end of the range; searched in the next range \\
+    790--894 & 792.0--810.1 & 18.10 & 20.8 & LTE, FDD, cells 145 and 146, 100 resource blocks (\qty{20}{\mega\hertz}), centre \qty{801}{\mega\hertz}, \qty{-19.3}{} and \qty{-20.1}{\decibel} \\
+    925--960 & 925.0--938.2 & 13.18 & 35.1 & A flat part, 925.5--934.5~MHz, followed by narrow peaks; searched at the centre of the flat part: LTE, FDD, cell 216, 50 resource blocks (\qty{10}{\mega\hertz}), centre \qty{930}{\mega\hertz}, \qty{-8.0}{\decibel} \\
+     & 944.9--947.3 & 2.36 & 11.7 & No LTE cell found (a cluster of narrow peaks) \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Four LTE carriers were confirmed, all with a channel bandwidth of at least \qty{10}{\mega\hertz}, so that C\textsubscript{offset} captures are possible on any of them (\cref{sec:m-classes}). Two cells, 145 and 146, were received on the same carrier at \qty{801}{\mega\hertz}; cell identity 145 was also found on the carrier at \qty{773}{\mega\hertz}. The crystal correction factors reported by the cell searches lay between 0.99999959 and 1.00000018, a receiver frequency error between \qty{-0.41}{ppm} and \qty{+0.18}{ppm}, within the \qty{1}{ppm} tolerance of the reference oscillator; this supports capturing without frequency correction (\cref{sec:m-capture}).
+
+\begin{table}[tbp]
+  \centering
+  \small
+  \caption[Night survey: quiet stretches]{Night survey at P1: quiet stretches at least \qty{1.92}{\mega\hertz} wide in which an idle window could be placed (\cref{sec:m-survey}), the centre of the suggested window, and the largest mean and maximum power above the noise floor within it.}
+  \label{tab:app-quiet-night}
+  \begin{tabular}{@{} l l r r r @{}}
+    \toprule
+    Range (\unit{\mega\hertz}) & Stretch (\unit{\mega\hertz}) & Centre (\unit{\mega\hertz}) & Mean (\unit{\decibel}) & Max.\ (\unit{\decibel}) \\
+    \midrule
+    758--803 & 758.0--763.2 & 760.6 & 0.8 & 1.5 \\
+     & 763.2--766.6 & 764.9 & 0.8 & 1.4 \\
+     & 787.5--791.9 & 789.7 & 1.7 & 2.7 \\
+    790--894 & 820.8--834.3 & 827.6 & 1.8 & 2.7 \\
+     & 834.4--849.6 & 842.0 & 1.9 & 3.4 \\
+     & 849.6--864.0 & 856.8 & 1.8 & 2.5 \\
+     & 864.0--878.4 & 871.2 & 1.7 & 2.4 \\
+     & 889.5--894.0 & 891.8 & 1.6 & 2.5 \\
+    925--960 & 954.3--960.0 & 957.1 & 0.6 & 1.1 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\TBC{The day run (5 November 2026, 07:00 WAT), the comparison of day and night, and the reasons for the choice of carrier, idle window and band.}
 
 \section{Capture Sessions}
 \label{app:sessions}

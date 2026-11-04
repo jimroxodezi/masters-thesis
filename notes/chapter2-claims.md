@@ -163,6 +163,7 @@ Sources read for this chapter: the full papers in `papers/`, plus the open-acces
 | 111 | Reconstruction methods reconstruct normal data well and detect anomalies by failing to; among the earliest and most common neural approaches | `ruff2021` | preprint pp. 13–14 (Section V) | |
 | 112 | Torío: the normal state of a channel is no transmission | `torio2025` | p. 5 | |
 | 113 | PCA: orthogonal basis maximizing variance; eigenvectors of the covariance matrix; equivalent minimum-reconstruction-error projection; default reconstruction baseline | `ruff2021` | preprint p. 15 (Section V-B, eqs. 25–26) | |
+| 113a | Autoencoders are neural networks and belong to machine learning, used for many but not all approaches to AI (Section 2.7 lead) | `goodfellow2016` | p. 499 (Chapter 14, first sentence); p. 9, Figure 1.4 (shallow autoencoders as an example of representation learning, a kind of machine learning) | Opened 2026-11-04 |
 | 114 | Autoencoder: encoder h = f(x), decoder r = g(h), trained to copy input to output; loss such as MSE | `goodfellow2016` | pp. 499–500 (Section 14 intro; eq. 14.1) | |
 | 115 | Undercomplete: code smaller than input; captures the most salient features | `goodfellow2016` | p. 500 (Section 14.1) | |
 | 116 | Linear decoder + MSE → same subspace as PCA; non-linear f, g → more powerful non-linear generalization of PCA | `goodfellow2016` | p. 500 | |

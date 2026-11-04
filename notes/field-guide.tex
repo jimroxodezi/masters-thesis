@@ -50,12 +50,15 @@ All commands are run from the \cmd{code/} folder of the project:
 cd ~/projects/msc-thesis/masters-thesis/code
 \end{Verbatim}
 \begin{enumerate}
-\item \textbf{Check the receiver.} Plug in the V4 and run \cmd{rtl\_test -t}. It should find the device and report the R828D tuner. The V4 needs the RTL-SDR Blog build of the driver. Then check that the study's software can see it, and note the gain steps it offers:
+\item \textbf{Check the receiver.} Plug in the V4 and run \cmd{rtl\_test -t}. It should find the device, report the R828D tuner and print ``RTL-SDR Blog V4 Detected'' with the 29 gain steps. The last line, ``No E4000 tuner found, aborting'', is normal: that test is only for an older tuner. Then check that the study's software can see it, and note the gain steps it offers:
 \begin{Verbatim}
 uv run python -m occupancy capture --info
 \end{Verbatim}
 \item \textbf{Check the survey tool.} \cmd{rtl\_power -h} should print its help; it comes with the RTL-SDR driver package.
-\item \textbf{Install and test the cell-search tool.} Use an LTE cell scanner that works with the RTL-SDR (for example LTE-Cell-Scanner). Test it once at home, and note its name and version.
+\item \textbf{Check the cell-search tool.} LTE-Cell-Scanner is installed in \cmd{\textasciitilde/tools/LTE-Cell-Scanner} (installation: thesis Appendix~C). Its program \cmd{CellSearch} should print its options:
+\begin{Verbatim}
+cd ~/tools/LTE-Cell-Scanner/build && ./src/CellSearch -h
+\end{Verbatim}
 \item \textbf{Rehearse without the dongle.} The rehearsal writes only to \cmd{data\_synthetic/}, which the thesis never uses:
 \begin{Verbatim}
 uv run python -m occupancy session --synthetic
@@ -63,22 +66,27 @@ uv run python -m occupancy session --synthetic
 \item \textbf{Clock.} Make sure the laptop sets its time automatically. Capture times are recorded in UTC.
 \end{enumerate}
 
-\section{Step 1: band survey (one day and one night)}
-Do this at your first position before any capture session. Fix one gain for the whole survey (40\,dB, as in the proposal):
+\section{Step 1: band survey (07:00 and 22:00)}
+Do this at P1, the parlour balcony, before any capture session, once starting at 07:00 (\cmd{--label day}) and once starting at 22:00 (\cmd{--label night}), the same times as the sessions. Fix one gain for the whole survey: 40.2\,dB, the tuner step nearest the proposal's 40\,dB, so that the recorded gain is the gain applied. Each run takes about half an hour of sweeps (three ranges of 10 minutes), plus the cell searches:
 \begin{Verbatim}
-uv run python -m occupancy survey --range 758M:803M --gain 40 \
+uv run python -m occupancy survey --range 758M:803M --gain 40.2 \
     --integration 10 --duration 10m --label day --position P1
-uv run python -m occupancy survey --range 790M:894M --gain 40 \
+uv run python -m occupancy survey --range 790M:894M --gain 40.2 \
     --integration 10 --duration 10m --label day --position P1
-uv run python -m occupancy survey --range 925M:960M --gain 40 \
+uv run python -m occupancy survey --range 925M:960M --gain 40.2 \
     --integration 10 --duration 10m --label day --position P1
 \end{Verbatim}
-Repeat at night with \cmd{--label night}. The CSV files and plots are saved in \cmd{data/survey/}.
+At 22:00, repeat with \cmd{--label night}. The CSV files and plots are saved in \cmd{data/survey/}.
 \begin{enumerate}
 \item \textbf{Find the carriers.} An LTE carrier shows as a flat plateau of raised power, 5--20\,MHz wide. Note each plateau's centre and width.
-\item \textbf{Confirm with the cell scanner.} Run it on the strongest plateaus, and record the cell identity (PCI), the centre frequency and the bandwidth.
+\item \textbf{Confirm with the cell scanner.} For each strong plateau, search 0.5\,MHz either side of its centre, at a fixed gain that is one of the tuner's steps (e.g.\ 40.2\,dB), with two tries per frequency. For a plateau near 796\,MHz:
+\begin{Verbatim}
+cd ~/tools/LTE-Cell-Scanner/build
+./src/CellSearch -s 795.5e6 -e 796.5e6 -g 40.2 -n 2
+\end{Verbatim}
+A plateau counts as a carrier only if a cell is found. From the results table record: \textbf{CID} (cell identity, PCI), \textbf{fc} (carrier centre), \textbf{nRB} (bandwidth: 6, 15, 25, 50, 75, 100 = 1.4, 3, 5, 10, 15, 20\,MHz), \textbf{RXPWR} and \textbf{DPX} (should be FDD). Never use \cmd{LTE-Tracker}; it decodes more than the study needs.
 \item \textbf{Choose the carrier.} It should be confirmed by the scanner, strong and steady by day and night, and preferably 10\,MHz wide or more. Only carriers of 10\,MHz or more allow the offset captures; the session helper checks this.
-\item \textbf{Choose the idle (Class~B) window.} It is a stretch of at least 1.92\,MHz with no carrier, as close to the chosen carrier as possible. The survey analysis can rank candidates:
+\item \textbf{Choose the idle (Class~B) window.} It is a stretch of at least 1.92\,MHz with no carrier, as close to the chosen carrier as possible. The scanner finds a carrier only at its centre, so do not search the window itself: check instead that the window lies outside every nearby carrier (centre $\pm$ half its bandwidth). The session helper checks this against the chosen carrier. The survey analysis suggests only stretches with no signal at all, narrow or intermittent ones included. The thin spikes evenly spaced about 2.2\,MHz apart are made by the dongle at the centre of each tuning step; ignore them. The survey analysis can rank candidates:
 \begin{Verbatim}
 uv run python -m occupancy survey --parse data/survey/<file>.csv --carrier 796M
 \end{Verbatim}
@@ -93,19 +101,21 @@ uv run python -m occupancy survey --parse data/survey/<file>.csv --carrier 796M
 
 \section{Step 2: capture sessions}
 \subsection*{Plan}
-Use the same carrier, Class~B window, antenna and gains $g_1$, $g_2$ in every session. Spread the sessions so that day and night, and the positions, are balanced. A possible plan, to adapt:
+\textbf{Positions:} P1 is the parlour balcony and P2 the bedroom balcony (they face different directions). At each one, mount the antenna at a marked spot, at the same height and orientation every time, at least 30\,cm from metal railings or burglary-proof bars, and photograph the setup; the laptop stays indoors with the cable through the door. \textbf{Before the first P2 session} (S03 in the plan), check P2 once: run \cmd{CellSearch} on the chosen carrier there, and one 10-minute survey of the range that contains it with \cmd{--position P2 --label check}; send me the plot.
+
+Use the same carrier, Class~B window, antenna and gains $g_1$, $g_2$ in every session. Day sessions start at \textbf{07:00} and night sessions at \textbf{22:00}; the session helper warns if you start more than two hours away from these times, and such a session is reported separately. There is one day and one night slot per day, so 12 sessions take at least 6 days. A possible plan, balanced over times and positions:
 
 \begin{center}
 \begin{tabular}{@{} l l l l @{\hspace{12mm}} l l l l @{}}
 \toprule
-Session & Day & Time & Position & Session & Day & Time & Position \\
+Session & Day & Start & Position & Session & Day & Start & Position \\
 \midrule
-S01 & 1 & day & P1 & S07 & 3 & day & P2 \\
-S02 & 1 & night & P1 & S08 & 3 & night & P1 \\
-S03 & 2 & day & P2 & S09 & 4 & day & P1 \\
-S04 & 2 & night & P2 & S10 & 4 & night & P2 \\
-S05 & 3 & day & P1 & S11 & 5 & day & P2 \\
-S06 & 3 & night & P2 & S12 & 5 & night & P1 \\
+S01 & 1 & 07:00 & P1 & S07 & 4 & 07:00 & P2 \\
+S02 & 1 & 22:00 & P1 & S08 & 4 & 22:00 & P1 \\
+S03 & 2 & 07:00 & P2 & S09 & 5 & 07:00 & P1 \\
+S04 & 2 & 22:00 & P2 & S10 & 5 & 22:00 & P2 \\
+S05 & 3 & 07:00 & P1 & S11 & 6 & 07:00 & P2 \\
+S06 & 3 & 22:00 & P2 & S12 & 6 & 22:00 & P1 \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -113,7 +123,11 @@ S06 & 3 & night & P2 & S12 & 5 & night & P1 \\
 \subsection*{Procedure for every session}
 \begin{enumerate}
 \item \textbf{Set up} at the position: antenna mounted as before at that position (see its photo), dongle plugged in, laptop on. Wait about 5 minutes before the first capture, so the dongle warms up.
-\item \textbf{Cell search} on the chosen carrier. Note the PCI; it should be the same cell as in the survey.
+\item \textbf{Cell search} on the chosen carrier only (here 796\,MHz), keeping the samples with the session's name. Note the CID; it should be the same cell as in the survey:
+\begin{Verbatim}
+./src/CellSearch -s 796e6 -g 40.2 -n 2 --recbin S01_cellsearch.bin
+\end{Verbatim}
+The scanner and the session helper both need the dongle, so run them one after the other.
 \item \textbf{Start the guided session} and answer its questions:
 \begin{Verbatim}
 uv run python -m occupancy session
@@ -189,7 +203,7 @@ Disk nearly full & Move backed-up sessions to the external drive. \\
 \end{tabularx}
 
 \section{Safety and ethics}
-Reception is passive: nothing is transmitted, and no content is decoded or recorded. Ask permission before using a private place, and take care of your own safety during night sessions.
+Reception is passive: nothing is transmitted. The cell scanner decodes only what every cell broadcasts openly (its identity and bandwidth); no other content is decoded or recorded. Ask permission before using a private place, and take care of your own safety during night sessions.
 
 \section{What to give me after the fieldwork}
 \begin{itemize}

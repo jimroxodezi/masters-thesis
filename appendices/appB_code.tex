@@ -31,7 +31,7 @@ The commands are run from the \texttt{code/} folder, for example \texttt{uv run 
     \texttt{provenance} & Code version, library versions, host and power state of every result & GitHub \\
     \texttt{iqio} & Raw capture files and their metadata records & GitHub \\
     \texttt{capture} & One capture, enforcing the capture rules (\cref{sec:m-capture}) & GitHub \\
-    \texttt{session} & Guided capture session of eight captures (\cref{sec:m-sessions}) & GitHub \\
+    \texttt{session} & Guided capture session of eight captures, with its day or night label (\cref{sec:m-sessions}) & GitHub \\
     \texttt{survey} & Band survey with \texttt{rtl\_power} (\cref{sec:m-survey}) & GitHub \\
     \texttt{quicklook} & Quick-look figures and the labelling check (\cref{sec:m-labels}) & GitHub \\
     \midrule
@@ -46,7 +46,7 @@ The commands are run from the \texttt{code/} folder, for example \texttt{uv run 
     \midrule
     \texttt{scoring} & Frames that each fold scores, and score files & GitHub \\
     \texttt{calibrate} & Thresholds at fixed false-alarm rates (\cref{sec:m-thresholds}) & \Cref{app:code-eval} \\
-    \texttt{evaluate} & Metrics, session bootstrap and the tests of H1 and H2 (\cref{sec:m-eval}) & GitHub \\
+    \texttt{evaluate} & Metrics, session bootstrap, breakdowns by position and time of day, and the tests of H1 and H2 (\cref{sec:m-eval}) & GitHub \\
     \midrule
     \texttt{latency} & Latency, throughput, real-time factor and the effect of the optimization (\cref{sec:m-compute}) & \Cref{app:code-cost} \\
     \texttt{realtime} & Real-time demonstration (\cref{sec:m-demo}) & GitHub \\
@@ -115,15 +115,15 @@ The tests check the parts of the method that can be checked without real data (\
 \begin{table}[tbp]
   \centering
   \small
-  \caption[Tests of the code]{Tests of the code in \texttt{code/tests/}. All 94 tests pass.}
+  \caption[Tests of the code]{Tests of the code in \texttt{code/tests/}. All 96 tests pass.}
   \label{tab:app-tests}
   \begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}p{4.1cm} >{\raggedright\arraybackslash}X r @{}}
     \toprule
     File & What it checks & Tests \\
     \midrule
     \texttt{test\_capture\_io} & Frequency parsing; manual gain, gain steps and tuning range; the offset-window rule; the capture file format and metadata; stopping a capture safely & 11 \\
-    \texttt{test\_session} & Capture order; omission of C\textsubscript{offset} for narrow carriers; retakes; resuming an interrupted session & 4 \\
-    \texttt{test\_survey} & Reading \texttt{rtl\_power} output; the command used; suggested carriers and Class~B windows & 4 \\
+    \texttt{test\_session} & Capture order; omission of C\textsubscript{offset} for narrow carriers; retakes; resuming an interrupted session; day and night labels from the start time & 5 \\
+    \texttt{test\_survey} & Reading \texttt{rtl\_power} output; the command used; suggested carriers and Class~B windows free of narrow and intermittent signals & 5 \\
     \texttt{test\_split} & Folds for twelve and other numbers of sessions; session order & 4 \\
     \texttt{test\_preprocess} & Spectrogram shape, bin spacing and orientation; the Hann window and decibel scale; DC removal; normalization from training data only & 5 \\
     \texttt{test\_injection} & SNR grid; scale factor; effective SNR within \qty{0.5}{\decibel} of the target; admissibility; reproducible draws & 5 \\
@@ -134,7 +134,7 @@ The tests check the parts of the method that can be checked without real data (\
     \texttt{test\_bootstrap} & Session-bootstrap intervals are reproducible with a fixed seed & 3 \\
     \texttt{test\_synthetic\_guard} & Synthetic data are marked, refused without the flag and never mixed with real data & 6 \\
     \texttt{test\_pipeline} & End-to-end run on a tiny synthetic data set (plumbing only) & 6 \\
-    \texttt{test\_resume} & An interrupted and resumed training run ends in the same state as an uninterrupted one; a checkpoint written with other settings is not resumed; a finished run is retrained only on request; the fallback to the CPU; the record of the runtime environment & 5 \\
+    \texttt{test\_resume} & A resumed training run ends in the same state as an uninterrupted one; checkpoints with other settings are not resumed; finished runs are retrained only on request; CPU fallback; the runtime record & 5 \\
     \texttt{test\_cost\_and\_demo} & The scoring copy of each network gives the same reconstructions; the percentile score equals the original computation; both forms of each network are timed; the power-condition check; the demonstration's queue, lost-sample estimate and live-view limits & 8 \\
     \texttt{test\_colab} & The pack holds only Class~B spectrograms at $g_1$; corrupted packs and unsafe zip files are refused; training from the pack gives the same models as training from the local data; training through the Colab script without the receiver library; unpacking; the epoch-timing output; a valid notebook & 10 \\
     \texttt{helpers} & Shared test helpers (tiny configurations and data sets) & --- \\

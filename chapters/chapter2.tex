@@ -308,12 +308,14 @@ Spectrograms and averaged power spectra are the usual inputs to learned spectrum
 \section{Autoencoders and Anomaly Detection}
 \label{sec:ae}
 
+The autoencoders studied in this thesis are its AI-based detectors. They are neural networks \parencite[p.~499]{goodfellow2016} and therefore belong to machine learning, which is used for many, though not all, approaches to AI \parencite[p.~9]{goodfellow2016}. This section describes how they detect anomalies, how they relate to PCA, the architectures compared, the variational autoencoder, and how their thresholds are set.
+
 \subsection{Anomaly Detection with Normal-Only Training}
 \label{sec:ae-anomaly}
 
 An anomaly is an observation that deviates considerably from some concept of normality \parencite{ruff2021}. In the unsupervised setting, a model is trained on unlabelled data that are assumed to be drawn from the normal distribution; such training data are called clean, although in practice they may contain noise or contamination \parencite{ruff2021}. Reconstruction-based methods learn a model that reconstructs normal data well, and they detect anomalies by their failure to reconstruct them accurately; they are among the earliest and most common neural approaches to anomaly detection \parencite{ruff2021}.
 
-Most spectrum anomaly detectors treat a band with its usual signals as normal and an unexpected signal as the anomaly (\cref{sec:related-anomaly}). This study inverts that arrangement. Idle spectrum, the receiver noise and whatever the environment contributes in a band without an LTE carrier, is the normal class, and an LTE carrier is the anomaly to be detected. \Textcite{torio2025} framed transmission detection in the same way, assuming that the normal state of a channel is the absence of transmissions (p.~5). A practical consequence is the need for clean idle training data: any LTE energy left in the training frames would be learned as normal, which is why idle frames are screened before training (Chapter~3).
+Most spectrum anomaly detectors treat a band with its usual signals as normal and an unexpected signal as the anomaly (\cref{sec:related-anomaly}). This study inverts that arrangement. Idle spectrum, the receiver noise and whatever the environment contributes in a band without an LTE carrier, is the normal class, and an LTE carrier is the anomaly to be detected. \Textcite{torio2025} framed transmission detection in the same way, assuming that the normal state of a channel is the absence of transmissions (p.~5). A practical consequence is the need for clean idle training data: any LTE energy left in the training frames would be learned as normal, which is why the idle window is surveyed and checked before any idle data are captured (\cref{sec:m-survey}).
 
 \subsection{Principal Component Analysis and the Autoencoder}
 \label{sec:ae-pca}

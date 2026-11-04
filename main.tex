@@ -41,10 +41,13 @@
 
 % ---------------------------------------------------------------------------
 % Appendices (A: band survey and capture sessions, filled after the fieldwork;
-% B: code listings, read from code/ at compile time)
+% B: code listings, read from code/ at compile time; C: software installation)
 % ---------------------------------------------------------------------------
 \appendix
+% Make \cref print "Appendix B" rather than "Chapter B" for appendix chapters.
+\crefalias{chapter}{appendix}
 \include{appendices/appA_details}
 \include{appendices/appB_code}
+\include{appendices/appC_install}
 
 \end{document}

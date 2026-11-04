@@ -1,0 +1,77 @@
+\chapter{Software Installation}
+\label{app:install}
+
+% Added 4 November 2026 at the author's request ("add the installation steps
+% of important software"). Every command was either taken from the cited guide
+% or run on the host laptop; keep it in step with code/README.md.
+
+The software runs on the host laptop under Ubuntu 26.04 LTS (\cref{tab:m-hw-sw}). Three components are installed on it: the receiver driver, the Python environment of the study's code, and the cell-search tool. The commands below are typed in a terminal. Training on Google Colab needs no installation on the laptop: the notebook copies the code to the Colab runtime and installs any missing Python packages there (\cref{sec:m-training}).
+
+\begin{singlespace}
+
+\section{Receiver Driver}
+\label{app:install-driver}
+
+The RTL-SDR Blog V4 needs a version of the RTL-SDR library that supports its R828D tuner. The host laptop uses the manufacturer's fork of the library, \texttt{rtl-sdr-blog} \parencite{rtlsdrblog2026}, at commit aed0ea1 (22 March 2026), built from source with the fork's instructions for Linux:
+\begin{lstlisting}[language=bash]
+sudo apt update
+sudo apt install libusb-1.0-0-dev git cmake pkg-config
+git clone https://github.com/rtlsdrblog/rtl-sdr-blog
+cd rtl-sdr-blog/
+mkdir build
+cd build
+cmake ../ -DINSTALL_UDEV_RULES=ON
+make
+sudo make install
+sudo cp ../rtl-sdr.rules /etc/udev/rules.d/
+sudo ldconfig
+\end{lstlisting}
+The build installs the library in \texttt{/usr/local/lib}, together with \texttt{rtl\_test} and the survey tool \texttt{rtl\_power}. The television drivers of the Linux kernel, which would otherwise claim the receiver, are disabled by a file in \texttt{/etc/modprobe.d/} that blacklists the modules \texttt{dvb\_usb\_rtl28xxu}, \texttt{rtl2832} and \texttt{rtl2830}.
+
+The capture program records the library it loaded with every capture, and \texttt{rtl\_test -t} identifies the receiver:
+\begin{lstlisting}[language=bash]
+Found 1 device(s):
+  0:  RTLSDRBlog, Blog V4, SN: 00000001
+Found Rafael Micro R828D tuner
+RTL-SDR Blog V4 Detected
+\end{lstlisting}
+It also lists the 29 gain steps of the tuner, from \qty{0.0}{\decibel} to \qty{49.6}{\decibel}; the gains $g_1$ and $g_2$ are chosen from these steps.
+
+\section{Python Environment}
+\label{app:install-python}
+
+The study's code (\cref{app:code}) runs in a Python environment managed by the package manager uv. The project's lock file, \texttt{code/uv.lock}, fixes the version of every package (\cref{tab:m-hw-sw}), so the environment is created with one command in the \texttt{code/} folder. Two further commands check that the code can see the receiver and that its tests pass:
+\begin{lstlisting}[language=bash]
+cd code
+uv sync
+uv run python -m occupancy capture --info
+uv run python -m unittest discover -s tests
+\end{lstlisting}
+The receiver check reports the product name (Blog V4), the tuner (R828D) and its gain steps.
+
+\section{Cell-Search Tool}
+\label{app:install-cellsearch}
+
+LTE-Cell-Scanner \parencite{peroulas2024} is built from source. Its last change (commit e7f71cb) dates from January 2024, before the versions of CMake (4.2) and Boost (1.90) in Ubuntu 26.04, so two adjustments are needed. Boost's \texttt{system} component is now part of the Boost headers and is no longer a separate library, so it is removed from the project's list of Boost components; and CMake is told to accept the project's old minimum version. The optional OpenCL acceleration is not built, so the program runs on the CPU:
+\begin{lstlisting}[language=bash]
+sudo apt install libitpp-dev libblas-dev liblapack-dev libfftw3-dev libboost-thread-dev libncurses-dev
+mkdir -p ~/tools && cd ~/tools
+git clone https://github.com/JiaoXianjun/LTE-Cell-Scanner.git
+cd LTE-Cell-Scanner
+sed -i 's/COMPONENTS thread system REQUIRED/COMPONENTS thread REQUIRED/' CMakeLists.txt
+mkdir build && cd build
+cmake .. -DUSE_OPENCL=0 -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+make -j4
+\end{lstlisting}
+Two checks confirm the build: the program must use the RTL-SDR library of \cref{app:install-driver}, and it must print its options:
+\begin{lstlisting}[language=bash]
+ldd src/CellSearch | grep rtlsdr    # /usr/local/lib/librtlsdr.so.0
+./src/CellSearch -h
+\end{lstlisting}
+A search around a plateau found in the survey, for example one centred near \qty{796}{\mega\hertz}, is then run with a fixed gain (in decibels) and two tries at each frequency:
+\begin{lstlisting}[language=bash]
+./src/CellSearch -s 795.5e6 -e 796.5e6 -g 40.2 -n 2
+\end{lstlisting}
+At each session, the search is repeated at the chosen carrier's frequency alone, and the samples it captured are kept with the session's records (\texttt{--recbin}). Only \texttt{CellSearch} is used; the scanner's tracking program, \texttt{LTE-Tracker}, is not (\cref{sec:m-ethics}).
+
+\end{singlespace}

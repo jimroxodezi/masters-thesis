@@ -1,7 +1,7 @@
 # CLAUDE.md: MSc Thesis (LaTeX)
 
 ## Project
-**Working title:** Real-Capture Evaluation of Autoencoder-Based and Classical Detection for LTE Downlink Spectrum Occupancy Using a Low-Cost RTL-SDR (confirm the final title with me).
+**Title (confirmed 4 November 2026):** AI-Based LTE Spectrum Occupancy Detection Using Autoencoders and a Low-Cost RTL-SDR: A Session-Level Evaluation Against Classical Detectors.
 
 Author: Jimrox Odezi Ogume. Department of Electrical and Electronic Engineering, University of Benin. Supervisor: Prof. Kingsley Ogbeide. Deadline: `<FILL IN>`. Citation style: APA 7.
 

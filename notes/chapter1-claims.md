@@ -48,6 +48,9 @@ Every cited claim in `chapters/chapter1.tex`, with the place in the source where
 | 25 | Torío et al. trained on synthetic Rayleigh noise, treated "no transmission" as the normal state, and took large reconstruction error as a transmission | `torio2025` | p. 5, §2.2 (also p. 7) | Closest prior work to the thesis idea |
 | 26 | Tian et al. modelled spectrograms with a VAE and a percentile-based score of reconstruction error | `tian2022` | p. 1 (abstract; §1) | |
 
+| G1 | Learned (machine-learning) detectors are AI-based: machine learning is used for many, though not all, approaches to AI | `goodfellow2016` | p. 9, Figure 1.4 caption ("deep learning is a kind of representation learning, which is in turn a kind of machine learning, which is used for many but not all approaches to AI") | Online book (deeplearningbook.org, Chapter 1), opened 2026-11-04 |
+| G2 | An autoencoder is a neural network trained to copy its input to its output (Section 1.3, aim) | `goodfellow2016` | p. 499, first sentence of Chapter 14 | Online book, opened 2026-11-04 |
+
 ## Section 1.2: Statement of the problem
 
 | # | Claim (as used) | Key | Where in source | Notes |
