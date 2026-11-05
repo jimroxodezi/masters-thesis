@@ -3,7 +3,7 @@ cli.py
 ------
 python -m occupancy <subcommand> [options]     (run from code/, e.g. with "uv run")
 
-Field work          survey, capture, session, inspect
+Field work          survey, capture, session, inspect, trials
 Experiment          preprocess, train, calibrate, evaluate
 Training elsewhere  pack (laptop: data for Colab), train --pack (Colab GPU), unpack (laptop: import models)
 Cost and demo       latency, demo, train --time-epoch
@@ -343,6 +343,22 @@ def cmd_demo(args):
     return 0
 
 
+def cmd_trials(args):
+    from .gaintrials import summarise_folder, write_csv
+    cfg = _load_cfg(args)
+    rows = summarise_folder(Path(args.folder), cfg.capture.utc_offset_h)
+    if not rows:
+        raise SystemExit(f"no trial captures (.json + .cu8) in {args.folder}")
+    out = write_csv(rows, Path(args.out) if args.out else Path(args.folder) / "gain_trials.csv")
+    for r in rows:
+        swing = "" if r["block_power_swing_db"] is None else f", 0.5 s power swing {r['block_power_swing_db']:.1f} dB"
+        print(f"{r['local_time'][11:]} {r['class']:8s} {r['centre_freq_mhz']:8.2f} MHz {r['gain_db']:5.1f} dB "
+              f"{r['duration_s']:4.0f} s: clipping {r['clipping_percent']:.4f} %, mean {r['mean_power_db']:.2f} dB, "
+              f"I/Q std {r['iq_std_lsb']:.2f} LSB{swing}")
+    print(f"summary written to {out}")
+    return 0
+
+
 def cmd_inspect(args):
     import json
     from .quicklook import capture_quicklook, labelling_agreement, labelling_template
@@ -525,6 +541,11 @@ def build_parser() -> argparse.ArgumentParser:
     i.add_argument("--out")
     i.add_argument("--agreement", help="filled labelling_check.csv: report the agreement")
     i.set_defaults(func=cmd_inspect)
+
+    t = sub.add_parser("trials", parents=[common], help="summarise gain-trial captures (choice of g1 and g2)")
+    t.add_argument("folder", help="folder of trial captures, e.g. data/trials/2026-11-05_gain_trials")
+    t.add_argument("--out", help="CSV to write (default: FOLDER/gain_trials.csv)")
+    t.set_defaults(func=cmd_trials)
     return p
 
 

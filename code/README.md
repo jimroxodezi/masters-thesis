@@ -141,10 +141,15 @@ All commands below are run from `code/` as `uv run python -m occupancy ...`.
 
    Note CID (the PCI), fc (carrier centre) and nRB (6/15/25/50/75/100 =
    1.4/3/5/10/15/20 MHz). Use only `CellSearch`, never `LTE-Tracker`.
-3. Choose **g1** (primary) and **g2** (gain-change test): two of the tuner's
-   gain steps that do not clip on the strongest Class C capture. Short test
-   captures (`capture --duration 2 ...`) report the clipping fraction; above
-   0.1 % the capture is flagged.
+3. Choose **g1** (primary) and **g2** (gain-change test) with short trial
+   captures (`capture --session trial --duration 2 ...`, which report the
+   clipping fraction; above 0.1 % a capture is flagged). g1 is the highest
+   tuner step at which the carrier stays below 0.1 % *even during traffic
+   peaks* (its power rises several dB with traffic), and g2 is 10 dB lower.
+   Move the trial captures out of `data/raw/` (e.g. to `data/trials/`) and
+   summarise them with `python -m occupancy trials data/trials/<folder>`.
+   This study: g1 = 29.7 dB, g2 = 19.7 dB (5 November 2026; thesis Appendix
+   A.2; `results/gain_trials_2026-11-05.csv`).
 4. Choose the **Class B** frequency: a stretch of the surveyed range at least
    1.92 MHz wide with no carrier (survey plus cell search), as close as
    possible to the carrier. CellSearch finds a carrier only at its centre, so

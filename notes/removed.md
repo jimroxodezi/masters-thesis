@@ -402,3 +402,54 @@ At the author's request, Chapters 1, 2 and 5 were aligned with the new title. Re
 - chapters/chapter5.tex: "This thesis examines whether an autoencoder trained only on idle spectrum, captured with a low-cost RTL-SDR receiver, detects the occupancy of an LTE downlink band better than carefully tuned classical detectors."
 - chapters/chapter5.tex: "Four are learned from idle frames: a convolutional autoencoder, a fully connected autoencoder, a variational autoencoder and a PCA detector."
 - chapters/chapter3.tex: "Seven detectors are compared (\cref{tab:m-detectors}). Four are learned from idle data, two are classical energy detectors and one exploits the known LTE synchronization signals."
+
+## Band, carrier and idle window confirmed (5 November 2026)
+
+Replaced text:
+
+- preamble.tex: "% The band is not yet chosen (CLAUDE.md, "Things to resolve").
+\newcommand{\TargetBand}{\TBC{target band to be confirmed after the band survey}}"
+- chapters/chapter3.tex: "The band studied is therefore the one with the best confirmed carrier at the site: \TargetBand."
+- chapters/chapter3.tex: "For idle captures (Class~B), it is placed on a stretch of the surveyed range at least \qty{1.92}{\mega\hertz} wide with no carrier, as close as possible to the carrier, so that the idle and active captures are made at nearly the same tuner frequency."
+- chapters/chapter3.tex: "A short logged run in \TargetBand{} illustrates occupancy over time in Chapter~4."
+- appendices/appA_details.tex: "\TBC{The reasons for the choice of carrier, idle window and band, once confirmed by the author.}"
+- CLAUDE.md: "## Things to resolve with me before writing (do not guess)
+1. **Band:** not yet decided. Candidates and the survey protocol are in Section 8.1 of the proposal. Until I confirm a band, use placeholders in band-specific text and never state a band or center frequency."
+- notes/method-design.md: "- **Positions** [fixed] (author, 4 November 2026):"
+
+## Gains chosen (5 November 2026)
+
+Replaced text:
+
+- appendices/appA_details.tex: "because the power of a downlink carrier rises and falls with its traffic."
+- chapters/chapter3.tex: "Two fixed gain settings are used: $g_1$, the primary setting, and $g_2$, used only for the gain-change test of \cref{sec:m-robustness}. Their values, \TBC{$g_1$ and $g_2$ in decibels}, are chosen during the survey so that the strongest active capture does not clip the 8-bit converter. For every capture the fraction of in-phase or quadrature samples at the extremes of the 8-bit range is recorded, and captures with more than \Prov{\pct{0.1}} clipped samples are flagged."
+- chapters/chapter3.tex: "Across gain settings, the models and thresholds calibrated at $g_1$ are applied to the same test sessions' captures at $g_2$, which shifts the recorded noise floor by a controlled amount."
+- chapters/chapter3.tex: "  \item \emph{Controlled-SNR mixtures.}"
+- notes/method-design.md: "- **Gains** [field]: rule agreed 5 November 2026: g1 = highest tuner step without clipping (> 0.1 %) on the carrier, g2 about 10 dB below g1. Values pending (gain trials of 5 November 2026: see the conversation summary / Appendix A once fixed)."
+- CLAUDE.md: "## Things to resolve with me before writing (do not guess)
+1. **Gains g1 and g2:** rule agreed (g1 = highest tuner step without clipping, g2 about 10 dB below g1), values not yet fixed (see `notes/method-design.md`)."
+- code/occupancy/config.py: "    g1_db: float | None = None                   # [field] primary gain, chosen in the survey
+    g2_db: float | None = None                   # [field] gain-change test gain"
+
+## Field guide: session plan replaced (5 November 2026)
+
+At the author's request, the plan was replaced by a dated plan in time order starting with S01 on 5 November at 22:00 (the 07:00 slot that day was used by the survey). Old text:
+
+```
+There is one day and one night slot per day, so 12 sessions take at least 6 days. A possible plan, balanced over times and positions:
+
+\begin{center}
+\begin{tabular}{@{} l l l l @{\hspace{12mm}} l l l l @{}}
+\toprule
+Session & Day & Start & Position & Session & Day & Start & Position \\
+\midrule
+S01 & 1 & 07:00 & P1 & S07 & 4 & 07:00 & P2 \\
+S02 & 1 & 22:00 & P1 & S08 & 4 & 22:00 & P1 \\
+S03 & 2 & 07:00 & P2 & S09 & 5 & 07:00 & P1 \\
+S04 & 2 & 22:00 & P2 & S10 & 5 & 22:00 & P2 \\
+S05 & 3 & 07:00 & P1 & S11 & 6 & 07:00 & P2 \\
+S06 & 3 & 22:00 & P2 & S12 & 6 & 22:00 & P1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+```

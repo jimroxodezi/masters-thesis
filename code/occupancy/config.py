@@ -70,8 +70,8 @@ class CaptureConfig:
     min_centre_freq_hz: float = 24_000_000.0     # [impl] lower limit of the normal (non-HF) path
     read_block_samples: int = 131_072            # [impl] USB block (usbfs caps buffers at 16 MB)
     settle_discard_samples: int = 131_072        # [impl] discarded after streaming starts (68 ms)
-    g1_db: float | None = None                   # [field] primary gain, chosen in the survey
-    g2_db: float | None = None                   # [field] gain-change test gain
+    g1_db: float | None = 29.7                   # [field] primary gain (gain trials, 5 Nov 2026)
+    g2_db: float | None = 19.7                   # [field] gain-change test gain (10 dB below g1)
     antenna: str = ""                            # [field] antenna description
     terminator_label: str = "50 ohm terminator"  # [fixed] Class A input
     session_order: tuple = CLASSES               # [fixed] A, B, C_centre, C_offset

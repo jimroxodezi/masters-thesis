@@ -34,6 +34,7 @@ The commands are run from the \texttt{code/} folder, for example \texttt{uv run 
     \texttt{session} & Guided capture session of eight captures, with its day or night label (\cref{sec:m-sessions}) & GitHub \\
     \texttt{survey} & Band survey with \texttt{rtl\_power} (\cref{sec:m-survey}) & GitHub \\
     \texttt{quicklook} & Quick-look figures and the labelling check (\cref{sec:m-labels}) & GitHub \\
+    \texttt{gaintrials} & Summary of the gain trials (\cref{app:gains}) & GitHub \\
     \midrule
     \texttt{dataset} & Frames, DC removal and session-level folds (\cref{sec:m-splits}) & \Cref{app:code-data} \\
     \texttt{preprocess} & Spectrograms and their standardization (\cref{sec:m-preproc}) & \Cref{app:code-data} \\
@@ -114,8 +115,8 @@ The tests check the parts of the method that can be checked without real data (\
 % Keep the counts in step with code/tests/ (grep -c "def test_" code/tests/test_*.py).
 \begin{table}[tbp]
   \centering
-  \small
-  \caption[Tests of the code]{Tests of the code in \texttt{code/tests/}. All 96 tests pass.}
+  \footnotesize
+  \caption[Tests of the code]{Tests of the code in \texttt{code/tests/}. All 97 tests pass.}
   \label{tab:app-tests}
   \begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}p{4.1cm} >{\raggedright\arraybackslash}X r @{}}
     \toprule
@@ -137,6 +138,7 @@ The tests check the parts of the method that can be checked without real data (\
     \texttt{test\_resume} & A resumed training run ends in the same state as an uninterrupted one; checkpoints with other settings are not resumed; finished runs are retrained only on request; CPU fallback; the runtime record & 5 \\
     \texttt{test\_cost\_and\_demo} & The scoring copy of each network gives the same reconstructions; the percentile score equals the original computation; both forms of each network are timed; the power-condition check; the demonstration's queue, lost-sample estimate and live-view limits & 8 \\
     \texttt{test\_colab} & The pack holds only Class~B spectrograms at $g_1$; corrupted packs and unsafe zip files are refused; training from the pack gives the same models as training from the local data; training through the Colab script without the receiver library; unpacking; the epoch-timing output; a valid notebook & 10 \\
+    \texttt{test\_gaintrials} & Gain-trial summaries: values from the capture record and from the raw samples & 1 \\
     \texttt{helpers} & Shared test helpers (tiny configurations and data sets) & --- \\
     \bottomrule
   \end{tabularx}

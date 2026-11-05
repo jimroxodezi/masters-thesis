@@ -79,53 +79,50 @@ uv run python -m occupancy survey --range 925M:960M --gain 40.2 \
 At 22:00, repeat with \cmd{--label night}. The CSV files and plots are saved in \cmd{data/survey/}.
 \begin{enumerate}
 \item \textbf{Find the carriers.} An LTE carrier shows as a flat plateau of raised power, 5--20\,MHz wide. Note each plateau's centre and width.
-\item \textbf{Confirm with the cell scanner.} For each strong plateau, search 0.5\,MHz either side of its centre, at a fixed gain that is one of the tuner's steps (e.g.\ 40.2\,dB), with two tries per frequency. For a plateau near 796\,MHz:
+\item \textbf{Confirm with the cell scanner.} For each strong plateau, search 0.5\,MHz either side of its centre, at a fixed gain that is one of the tuner's steps (e.g.\ 40.2\,dB), with two tries per frequency. For the plateau near 773\,MHz:
 \begin{Verbatim}
 cd ~/tools/LTE-Cell-Scanner/build
-./src/CellSearch -s 795.5e6 -e 796.5e6 -g 40.2 -n 2
+./src/CellSearch -s 772.5e6 -e 773.5e6 -g 40.2 -n 2
 \end{Verbatim}
 A plateau counts as a carrier only if a cell is found. From the results table record: \textbf{CID} (cell identity, PCI), \textbf{fc} (carrier centre), \textbf{nRB} (bandwidth: 6, 15, 25, 50, 75, 100 = 1.4, 3, 5, 10, 15, 20\,MHz), \textbf{RXPWR} and \textbf{DPX} (should be FDD). Never use \cmd{LTE-Tracker}; it decodes more than the study needs.
 \item \textbf{Choose the carrier.} It should be confirmed by the scanner, strong and steady by day and night, and preferably 10\,MHz wide or more. Only carriers of 10\,MHz or more allow the offset captures; the session helper checks this.
 \item \textbf{Choose the idle (Class~B) window.} It is a stretch of at least 1.92\,MHz with no carrier, as close to the chosen carrier as possible. The scanner finds a carrier only at its centre, so do not search the window itself: check instead that the window lies outside every nearby carrier (centre $\pm$ half its bandwidth). The session helper checks this against the chosen carrier. The survey analysis suggests only stretches with no signal at all, narrow or intermittent ones included. The thin spikes evenly spaced about 2.2\,MHz apart are made by the dongle at the centre of each tuning step; ignore them. The survey analysis can rank candidates:
 \begin{Verbatim}
-uv run python -m occupancy survey --parse data/survey/<file>.csv --carrier 796M
+uv run python -m occupancy survey --parse data/survey/<file>.csv --carrier 773M
 \end{Verbatim}
-\item \textbf{Choose the two gains, $g_1$ and $g_2$.} They are fixed for the whole study.
-  \begin{itemize}
-  \item $g_1$ is the highest gain step at which a capture centred on the carrier is not flagged for clipping (more than 0.1\% of samples at the limits).
-  \item $g_2$ is lower, about 10\,dB below $g_1$ (a suggestion, not a fixed rule).
-  \item Make trial captures under the session ID \cmd{trial}. Afterwards, move \cmd{data/raw/trial} to a folder outside \cmd{data/} (e.g. \cmd{data\_trials/}) so they are never used.
-  \end{itemize}
+\item \textbf{The two gains (chosen 5 November 2026): $g_1 = 29.7$\,dB and $g_2 = 19.7$\,dB,} fixed for the whole study. They come from trial captures under the session ID \cmd{trial} (thesis Appendix~A.2): $g_1$ is the highest gain step at which the carrier stays below 0.1\% clipped samples even during traffic peaks, and $g_2$ is 10\,dB lower. Trial captures were moved to \cmd{data/trials/} so they are never used as data; summarise any trial folder with \cmd{uv run python -m occupancy trials data/trials/<folder>}.
 \item \textbf{Send me the survey plots, the scanner output, and your choice of carrier, Class~B window, $g_1$ and $g_2$} before Session~1. They go into Appendix~A of the thesis.
 \end{enumerate}
 
 \section{Step 2: capture sessions}
 \subsection*{Plan}
-\textbf{Positions:} P1 is the parlour balcony and P2 the bedroom balcony (they face different directions). At each one, mount the antenna at a marked spot, at the same height and orientation every time, at least 30\,cm from metal railings or burglary-proof bars, and photograph the setup; the laptop stays indoors with the cable through the door. \textbf{Before the first P2 session} (S03 in the plan), check P2 once: run \cmd{CellSearch} on the chosen carrier there, and one 10-minute survey of the range that contains it with \cmd{--position P2 --label check}; send me the plot.
+\textbf{Positions:} P1 is the parlour balcony and P2 the bedroom balcony (they face different directions). At each one, mount the antenna at a marked spot, at the same height and orientation every time, at least 30\,cm from metal railings or burglary-proof bars, and photograph the setup; the laptop stays indoors with the cable through the door. \textbf{Before the first P2 session} (S03, Friday 6 November at 22:00), check P2 once, during the day: run \cmd{CellSearch} on the chosen carrier there, and one 10-minute survey of the range that contains it with \cmd{--position P2 --label check}; send me the plot.
 
-Use the same carrier, Class~B window, antenna and gains $g_1$, $g_2$ in every session. Day sessions start at \textbf{07:00} and night sessions at \textbf{22:00}; the session helper warns if you start more than two hours away from these times, and such a session is reported separately. There is one day and one night slot per day, so 12 sessions take at least 6 days. A possible plan, balanced over times and positions:
+Use the same carrier, Class~B window, antenna and gains $g_1$, $g_2$ in every session. Day sessions start at \textbf{07:00} and night sessions at \textbf{22:00}; the session helper warns if you start more than two hours away from these times, and such a session is reported separately. There is one day and one night slot per day. Number the sessions in the order they are recorded (the folds of the evaluation follow that order). The plan, in time order, has three sessions each of P1 by day, P1 at night, P2 by day and P2 at night:
 
 \begin{center}
 \begin{tabular}{@{} l l l l @{\hspace{12mm}} l l l l @{}}
 \toprule
-Session & Day & Start & Position & Session & Day & Start & Position \\
+Session & Date & Start & Position & Session & Date & Start & Position \\
 \midrule
-S01 & 1 & 07:00 & P1 & S07 & 4 & 07:00 & P2 \\
-S02 & 1 & 22:00 & P1 & S08 & 4 & 22:00 & P1 \\
-S03 & 2 & 07:00 & P2 & S09 & 5 & 07:00 & P1 \\
-S04 & 2 & 22:00 & P2 & S10 & 5 & 22:00 & P2 \\
-S05 & 3 & 07:00 & P1 & S11 & 6 & 07:00 & P2 \\
-S06 & 3 & 22:00 & P2 & S12 & 6 & 22:00 & P1 \\
+S01 & Thu 5 Nov & 22:00 & P1 & S07 & Sun 8 Nov & 22:00 & P2 \\
+S02 & Fri 6 Nov & 07:00 & P1 & S08 & Mon 9 Nov & 07:00 & P1 \\
+S03 & Fri 6 Nov & 22:00 & P2 & S09 & Mon 9 Nov & 22:00 & P1 \\
+S04 & Sat 7 Nov & 07:00 & P2 & S10 & Tue 10 Nov & 07:00 & P2 \\
+S05 & Sat 7 Nov & 22:00 & P1 & S11 & Tue 10 Nov & 22:00 & P2 \\
+S06 & Sun 8 Nov & 07:00 & P2 & S12 & Wed 11 Nov & 07:00 & P1 \\
 \bottomrule
 \end{tabular}
 \end{center}
 
+If a slot is missed, record the next session in the next free slot at the planned position and keep numbering in time order; tell me, and I will rebalance the rest of the plan.
+
 \subsection*{Procedure for every session}
 \begin{enumerate}
 \item \textbf{Set up} at the position: antenna mounted as before at that position (see its photo), dongle plugged in, laptop on. Wait about 5 minutes before the first capture, so the dongle warms up.
-\item \textbf{Cell search} on the chosen carrier only (here 796\,MHz), keeping the samples with the session's name. Note the CID; it should be the same cell as in the survey:
+\item \textbf{Cell search} on the chosen carrier only (773\,MHz), keeping the samples with the session's name. Note the CID; it should be the same cell as in the survey:
 \begin{Verbatim}
-./src/CellSearch -s 796e6 -g 40.2 -n 2 --recbin S01_cellsearch.bin
+./src/CellSearch -s 773e6 -g 40.2 -n 2 --recbin S01_cellsearch.bin
 \end{Verbatim}
 The scanner and the session helper both need the dongle, so run them one after the other.
 \item \textbf{Start the guided session} and answer its questions:
@@ -133,7 +130,7 @@ The scanner and the session helper both need the dongle, so run them one after t
 uv run python -m occupancy session
 \end{Verbatim}
 \begin{itemize}
-\item It asks for: the session ID (S01, S02, \dots); the position; $g_1$ and $g_2$; the frequency correction (enter 0); the antenna; the temperature; notes on weather and surroundings; the cell-search tool; the carrier's centre frequency, PCI and bandwidth; which side of the carrier to use for the offset window (+ or $-$); and the Class~B and Class~A frequencies.
+\item It asks for: the session ID (S01, S02, \dots); the position; $g_1$ and $g_2$; the frequency correction (enter 0); the antenna; the temperature; notes on weather and surroundings; the cell-search tool; the carrier's centre frequency, PCI and bandwidth; which side of the carrier to use for the offset window (+ or $-$); and the Class~B and Class~A frequencies. The answers for this study: $g_1$ 29.7, $g_2$ 19.7, frequency correction 0, carrier 773M, PCI 145, bandwidth 10\,MHz, offset side +, Class~B 765.37M, Class~A: accept the default (the Class~B frequency).
 \item It then shows the plan.
 \end{itemize}
 \item \textbf{Follow the screen for the 8 captures} of 30\,s each, pressing Enter to start each one:

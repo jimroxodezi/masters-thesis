@@ -20,9 +20,12 @@ Author: Jimrox Odezi Ogume. Department of Electrical and Electronic Engineering,
 - Splits are by capture session/day/location, never by random frame. Normalization statistics come from training data only. Thresholds are set on idle validation data only.
 - The thesis reports **actual** results from `code/` and `results/`, never the proposal's hypotheses or predictions.
 - The thesis has **five chapters** (see Chapter plan).
+- **Band (confirmed 5 November 2026, after the band survey; Appendix A):** LTE Band 28 downlink (758–803 MHz). Carrier: 773 MHz, cell identity 145, 10 MHz (50 RB). Idle (Class B) window centred at 765.37 MHz; C_offset window at 775.52 MHz (+ side). Positions P1 (parlour balcony) and P2 (bedroom balcony) at the author's home; sessions start at 07:00 (day) and 22:00 (night) WAT.
+
+- **Gains (confirmed 5 November 2026, after gain trials; Appendix A.2):** g1 = 29.7 dB, g2 = 19.7 dB (g1 keeps a margin for traffic peaks; g2 is 10 dB lower).
 
 ## Things to resolve with me before writing (do not guess)
-1. **Band:** not yet decided. Candidates and the survey protocol are in Section 8.1 of the proposal. Until I confirm a band, use placeholders in band-specific text and never state a band or center frequency.
+None open at present.
 
 ## Repo layout
 ```
